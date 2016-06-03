@@ -111,7 +111,7 @@ struct BlockParser
            node.next()) {
         if (filter->matches(node)) {
           osm_input::OsmPoi::Position pos((int32_t)node.lati(),
-                                          (int32_t)node.lati());
+                                          (int32_t)node.loni());
           int64_t id = node.id();
 
           osm_input::OsmPoi* poi = new osm_input::OsmPoi(id, pos);

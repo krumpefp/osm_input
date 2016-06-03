@@ -27,6 +27,8 @@
 
 namespace osm_input {
 
+const double COORDINATE_SCALING = 10000000;
+
 class OsmPoi
 {
 public:
@@ -49,6 +51,9 @@ public:
     Position(int32_t aLat, int32_t aLon)
       : mLat(aLat)
       , mLon(aLon){};
+
+    double getLatDegree() { return mLat / COORDINATE_SCALING; };
+    double getLonDegree() { return mLon / COORDINATE_SCALING; };
   };
 
   struct LabelBall
@@ -81,6 +86,8 @@ public:
 
   LabelBall getCorrespondingBall(std::size_t aSplitSize,
                                  const std::unordered_set<char>& aDelims) const;
+
+  std::string getTagValue(std::string aTagName) const;
 
 private:
   int64_t mOsmId;

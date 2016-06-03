@@ -205,13 +205,14 @@ osm_input::OsmPoi::computeType(bool aUpdateType)
   Poi_Types type = UNDEFINED;
 
   for (auto& tag : mTags) {
-    if (tag.first == "place" && (tag.second == "city" || tag.second == "town" ||
-        tag.second == "village" || tag.second == "municipality" ||
-        tag.second == "borough" || tag.second == "suburb" ||
-        tag.second == "quarter" || tag.second == "neighbourhood" ||
-        tag.second == "city_block" || tag.second == "hamlet" ||
-        tag.second == "isolated_dwelling" || tag.second == "farm" ||
-        tag.second == "allotments" || tag.second == "plot")) {
+    if (tag.first == "place" &&
+        (tag.second == "city" || tag.second == "town" ||
+         tag.second == "village" || tag.second == "municipality" ||
+         tag.second == "borough" || tag.second == "suburb" ||
+         tag.second == "quarter" || tag.second == "neighbourhood" ||
+         tag.second == "city_block" || tag.second == "hamlet" ||
+         tag.second == "isolated_dwelling" || tag.second == "farm" ||
+         tag.second == "allotments" || tag.second == "plot")) {
       type = SETTLEMENT;
     } else if (type == UNDEFINED) {
       type = GENERAL_POI;
@@ -236,12 +237,19 @@ std::size_t
 computeSplitSize(const std::string& aLabel,
                  const std::unordered_set<char>& aDelims)
 {
+  const char* label = aLabel.c_str();
+  
   std::size_t centerPos = aLabel.size() / 2;
   std::size_t pos = 0;
-  while (pos != aLabel.npos) {
-    if (aDelims.count(aLabel[centerPos + pos]) > 0) {
+  while (pos < centerPos / 2) {
+    if (aDelims.count(label[centerPos + pos]) > 0) {
       return 1 + centerPos + pos;
     }
+    if (aDelims.count(label[centerPos - pos]) > 0) {
+      return centerPos + pos;
+    }
+
+    ++pos;
   }
 
   return aLabel.size();
@@ -263,5 +271,16 @@ osm_input::OsmPoi::getCorrespondingBall(
     }
   }
 
-  return LabelBall(mPos, (int32_t)(labelSize + 1) / 2);
+  return LabelBall(mPos, (int32_t)labelSize / 2);
+}
+
+std::string osm_input::OsmPoi::getTagValue(std::string aTagName) const
+{
+  for (auto& tag : mTags) {
+    if (tag.first == aTagName) {
+      return tag.second;
+    }
+  }
+  
+  return "<undefined>";
 }

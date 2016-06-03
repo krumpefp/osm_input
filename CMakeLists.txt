@@ -11,6 +11,7 @@ include_directories(src
                     src/debughelpers
                     src/input
                     src/labelhelpers
+                    src/output
                     vendor/osmpbf
                     vendor/osmpbf/osmpbf/include)
 
@@ -18,7 +19,8 @@ include_directories(src
 FILE(GLOB SOURCES_CPP src/*.cpp
                       src/debughelpers/*.cpp
                       src/input/*.cpp
-                      src/labelhelpers/*.cpp)
+                      src/labelhelpers/*.cpp
+                      src/output/*.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-variable -Wconversion -Wall")

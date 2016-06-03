@@ -21,15 +21,23 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <unordered_set>
+#include <vector>
 
 #include "osminputhelper.h"
 #include "osmpoi.h"
+#include "textoutputhelper.h"
 #include "timer.h"
 
 namespace {
-  bool osmPoiComp(const osm_input::OsmPoi* aLhs, const osm_input::OsmPoi* aRhs) {
-    return *aLhs < *aRhs;
-  }
+const std::size_t SPLIT_SIZE = 15;
+const std::unordered_set<char> DELIMITERS({ ' ', '-', '/' });
+
+bool
+osmPoiComp(const osm_input::OsmPoi* aLhs, const osm_input::OsmPoi* aRhs)
+{
+  return *aLhs < *aRhs;
+}
 }
 
 int
@@ -55,6 +63,26 @@ main(int argc, char** argv)
   std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n \
               \tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
+
+  std::vector<osm_input::OsmPoi::LabelBall> balls;
+  balls.reserve(pois.size());
+  for (auto& poi : pois) {
+    balls.push_back(poi->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
+  }
+
+  std::string outputname = (path.find("/") == path.npos)
+                             ? path.substr(0, path.size())
+                             : path.substr(path.rfind('/') + 1, path.size());
+
+  std::string outputpath = outputname + ".balls.txt";
+  std::printf("Outputting data to %s\n", outputpath.c_str());
+  text_output::TextOutputHelper out(outputpath);
+  out.writeBallsFile(balls);
+
+  outputpath = outputname + ".complete.txt";
+  std::printf("Outputting data to %s\n", outputpath.c_str());
+  text_output::TextOutputHelper outComplete(outputpath);
+  outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS);
 
   return 1;
 }
