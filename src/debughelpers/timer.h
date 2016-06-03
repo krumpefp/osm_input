@@ -54,7 +54,6 @@ private:
     std::chrono::time_point<std::chrono::system_clock>& t1,
     std::chrono::time_point<std::chrono::system_clock>& t2);
 };
-
 }
 
 #endif // TIMER_H

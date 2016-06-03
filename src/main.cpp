@@ -26,28 +26,35 @@
 #include "osmpoi.h"
 #include "timer.h"
 
+namespace {
+  bool osmPoiComp(const osm_input::OsmPoi* aLhs, const osm_input::OsmPoi* aRhs) {
+    return *aLhs < *aRhs;
+  }
+}
+
 int
 main(int argc, char** argv)
 {
   std::printf("Hallo!\n");
-  
+
   std::string path = std::string(argv[1]);
-  
+
   debug_timer::Timer t;
-  
+
   t.start();
-  osm_input::OsmInputHelper input (path);
-  
+  osm_input::OsmInputHelper input(path);
+
   std::vector<const osm_input::OsmPoi*> pois = input.importPoiData(true, true);
-  
+
   t.createTimepoint();
-  
-  std::sort(pois.begin(), pois.end());
-  
+
+  std::sort(pois.begin(), pois.end(), osmPoiComp);
+
   t.stop();
-  
+
   std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n \
-              \tSorting objects took %4.2f seconds.\n", pois.size(), t.getTimes()[0], t.getTimes()[1]);
-  
+              \tSorting objects took %4.2f seconds.\n",
+              pois.size(), t.getTimes()[0], t.getTimes()[1]);
+
   return 1;
 }

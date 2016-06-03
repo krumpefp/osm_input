@@ -22,6 +22,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace osm_input {
@@ -50,6 +51,16 @@ public:
       , mLon(aLon){};
   };
 
+  struct LabelBall
+  {
+    Position mPos;
+    int32_t mBallRadius;
+
+    LabelBall(const Position& aCenter, int32_t aRadius)
+      : mPos(aCenter)
+      , mBallRadius(aRadius){};
+  };
+
 public:
   OsmPoi(int64_t aOsmId, Position aPos);
   OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType);
@@ -68,10 +79,14 @@ public:
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 
+  LabelBall getCorrespondingBall(std::size_t aSplitSize,
+                                 const std::unordered_set<char>& aDelims) const;
+
 private:
   int64_t mOsmId;
   Position mPos;
   Poi_Types mPoiType;
+  int32_t mSubImportance = -1;
 
   std::vector<std::pair<std::string, std::string>> mTags;
 };

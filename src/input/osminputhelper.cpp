@@ -29,7 +29,9 @@
 #include "osmpbf/parsehelpers.h"
 
 // ---- BoundingBox
-void osm_input::OsmInputHelper::BoundingBox::adapt(const osm_input::OsmPoi::Position& aPos)
+void
+osm_input::OsmInputHelper::BoundingBox::adapt(
+  const osm_input::OsmPoi::Position& aPos)
 {
   mMinLat = std::min(mMinLat, aPos.mLat);
   mMaxLat = std::max(mMinLat, aPos.mLat);
@@ -37,7 +39,6 @@ void osm_input::OsmInputHelper::BoundingBox::adapt(const osm_input::OsmPoi::Posi
   mMinLon = std::min(mMinLon, aPos.mLon);
   mMaxLon = std::max(mMinLon, aPos.mLon);
 }
-
 
 void
 osm_input::OsmInputHelper::BoundingBox::adapt(int32_t aLat, int32_t aLon)
@@ -109,7 +110,8 @@ struct BlockParser
       for (osmpbf::INodeStream node = pbi.getNodeStream(); !node.isNull();
            node.next()) {
         if (filter->matches(node)) {
-          osm_input::OsmPoi::Position pos ((int32_t)node.lati(), (int32_t)node.lati());
+          osm_input::OsmPoi::Position pos((int32_t)node.lati(),
+                                          (int32_t)node.lati());
           int64_t id = node.id();
 
           osm_input::OsmPoi* poi = new osm_input::OsmPoi(id, pos);
@@ -121,9 +123,9 @@ struct BlockParser
               poi->addTag(key, value);
             }
           }
-          
+
           poi->computeType(true);
-          
+
           localPois.push_back(poi);
         }
       }
@@ -157,17 +159,18 @@ osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
 
   if (!osmFile.open()) {
     printf("Failed to open infile %s\n", mPbfPath.c_str());
-    
+
     return PoiSet();
   }
-  
+
   osm_parsing::SharedPOISet pois;
   uint32_t threadCount = 4;   // use 4 threads, usually 4 are more than enough
   uint32_t readBlobCount = 2; // parse 2 blocks at once
   bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
 
   osmpbf::parseFileCPPThreads(
-    osmFile, osm_parsing::BlockParser(&pois, aIncludeSettlements, aIncludeGeneral),
+    osmFile,
+    osm_parsing::BlockParser(&pois, aIncludeSettlements, aIncludeGeneral),
     threadCount, readBlobCount, threadPrivateProcessor);
 
   mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());

@@ -50,8 +50,8 @@ public:
       , mMinLon(aMinLon)
       , mMaxLon(aMaxLon){};
 
-      void adapt(const osm_input::OsmPoi::Position& aPos);
-      
+    void adapt(const osm_input::OsmPoi::Position& aPos);
+
     void adapt(int32_t aLat, int32_t aLon);
   };
 
