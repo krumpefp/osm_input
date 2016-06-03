@@ -23,6 +23,7 @@
 
 #include "osminputhelper.h"
 #include "osmpoi.h"
+#include "timer.h"
 
 int
 main(int argc, char** argv)
@@ -31,11 +32,16 @@ main(int argc, char** argv)
   
   std::string path = std::string(argv[1]);
   
+  debug_timer::Timer t;
+  
+  t.start();
   osm_input::OsmInputHelper input (path);
   
   std::vector<const osm_input::OsmPoi*> pois = input.importPoiData(true, true);
   
-  std::printf("Dataset size: %lu\n", pois.size());
+  t.stop();
+  
+  std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n", pois.size(), t.getTotal());
   
   return 1;
 }

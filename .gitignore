@@ -1,5 +1,5 @@
-debug
-release
+debug/
+release/
 .kdev4/
 osm_input.kdev4
 vendor/

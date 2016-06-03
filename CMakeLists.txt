@@ -9,12 +9,14 @@ set(BIN_NAME "osm_input")
 
 include_directories(src
                     src/input
+                    src/debughelpers
                     vendor/osmpbf
                     vendor/osmpbf/osmpbf/include)
 
 
-FILE(GLOB SOURCES_CPP ${PROJECT_SOURCE_DIR}/src/*.cpp
-                      ${PROJECT_SOURCE_DIR}/src/input/*.cpp)
+FILE(GLOB SOURCES_CPP src/*.cpp
+                      src/input/*.cpp
+                      src/debughelpers/*.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-variable -Wconversion -Wall")
