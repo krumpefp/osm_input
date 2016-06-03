@@ -8,15 +8,17 @@ find_package(ZLIB REQUIRED)
 set(BIN_NAME "osm_input")
 
 include_directories(src
-                    src/input
                     src/debughelpers
+                    src/input
+                    src/labelhelpers
                     vendor/osmpbf
                     vendor/osmpbf/osmpbf/include)
 
 
 FILE(GLOB SOURCES_CPP src/*.cpp
+                      src/debughelpers/*.cpp
                       src/input/*.cpp
-                      src/debughelpers/*.cpp)
+                      src/labelhelpers/*.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-variable -Wconversion -Wall")

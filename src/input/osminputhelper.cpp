@@ -122,6 +122,8 @@ struct BlockParser
             }
           }
           
+          poi->computeType(true);
+          
           localPois.push_back(poi);
         }
       }

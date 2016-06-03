@@ -18,6 +18,7 @@
  *
  */
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 
@@ -39,9 +40,14 @@ main(int argc, char** argv)
   
   std::vector<const osm_input::OsmPoi*> pois = input.importPoiData(true, true);
   
+  t.createTimepoint();
+  
+  std::sort(pois.begin(), pois.end());
+  
   t.stop();
   
-  std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n", pois.size(), t.getTotal());
+  std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n \
+              \tSorting objects took %4.2f seconds.\n", pois.size(), t.getTimes()[0], t.getTimes()[1]);
   
   return 1;
 }
