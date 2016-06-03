@@ -19,11 +19,23 @@
  */
 
 #include <iostream>
+#include <string>
+
+#include "osminputhelper.h"
+#include "osmpoi.h"
 
 int
 main(int argc, char** argv)
 {
   std::printf("Hallo!\n");
+  
+  std::string path = std::string(argv[1]);
+  
+  osm_input::OsmInputHelper input (path);
+  
+  std::vector<const osm_input::OsmPoi*> pois = input.importPoiData(true, true);
+  
+  std::printf("Dataset size: %lu\n", pois.size());
   
   return 1;
 }

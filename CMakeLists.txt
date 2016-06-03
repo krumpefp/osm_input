@@ -2,14 +2,21 @@ cmake_minimum_required(VERSION 3.0)
 
 project(osm_input)
 
+find_package(Protobuf REQUIRED)
+find_package(ZLIB REQUIRED)
+
 set(BIN_NAME "osm_input")
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(src
+                    src/input
+                    vendor/osmpbf
+                    vendor/osmpbf/osmpbf/include)
 
 
-FILE(GLOB SOURCES_CPP ${PROJECT_SOURCE_DIR}/src/*.cpp)
+FILE(GLOB SOURCES_CPP ${PROJECT_SOURCE_DIR}/src/*.cpp
+                      ${PROJECT_SOURCE_DIR}/src/input/*.cpp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-variable -Wconversion -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -O3 -march=native")
 
@@ -23,4 +30,14 @@ elseif (CMAKE_BUILD_TYPE MATCHES Release)
 	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_RELEASE}")
 endif()
 
+set(MY_LINK_LIBS
+    ${osmpbf_BINARY_DIR}/libosmpbf.a
+    ${PROTOBUF_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+)
+
 add_executable(${BIN_NAME} ${SOURCES_CPP})
+
+add_subdirectory(vendor/osmpbf)
+add_dependencies(${PROJECT_NAME} osmpbf)
+target_link_libraries(${BIN_NAME} ${MY_LINK_LIBS})

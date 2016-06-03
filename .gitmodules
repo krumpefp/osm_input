@@ -1,0 +1,6 @@
+[submodule "vendor/--recursive"]
+	path = vendor/--recursive
+	url = https://github.com/inphos42/osmpbf.git
+[submodule "vendor/osmpbf"]
+	path = vendor/osmpbf
+	url = https://github.com/inphos42/osmpbf.git
