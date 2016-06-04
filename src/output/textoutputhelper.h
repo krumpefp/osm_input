@@ -37,9 +37,13 @@ public:
   TextOutputHelper& operator=(const TextOutputHelper& other) = delete;
   bool operator==(const TextOutputHelper& other) const = delete;
 
-  bool writeBallsFile(std::vector<osm_input::OsmPoi::LabelBall>& aBalls, char aSep);
+  bool writeBallsFile(std::vector<osm_input::OsmPoi::LabelBall>& aBalls,
+                      char aSep);
 
-  bool writeCompleteFile(std::vector< const osm_input::OsmPoi* >& aPois, std::size_t aSplitSize, const std::unordered_set< char >& aDelimiters, char aSep);
+  bool writeCompleteFile(std::vector<const osm_input::OsmPoi*>& aPois,
+                         std::size_t aSplitSize,
+                         const std::unordered_set<char>& aDelimiters,
+                         char aSep);
 
 private:
   std::string mOutputPath;

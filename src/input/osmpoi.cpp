@@ -238,7 +238,7 @@ computeSplitSize(const std::string& aLabel,
                  const std::unordered_set<char>& aDelims)
 {
   const char* label = aLabel.c_str();
-  
+
   std::size_t centerPos = aLabel.size() / 2;
   std::size_t pos = 0;
   while (pos < centerPos / 2) {
@@ -274,13 +274,14 @@ osm_input::OsmPoi::getCorrespondingBall(
   return LabelBall(mPos, (int32_t)labelSize / 2);
 }
 
-std::string osm_input::OsmPoi::getTagValue(std::string aTagName) const
+std::string
+osm_input::OsmPoi::getTagValue(std::string aTagName) const
 {
   for (auto& tag : mTags) {
     if (tag.first == aTagName) {
       return tag.second;
     }
   }
-  
+
   return "<undefined>";
 }
