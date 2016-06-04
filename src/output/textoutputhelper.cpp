@@ -23,7 +23,7 @@
 
 bool
 text_output::TextOutputHelper::writeBallsFile(
-  std::vector<osm_input::OsmPoi::LabelBall>& aBalls)
+  std::vector<osm_input::OsmPoi::LabelBall>& aBalls, char aSep)
 {
   std::ofstream file(mOutputPath.c_str());
 
@@ -33,12 +33,13 @@ text_output::TextOutputHelper::writeBallsFile(
   file.clear();
 
   std::size_t importance = 0;
-  file << "Longitude [-180, 180] Latitude [-90, 90] Importance Radius";
+//   file << "Longitude [-180, 180] Latitude [-90, 90] Importance Radius";
+  file << aBalls.size();
 
   for (auto& ball : aBalls) {
     file << "\n"
-         << ball.mPos.getLonDegree() << "\t" << ball.mPos.getLatDegree() << "\t"
-         << importance++ << "\t" << ball.mBallRadius;
+         << ball.mPos.getLonDegree() << aSep << ball.mPos.getLatDegree() << aSep
+         << importance++ << aSep << ball.mBallRadius;
   }
 
   file.close();
@@ -48,7 +49,7 @@ text_output::TextOutputHelper::writeBallsFile(
 
 bool
 text_output::TextOutputHelper::writeCompleteFile(
-  std::vector< const osm_input::OsmPoi* >& aPois, std::size_t aSplitSize, const std::unordered_set< char >& aDelimiters)
+  std::vector< const osm_input::OsmPoi* >& aPois, std::size_t aSplitSize, const std::unordered_set< char >& aDelimiters, char aSep)
 {
   std::ofstream file(mOutputPath.c_str());
 
@@ -58,17 +59,18 @@ text_output::TextOutputHelper::writeCompleteFile(
   file.clear();
 
   std::size_t importance = 0;
-  file
-    << "Longitude [-180, 180] Latitude [-90, 90] Importance Radius OsmID name";
+//   file
+//     << "Longitude [-180, 180] Latitude [-90, 90] Importance Radius OsmID name";
+  file << aPois.size();
 
   for (auto& poi : aPois) {
     osm_input::OsmPoi::LabelBall ball =
       poi->getCorrespondingBall(aSplitSize, aDelimiters);
 
       file << "\n"
-           << ball.mPos.getLonDegree() << "\t" << ball.mPos.getLatDegree() << "\t"
-           << importance++ << "\t" << ball.mBallRadius << "\t" << poi->getOsmId()
-           << "\t" << poi->getTagValue("name");
+           << ball.mPos.getLonDegree() << aSep << ball.mPos.getLatDegree() << aSep
+           << importance++ << aSep << ball.mBallRadius << aSep << poi->getOsmId()
+           << aSep << poi->getTagValue("name");
   }
 
   file.close();

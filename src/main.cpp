@@ -77,12 +77,12 @@ main(int argc, char** argv)
   std::string outputpath = outputname + ".balls.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper out(outputpath);
-  out.writeBallsFile(balls);
+  out.writeBallsFile(balls, ' ');
 
   outputpath = outputname + ".complete.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
-  outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS);
+  outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS, ' ');
 
   return 1;
 }
