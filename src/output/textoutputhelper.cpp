@@ -19,6 +19,8 @@
 
 #include "textoutputhelper.h"
 
+#include <iomanip>
+
 #include "osmpoi.h"
 
 bool
@@ -38,8 +40,10 @@ text_output::TextOutputHelper::writeBallsFile(
 
   for (auto& ball : aBalls) {
     file << "\n"
-         << ball.mPos.getLonDegree() << aSep << ball.mPos.getLatDegree() << aSep
-         << importance++ << aSep << ball.mBallRadius;
+      << std::fixed << std::setprecision(17) << ball.mPos.getLonDegree() << aSep
+      << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree() << aSep
+      << importance++ << aSep
+      << std::fixed << std::setprecision(17) << ball.mBallRadius;
   }
 
   file.close();
