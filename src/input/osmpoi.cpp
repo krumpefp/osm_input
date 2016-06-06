@@ -20,6 +20,7 @@
 #include "osmpoi.h"
 
 #include <assert.h>
+#include <math.h>
 
 namespace osmpoi {
 int32_t
@@ -271,7 +272,8 @@ osm_input::OsmPoi::getCorrespondingBall(
     }
   }
 
-  return LabelBall(mPos, (int32_t)labelSize / 2);
+  double halfLabelSize = ceil((double)labelSize / 2.);
+  return LabelBall(mPos, (int32_t)halfLabelSize);
 }
 
 std::string

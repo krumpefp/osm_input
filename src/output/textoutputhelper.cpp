@@ -40,10 +40,10 @@ text_output::TextOutputHelper::writeBallsFile(
 
   for (auto& ball : aBalls) {
     file << "\n"
-      << std::fixed << std::setprecision(17) << ball.mPos.getLonDegree() << aSep
-      << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree() << aSep
-      << importance++ << aSep
-      << std::fixed << std::setprecision(17) << ball.mBallRadius;
+         << std::fixed << std::setprecision(17) << ball.mPos.getLonDegree()
+         << aSep << std::fixed << std::setprecision(17)
+         << ball.mPos.getLatDegree() << aSep << importance++ << aSep
+         << std::fixed << std::setprecision(17) << ball.mBallRadius;
   }
 
   file.close();
@@ -73,12 +73,12 @@ text_output::TextOutputHelper::writeCompleteFile(
     osm_input::OsmPoi::LabelBall ball =
       poi->getCorrespondingBall(aSplitSize, aDelimiters);
 
-      file << "\n"
-      << std::fixed << std::setprecision(17) << ball.mPos.getLonDegree() << aSep
-      << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree() << aSep
-      << importance++ << aSep
-      << std::fixed << std::setprecision(17) << ball.mBallRadius << aSep
-      << poi->getOsmId() << aSep << poi->getTagValue("name");
+    file << "\n"
+         << std::fixed << std::setprecision(17) << ball.mPos.getLonDegree()
+         << aSep << std::fixed << std::setprecision(17)
+         << ball.mPos.getLatDegree() << aSep << importance++ << aSep
+         << std::fixed << std::setprecision(17) << ball.mBallRadius << aSep
+         << poi->getOsmId() << aSep << poi->getTagValue("name");
   }
 
   file.close();
