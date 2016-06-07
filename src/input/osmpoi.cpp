@@ -234,26 +234,47 @@ osm_input::OsmPoi::computeType(bool aUpdateType)
 }
 
 namespace osmpoi {
-std::size_t
-computeSplitSize(const std::string& aLabel,
-                 const std::unordered_set<char>& aDelims)
+std::string
+computeSplit(std::string& aLabel, const std::unordered_set<char>& aDelims)
 {
-  const char* label = aLabel.c_str();
+  if (aLabel.find("\n") != aLabel.npos) {
+    return aLabel.replace(aLabel.find("\n"), aLabel.npos, "$");
+  }
+
+  std::string labelSplit = aLabel;
 
   std::size_t centerPos = aLabel.size() / 2;
   std::size_t pos = 0;
   while (pos < centerPos / 2) {
-    if (aDelims.count(label[centerPos + pos]) > 0) {
-      return 1 + centerPos + pos;
+    char c = aLabel[centerPos + pos];
+    if (aDelims.count(c) > 0) {
+      labelSplit = aLabel.substr(0, centerPos + pos + 1) + "%" +
+                   aLabel.substr(centerPos + pos + 1, aLabel.size());
+      break;
     }
-    if (aDelims.count(label[centerPos - pos]) > 0) {
-      return centerPos + pos;
+    c = aLabel[centerPos - pos];
+    if (aDelims.count(c) > 0) {
+      labelSplit = aLabel.substr(0, centerPos - pos + 1) + "%" +
+                   aLabel.substr(centerPos - pos + 1, aLabel.size());
+      break;
     }
 
     ++pos;
   }
 
-  return aLabel.size();
+  return labelSplit;
+}
+
+std::size_t
+computeBallRadius(const std::string& aLabel)
+{
+  std::size_t delimPos = aLabel.find("%");
+  if (delimPos == aLabel.npos)
+    delimPos = aLabel.size();
+
+  std::size_t labelSize =
+    (delimPos > aLabel.size() / 2) ? delimPos : aLabel.size() - delimPos;
+  return ((int32_t)labelSize + 1) / 2;
 }
 }
 
@@ -262,18 +283,23 @@ osm_input::OsmPoi::getCorrespondingBall(
   std::size_t aSplitSize, const std::unordered_set<char>& aDelims) const
 {
   // corresponds to a little icon
-  std::size_t labelSize = 4;
+  std::string label = "undef";
+  int32_t ballRadius = ((int32_t)label.size() + 1) / 2;
 
   for (auto& tag : mTags) {
     if (tag.first == "name") {
-      labelSize = (tag.second.size() <= aSplitSize)
-                    ? tag.second.size()
-                    : osmpoi::computeSplitSize(tag.second, aDelims);
+      if (tag.second.size() > aSplitSize) {
+        label = tag.second;
+        label = osmpoi::computeSplit(label, aDelims);
+        ballRadius = (int32_t)osmpoi::computeBallRadius(label);
+      } else {
+        label = tag.second;
+        ballRadius = ((int32_t)label.size() + 1) / 2;
+      }
     }
   }
 
-  double halfLabelSize = ceil((double)labelSize / 2.);
-  return LabelBall(mPos, (int32_t)halfLabelSize);
+  return LabelBall(mPos, ballRadius, label);
 }
 
 std::string

@@ -41,29 +41,31 @@ public:
 
   struct Position
   {
-    int32_t mLat;
-    int32_t mLon;
+    double mLat;
+    double mLon;
 
     Position()
       : mLat(0)
       , mLon(0){};
 
-    Position(int32_t aLat, int32_t aLon)
+    Position(double aLat, double aLon)
       : mLat(aLat)
       , mLon(aLon){};
 
-    double getLatDegree() { return mLat / COORDINATE_SCALING; };
-    double getLonDegree() { return mLon / COORDINATE_SCALING; };
+    double getLatDegree() { return mLat; };
+    double getLonDegree() { return mLon; };
   };
 
   struct LabelBall
   {
     Position mPos;
     int32_t mBallRadius;
+    std::string mLabel;
 
-    LabelBall(const Position& aCenter, int32_t aRadius)
+    LabelBall(const Position& aCenter, int32_t aRadius, std::string aLabel)
       : mPos(aCenter)
-      , mBallRadius(aRadius){};
+      , mBallRadius(aRadius)
+      , mLabel(aLabel){};
   };
 
 public:

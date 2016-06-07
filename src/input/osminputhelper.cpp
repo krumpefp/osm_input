@@ -41,7 +41,7 @@ osm_input::OsmInputHelper::BoundingBox::adapt(
 }
 
 void
-osm_input::OsmInputHelper::BoundingBox::adapt(int32_t aLat, int32_t aLon)
+osm_input::OsmInputHelper::BoundingBox::adapt(double aLat, double aLon)
 {
   mMinLat = std::min(mMinLat, aLat);
   mMaxLat = std::max(mMinLat, aLat);
@@ -87,16 +87,10 @@ struct BlockParser
 
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
-    // Filter to get all nodes that have an name and (amenity or place) tag
-    osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
+    // Filter to get all nodes that have an name tag
+    osmpbf::KeyOnlyTagFilter* nameFilter = new osmpbf::KeyOnlyTagFilter("name");
 
-    osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
-    andFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
-    andFilter->addChild(orFilter);
-
-    filter.reset(andFilter);
+    filter.reset(nameFilter);
     filter->assignInputAdaptor(&pbi);
 
     if (!(filter->rebuildCache())) {
@@ -110,8 +104,7 @@ struct BlockParser
       for (osmpbf::INodeStream node = pbi.getNodeStream(); !node.isNull();
            node.next()) {
         if (filter->matches(node)) {
-          osm_input::OsmPoi::Position pos((int32_t)node.lati(),
-                                          (int32_t)node.loni());
+          osm_input::OsmPoi::Position pos(node.latd(), node.lond());
           int64_t id = node.id();
 
           osm_input::OsmPoi* poi = new osm_input::OsmPoi(id, pos);

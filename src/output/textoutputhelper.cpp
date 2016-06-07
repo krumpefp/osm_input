@@ -78,7 +78,7 @@ text_output::TextOutputHelper::writeCompleteFile(
          << aSep << std::fixed << std::setprecision(17)
          << ball.mPos.getLatDegree() << aSep << importance++ << aSep
          << std::fixed << std::setprecision(17) << ball.mBallRadius << aSep
-         << poi->getOsmId() << aSep << poi->getTagValue("name");
+         << poi->getOsmId() << aSep << ball.mLabel;
   }
 
   file.close();

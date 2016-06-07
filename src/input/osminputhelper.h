@@ -32,10 +32,10 @@ class OsmInputHelper
 public:
   struct BoundingBox
   {
-    int32_t mMinLat;
-    int32_t mMaxLat;
-    int32_t mMinLon;
-    int32_t mMaxLon;
+    double mMinLat;
+    double mMaxLat;
+    double mMinLon;
+    double mMaxLon;
 
     BoundingBox()
       : mMinLat(90)
@@ -43,8 +43,7 @@ public:
       , mMinLon(180)
       , mMaxLon(-180){};
 
-    BoundingBox(int32_t aMinLat, int32_t aMaxLat, int32_t aMinLon,
-                int32_t aMaxLon)
+    BoundingBox(double aMinLat, double aMaxLat, double aMinLon, double aMaxLon)
       : mMinLat(aMinLat)
       , mMaxLat(aMaxLat)
       , mMinLon(aMinLon)
@@ -52,7 +51,7 @@ public:
 
     void adapt(const osm_input::OsmPoi::Position& aPos);
 
-    void adapt(int32_t aLat, int32_t aLon);
+    void adapt(double aLat, double aLon);
   };
 
 public:
