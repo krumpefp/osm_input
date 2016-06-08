@@ -40,9 +40,9 @@ text_output::TextOutputHelper::writeBallsFile(
 
   for (auto& ball : aBalls) {
     file << "\n"
-         << std::fixed << std::setprecision(17) << ball.mPos.getLonDegree()
+         << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << std::fixed << std::setprecision(17)
-         << ball.mPos.getLatDegree() << aSep << importance++ << aSep
+         << ball.mPos.getLonDegree() << aSep << importance++ << aSep
          << std::fixed << std::setprecision(17) << ball.mBallRadius;
   }
 
@@ -74,9 +74,9 @@ text_output::TextOutputHelper::writeCompleteFile(
       poi->getCorrespondingBall(aSplitSize, aDelimiters);
 
     file << "\n"
-         << std::fixed << std::setprecision(17) << ball.mPos.getLonDegree()
+         << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << std::fixed << std::setprecision(17)
-         << ball.mPos.getLatDegree() << aSep << importance++ << aSep
+         << ball.mPos.getLonDegree() << aSep << importance++ << aSep
          << std::fixed << std::setprecision(17) << ball.mBallRadius << aSep
          << poi->getOsmId() << aSep << ball.mLabel;
   }
