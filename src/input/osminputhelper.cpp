@@ -51,7 +51,7 @@ osm_input::OsmInputHelper::BoundingBox::adapt(double aLat, double aLon)
 }
 
 // ---- OsmInputHelper
-typedef std::vector<const osm_input::OsmPoi*> PoiSet;
+typedef std::vector<osm_input::OsmPoi*> PoiSet;
 
 // osm.pbf parsing
 namespace osm_parsing {

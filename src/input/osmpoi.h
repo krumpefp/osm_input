@@ -59,13 +59,16 @@ public:
   struct LabelBall
   {
     Position mPos;
-    int32_t mBallRadius;
+    double mBallRadius;
+    
     std::string mLabel;
+    double mLabelFactor;
 
-    LabelBall(const Position& aCenter, int32_t aRadius, std::string aLabel)
+    LabelBall(const Position& aCenter, int32_t aRadius, std::string aLabel, double aFactor)
       : mPos(aCenter)
       , mBallRadius(aRadius)
-      , mLabel(aLabel){};
+      , mLabel(aLabel)
+      , mLabelFactor(aFactor) {};
   };
 
 public:
@@ -90,12 +93,15 @@ public:
                                  const std::unordered_set<char>& aDelims) const;
 
   std::string getTagValue(std::string aTagName) const;
+  
+  void setLabelFactor(double aFactor);
 
 private:
   int64_t mOsmId;
   Position mPos;
   Poi_Types mPoiType;
   int32_t mSubImportance = -1;
+  double mLabelFactor = 1;
 
   std::vector<std::pair<std::string, std::string>> mTags;
 };

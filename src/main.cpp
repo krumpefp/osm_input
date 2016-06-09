@@ -52,12 +52,18 @@ main(int argc, char** argv)
   t.start();
   osm_input::OsmInputHelper input(path);
 
-  std::vector<const osm_input::OsmPoi*> pois = input.importPoiData(true, true);
+  std::vector<osm_input::OsmPoi*> pois = input.importPoiData(true, true);
 
   t.createTimepoint();
 
   std::sort(pois.begin(), pois.end(), osmPoiComp);
 
+  
+  
+  for (auto& poi : pois) {
+    poi->setLabelFactor(1);
+  }
+  
   t.stop();
 
   std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n \

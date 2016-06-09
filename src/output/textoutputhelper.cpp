@@ -53,7 +53,7 @@ text_output::TextOutputHelper::writeBallsFile(
 
 bool
 text_output::TextOutputHelper::writeCompleteFile(
-  std::vector<const osm_input::OsmPoi*>& aPois, std::size_t aSplitSize,
+  std::vector<osm_input::OsmPoi*>& aPois, std::size_t aSplitSize,
   const std::unordered_set<char>& aDelimiters, char aSep)
 {
   std::ofstream file(mOutputPath.c_str());
@@ -75,10 +75,10 @@ text_output::TextOutputHelper::writeCompleteFile(
 
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
-         << aSep << std::fixed << std::setprecision(17)
-         << ball.mPos.getLonDegree() << aSep << importance++ << aSep
-         << std::fixed << std::setprecision(17) << ball.mBallRadius << aSep
-         << poi->getOsmId() << aSep << ball.mLabel;
+         << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
+         << ball.mBallRadius << aSep << poi->getOsmId() << aSep << "'"
+         << ball.mLabel << "'" << std::fixed << std::setprecision(4)
+         << aSep << ball.mLabelFactor;
   }
 
   file.close();

@@ -40,7 +40,7 @@ public:
   bool writeBallsFile(std::vector<osm_input::OsmPoi::LabelBall>& aBalls,
                       char aSep);
 
-  bool writeCompleteFile(std::vector<const osm_input::OsmPoi*>& aPois,
+  bool writeCompleteFile(std::vector<osm_input::OsmPoi*>& aPois,
                          std::size_t aSplitSize,
                          const std::unordered_set<char>& aDelimiters,
                          char aSep);

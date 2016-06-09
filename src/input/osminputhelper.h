@@ -61,15 +61,15 @@ public:
   OsmInputHelper& operator=(const OsmInputHelper& other) = delete;
   bool operator==(const OsmInputHelper& other) const = delete;
 
-  std::vector<const osm_input::OsmPoi*> importPoiData(bool aIncludeSettlements,
-                                                      bool aIncludeGeneral);
+  std::vector<osm_input::OsmPoi*> importPoiData(bool aIncludeSettlements,
+                                                bool aIncludeGeneral);
 
 private:
   std::string mPbfPath;
 
   BoundingBox mDataBox;
 
-  std::vector<const osm_input::OsmPoi*> mPois;
+  std::vector<osm_input::OsmPoi*> mPois;
 };
 }
 

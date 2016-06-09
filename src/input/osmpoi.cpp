@@ -237,10 +237,18 @@ namespace osmpoi {
 std::string
 computeSplit(std::string& aLabel, const std::unordered_set<char>& aDelims)
 {
-  if (aLabel.find("\n") != aLabel.npos) {
-    return aLabel.replace(aLabel.find("\n"), aLabel.npos, "$");
+  // if the label already contains newline information use this
+  if (aLabel.find("\r\n") != aLabel.npos) {
+    return aLabel.replace(aLabel.find("\r\n"), 2, "%");
+  } else if (aLabel.find("\n") != aLabel.npos) {
+    return aLabel.replace(aLabel.find("\n"), 2, "%");
+  } else if (aLabel.find("\r") != aLabel.npos) {
+    return aLabel.replace(aLabel.find("\r"), 2, "%");
+  } else if (aLabel.find("^M") != aLabel.npos) {
+    return aLabel.replace(aLabel.find("^M"), 2, "%");
   }
 
+  // otherwise split at an 
   std::string labelSplit = aLabel;
 
   std::size_t centerPos = aLabel.size() / 2;
@@ -265,16 +273,16 @@ computeSplit(std::string& aLabel, const std::unordered_set<char>& aDelims)
   return labelSplit;
 }
 
-std::size_t
+double
 computeBallRadius(const std::string& aLabel)
 {
   std::size_t delimPos = aLabel.find("%");
   if (delimPos == aLabel.npos)
     delimPos = aLabel.size();
 
-  std::size_t labelSize =
+  double labelSize = (double)
     (delimPos > aLabel.size() / 2) ? delimPos : aLabel.size() - delimPos;
-  return ((int32_t)labelSize + 1) / 2;
+  return (labelSize + 1) / 2;
 }
 }
 
@@ -284,22 +292,24 @@ osm_input::OsmPoi::getCorrespondingBall(
 {
   // corresponds to a little icon
   std::string label = "undef";
-  int32_t ballRadius = ((int32_t)label.size() + 1) / 2;
+  double ballRadius = ((double)label.size() + 1) / 2;
 
   for (auto& tag : mTags) {
     if (tag.first == "name") {
       if (tag.second.size() > aSplitSize) {
         label = tag.second;
         label = osmpoi::computeSplit(label, aDelims);
-        ballRadius = (int32_t)osmpoi::computeBallRadius(label);
+        ballRadius = osmpoi::computeBallRadius(label);
       } else {
         label = tag.second;
-        ballRadius = ((int32_t)label.size() + 1) / 2;
+        ballRadius = (label.size() + 1) / 2;
       }
     }
   }
+  
+  ballRadius *= mLabelFactor;
 
-  return LabelBall(mPos, ballRadius, label);
+  return LabelBall(mPos, ballRadius, label, mLabelFactor);
 }
 
 std::string
@@ -312,4 +322,9 @@ osm_input::OsmPoi::getTagValue(std::string aTagName) const
   }
 
   return "<undefined>";
+}
+
+void osm_input::OsmPoi::setLabelFactor(double aFactor)
+{
+  mLabelFactor = aFactor;
 }
