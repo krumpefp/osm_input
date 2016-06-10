@@ -60,15 +60,16 @@ public:
   {
     Position mPos;
     double mBallRadius;
-    
+
     std::string mLabel;
     double mLabelFactor;
 
-    LabelBall(const Position& aCenter, int32_t aRadius, std::string aLabel, double aFactor)
+    LabelBall(const Position& aCenter, double aRadius, std::string aLabel,
+              double aFactor)
       : mPos(aCenter)
       , mBallRadius(aRadius)
       , mLabel(aLabel)
-      , mLabelFactor(aFactor) {};
+      , mLabelFactor(aFactor){};
   };
 
 public:
@@ -93,7 +94,7 @@ public:
                                  const std::unordered_set<char>& aDelims) const;
 
   std::string getTagValue(std::string aTagName) const;
-  
+
   void setLabelFactor(double aFactor);
 
 private:

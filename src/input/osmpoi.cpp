@@ -160,8 +160,21 @@ osm_input::OsmPoi::operator<(const osm_input::OsmPoi& aOther) const
 
   if (mPoiType == aOther.mPoiType) {
     if (this->mSubImportance == aOther.mSubImportance) {
-      // if both elements can not be distinguished fall back to id comparison
-      less = mOsmId < aOther.mOsmId;
+      if (this->mPoiType == Poi_Types::SETTLEMENT) {
+        // search for population tag and compare
+        std::string szPop = this->getTagValue("population");
+        std::string szOtherPop = aOther.getTagValue("population");
+        int32_t pop = (szPop != "<undefined>") ? std::atoi(szPop.c_str()) : 0;
+        int32_t otherPop =
+          (szOtherPop != "<undefined>") ? std::atoi(szOtherPop.c_str()) : 0;
+        if (pop == otherPop)
+          less = mOsmId < aOther.mOsmId;
+        else
+          less = pop < otherPop;
+      } else {
+        // if both elements can not be distinguished fall back to id comparison
+        less = mOsmId < aOther.mOsmId;
+      }
     } else {
       less = this->mSubImportance < aOther.mSubImportance;
     }
@@ -237,38 +250,40 @@ namespace osmpoi {
 std::string
 computeSplit(std::string& aLabel, const std::unordered_set<char>& aDelims)
 {
+  std::string labelSplit = aLabel;
   // if the label already contains newline information use this
   if (aLabel.find("\r\n") != aLabel.npos) {
-    return aLabel.replace(aLabel.find("\r\n"), 2, "%");
+    labelSplit = aLabel.replace(aLabel.find("\r\n"), 2, "%");
   } else if (aLabel.find("\n") != aLabel.npos) {
-    return aLabel.replace(aLabel.find("\n"), 2, "%");
+    labelSplit = aLabel.replace(aLabel.find("\n"), 2, "%");
   } else if (aLabel.find("\r") != aLabel.npos) {
-    return aLabel.replace(aLabel.find("\r"), 2, "%");
+    labelSplit = aLabel.replace(aLabel.find("\r"), 2, "%");
   } else if (aLabel.find("^M") != aLabel.npos) {
-    return aLabel.replace(aLabel.find("^M"), 2, "%");
-  }
+    labelSplit = aLabel.replace(aLabel.find("^M"), 2, "%");
+  } else {
+    // otherwise split at one of the delimiters
 
-  // otherwise split at an 
-  std::string labelSplit = aLabel;
+    std::size_t centerPos = aLabel.size() / 2;
+    std::size_t pos = 0;
+    while (pos < centerPos / 2) {
+      char c = aLabel[centerPos + pos];
+      if (aDelims.count(c) > 0) {
+        labelSplit = aLabel.substr(0, centerPos + pos + 1) + "%" +
+                     aLabel.substr(centerPos + pos + 1, aLabel.size());
+        break;
+      }
+      c = aLabel[centerPos - pos];
+      if (aDelims.count(c) > 0) {
+        labelSplit = aLabel.substr(0, centerPos - pos + 1) + "%" +
+                     aLabel.substr(centerPos - pos + 1, aLabel.size());
+        break;
+      }
 
-  std::size_t centerPos = aLabel.size() / 2;
-  std::size_t pos = 0;
-  while (pos < centerPos / 2) {
-    char c = aLabel[centerPos + pos];
-    if (aDelims.count(c) > 0) {
-      labelSplit = aLabel.substr(0, centerPos + pos + 1) + "%" +
-                   aLabel.substr(centerPos + pos + 1, aLabel.size());
-      break;
+      ++pos;
     }
-    c = aLabel[centerPos - pos];
-    if (aDelims.count(c) > 0) {
-      labelSplit = aLabel.substr(0, centerPos - pos + 1) + "%" +
-                   aLabel.substr(centerPos - pos + 1, aLabel.size());
-      break;
-    }
-
-    ++pos;
   }
+  if (labelSplit.find(" %") != labelSplit.npos)
+    labelSplit.replace(labelSplit.find(" %"), 2, "%");
 
   return labelSplit;
 }
@@ -280,9 +295,10 @@ computeBallRadius(const std::string& aLabel)
   if (delimPos == aLabel.npos)
     delimPos = aLabel.size();
 
-  double labelSize = (double)
-    (delimPos > aLabel.size() / 2) ? delimPos : aLabel.size() - delimPos;
-  return (labelSize + 1) / 2;
+  double labelSize = (double)(delimPos > aLabel.size() / 2)
+                       ? delimPos
+                       : aLabel.size() - delimPos;
+  return labelSize / 2;
 }
 }
 
@@ -302,11 +318,11 @@ osm_input::OsmPoi::getCorrespondingBall(
         ballRadius = osmpoi::computeBallRadius(label);
       } else {
         label = tag.second;
-        ballRadius = (label.size() + 1) / 2;
+        ballRadius = label.size() / 2;
       }
     }
   }
-  
+
   ballRadius *= mLabelFactor;
 
   return LabelBall(mPos, ballRadius, label, mLabelFactor);
@@ -324,7 +340,8 @@ osm_input::OsmPoi::getTagValue(std::string aTagName) const
   return "<undefined>";
 }
 
-void osm_input::OsmPoi::setLabelFactor(double aFactor)
+void
+osm_input::OsmPoi::setLabelFactor(double aFactor)
 {
   mLabelFactor = aFactor;
 }

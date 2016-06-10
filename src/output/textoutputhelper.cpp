@@ -41,9 +41,8 @@ text_output::TextOutputHelper::writeBallsFile(
   for (auto& ball : aBalls) {
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
-         << aSep << std::fixed << std::setprecision(17)
-         << ball.mPos.getLonDegree() << aSep << importance++ << aSep
-         << std::fixed << std::setprecision(17) << ball.mBallRadius;
+         << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
+         << (int32_t)(ball.mBallRadius);
   }
 
   file.close();
@@ -76,9 +75,9 @@ text_output::TextOutputHelper::writeCompleteFile(
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
-         << ball.mBallRadius << aSep << poi->getOsmId() << aSep << "'"
-         << ball.mLabel << "'" << std::fixed << std::setprecision(4)
-         << aSep << ball.mLabelFactor;
+         << std::fixed << std::setprecision(4) << ball.mBallRadius << aSep
+         << poi->getOsmId() << aSep << "'" << ball.mLabel << "'" << aSep
+         << ball.mLabelFactor;
   }
 
   file.close();

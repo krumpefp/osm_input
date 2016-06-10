@@ -34,7 +34,7 @@ const std::size_t SPLIT_SIZE = 15;
 const std::unordered_set<char> DELIMITERS({ ' ', '-', '/' });
 
 bool
-osmPoiComp(const osm_input::OsmPoi* aLhs, const osm_input::OsmPoi* aRhs)
+osmPoiComp(osm_input::OsmPoi* aLhs, osm_input::OsmPoi* aRhs)
 {
   return *aLhs < *aRhs;
 }
@@ -58,12 +58,13 @@ main(int argc, char** argv)
 
   std::sort(pois.begin(), pois.end(), osmPoiComp);
 
-  
-  
+  double sizeFactorSteps = 5 / (double)(pois.size() - 1);
+  std::size_t counter = 0;
   for (auto& poi : pois) {
-    poi->setLabelFactor(1);
+    poi->setLabelFactor(1 + (double)counter * sizeFactorSteps);
+    ++counter;
   }
-  
+
   t.stop();
 
   std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n \
