@@ -38,6 +38,13 @@ public:
     SETTLEMENT,
     UNDEFINED
   };
+  
+  struct Tag {
+    std::string mKey;
+    std::string mValue;
+    
+    Tag(std::string aKey, std::string aValue) : mKey(aKey), mValue(aValue) {};
+  };
 
   struct Position
   {
@@ -73,8 +80,8 @@ public:
   };
 
 public:
-  OsmPoi(int64_t aOsmId, Position aPos);
-  OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType);
+  OsmPoi(int64_t aOsmId, Position aPos, std::vector<Tag> aTags);
+  OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType, std::vector<Tag> aTags);
 
   // comparison operators
   bool operator==(const OsmPoi& aOther) const;
@@ -83,9 +90,7 @@ public:
   bool operator>(const OsmPoi& aOther) const;
   bool operator<=(const OsmPoi& aOther) const;
   bool operator>=(const OsmPoi& aOther) const;
-
-  void addTag(std::string aKey, std::string aValue);
-  Poi_Types computeType(bool aUpdateType);
+  void finish(bool aUpdateType);
 
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
@@ -95,8 +100,6 @@ public:
 
   std::string getTagValue(std::string aTagName) const;
 
-  void setLabelFactor(double aFactor);
-
 private:
   int64_t mOsmId;
   Position mPos;
@@ -104,7 +107,7 @@ private:
   int32_t mSubImportance = -1;
   double mLabelFactor = 1;
 
-  std::vector<std::pair<std::string, std::string>> mTags;
+  std::vector<Tag> mTags;
 };
 }
 

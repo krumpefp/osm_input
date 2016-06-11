@@ -106,20 +106,18 @@ struct BlockParser
         if (filter->matches(node)) {
           osm_input::OsmPoi::Position pos(node.latd(), node.lond());
           int64_t id = node.id();
+          std::vector<osm_input::OsmPoi::Tag> tags;
 
-          osm_input::OsmPoi* poi = new osm_input::OsmPoi(id, pos);
           for (uint32_t i = 0, s = node.tagsSize(); i < s; ++i) {
             std::string key = node.key(i);
             std::string value = node.value(i);
             if (key == "amenity" || key == "place" || key == "name" ||
                 key == "population") {
-              poi->addTag(key, value);
+              tags.emplace_back(key, value);
             }
           }
-
-          poi->computeType(true);
-
-          localPois.push_back(poi);
+          
+          localPois.emplace_back(new osm_input::OsmPoi(id, pos, tags));
         }
       }
     }

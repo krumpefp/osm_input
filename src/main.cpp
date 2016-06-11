@@ -58,13 +58,6 @@ main(int argc, char** argv)
 
   std::sort(pois.begin(), pois.end(), osmPoiComp);
 
-  double sizeFactorSteps = 5 / (double)(pois.size() - 1);
-  std::size_t counter = 0;
-  for (auto& poi : pois) {
-    poi->setLabelFactor(1 + (double)counter * sizeFactorSteps);
-    ++counter;
-  }
-
   t.stop();
 
   std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n \
