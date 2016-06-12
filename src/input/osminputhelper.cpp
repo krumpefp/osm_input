@@ -111,8 +111,8 @@ struct BlockParser
           for (uint32_t i = 0, s = node.tagsSize(); i < s; ++i) {
             std::string key = node.key(i);
             std::string value = node.value(i);
-            if (key == "amenity" || key == "place" || key == "name" ||
-                key == "population") {
+            if (key == "amenity" || key == "place" || key == "population" ||
+                key == "name" || key == "name:de"  || key == "name:en") {
               tags.emplace_back(key, value);
             }
           }

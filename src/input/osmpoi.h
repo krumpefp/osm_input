@@ -90,7 +90,6 @@ public:
   bool operator>(const OsmPoi& aOther) const;
   bool operator<=(const OsmPoi& aOther) const;
   bool operator>=(const OsmPoi& aOther) const;
-  void finish(bool aUpdateType);
 
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
@@ -100,6 +99,7 @@ public:
 
   std::string getTagValue(std::string aTagName) const;
 
+  std::string getName() const;
 private:
   int64_t mOsmId;
   Position mPos;

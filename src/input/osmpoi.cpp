@@ -419,20 +419,11 @@ osm_input::OsmPoi::getCorrespondingBall(
   std::size_t aSplitSize, const std::unordered_set<char>& aDelims) const
 {
   // corresponds to a little icon
-  std::string label = "undef";
-  double ballRadius = ((double)label.size() + 1) / 2;
-
-  for (auto& tag : mTags) {
-    if (tag.mKey == "name") {
-      if (tag.mValue.size() > aSplitSize) {
-        label = tag.mValue;
-        label = osmpoi::computeSplit(label, aDelims);
-        ballRadius = osmpoi::computeBallRadius(label);
-      } else {
-        label = tag.mValue;
-        ballRadius = label.size() / 2;
-      }
-    }
+  std::string label = getName();
+  double ballRadius = (double)label.size() / 2;
+  if (label.size() > aSplitSize) {
+    label = osmpoi::computeSplit(label, aDelims);
+    ballRadius = osmpoi::computeBallRadius(label);
   }
 
   ballRadius *= mLabelFactor;
@@ -450,4 +441,26 @@ osm_input::OsmPoi::getTagValue(std::string aTagName) const
   }
 
   return "<undefined>";
+}
+
+std::string osm_input::OsmPoi::getName() const {
+  std::string name = "<undefined>";
+  
+  enum Dom {UNDEF, NAME, NAME_DE, NAME_EN};
+  Dom d = Dom::UNDEF;
+  
+  for (auto& tag : mTags) {
+    if (tag.mKey == "name" && d < Dom::NAME) {
+      name = tag.mValue;
+      d = Dom::NAME;
+    } else if (tag.mKey == "name:de" && d < Dom::NAME_DE) {
+      name = tag.mValue;
+      d = Dom::NAME_DE;
+    } else if (tag.mKey == "name:en" && d < Dom::NAME_EN) {
+      name = tag.mValue;
+      d = Dom::NAME_EN;
+    }
+  }
+  
+  return name;
 }
