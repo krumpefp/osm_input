@@ -26,6 +26,7 @@
 
 #include "osminputhelper.h"
 #include "osmpoi.h"
+#include "populationinput.h"
 #include "textoutputhelper.h"
 #include "timer.h"
 
@@ -45,9 +46,18 @@ main(int argc, char** argv)
 {
   std::printf("Hallo!\n");
 
-  std::string path = std::string(argv[1]);
+  std::string path;
 
   debug_timer::Timer t;
+  
+  std::map<std::string, int32_t> populations;
+  if (argc > 2) {
+    path = std::string(argv[2]);
+    pop_input::PopulationInput popInput(path);
+    populations = popInput.getPopulationsMap();
+  }
+  
+  path = std::string(argv[1]);
 
   t.start();
   osm_input::OsmInputHelper input(path);

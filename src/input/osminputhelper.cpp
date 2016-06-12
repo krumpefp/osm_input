@@ -70,12 +70,19 @@ struct BlockParser
 {
   SharedPOISet* globalPois;
   PoiSet localPois;
+  const std::map<std::string, int32_t>* aPopData;
+  
   bool mIncludeSettlements;
   bool mIncludeGeneralPois;
 
   osmpbf::RCFilterPtr filter;
 
   BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois)
+    : globalPois(aPoiGlobal)
+    , mIncludeSettlements(aSettlements)
+    , mIncludeGeneralPois(aGeneralPois){};
+
+  BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois, )
     : globalPois(aPoiGlobal)
     , mIncludeSettlements(aSettlements)
     , mIncludeGeneralPois(aGeneralPois){};
@@ -169,4 +176,37 @@ osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
   delete (pois.pois);
 
   return mPois;
+}
+
+std::vector< osm_input::OsmPoi* > osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements, bool aIncludeGeneral, const std::map< std::__cxx11::string, int32_t >& aPopData)
+
+{
+  mPois.clear();
+
+  printf("Trying to parse infile %s\n", mPbfPath.c_str());
+
+  osmpbf::OSMFileIn osmFile(mPbfPath.c_str(), false);
+
+  if (!osmFile.open()) {
+    printf("Failed to open infile %s\n", mPbfPath.c_str());
+
+    return PoiSet();
+  }
+
+  osm_parsing::SharedPOISet pois;
+  uint32_t threadCount = 4;   // use 4 threads, usually 4 are more than enough
+  uint32_t readBlobCount = 2; // parse 2 blocks at once
+  bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
+
+  osmpbf::parseFileCPPThreads(
+    osmFile,
+    osm_parsing::BlockParser(&pois, aIncludeSettlements, aIncludeGeneral, aPopData),
+    threadCount, readBlobCount, threadPrivateProcessor);
+
+  mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());
+
+  delete (pois.pois);
+
+  return mPois;
+}
 }

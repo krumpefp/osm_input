@@ -21,6 +21,7 @@
 #ifndef OSMINPUTHELPER_H
 #define OSMINPUTHELPER_H
 
+#include <map>
 #include <stdint.h>
 
 #include "osmpoi.h"
@@ -63,6 +64,10 @@ public:
 
   std::vector<osm_input::OsmPoi*> importPoiData(bool aIncludeSettlements,
                                                 bool aIncludeGeneral);
+
+  std::vector<osm_input::OsmPoi*> importPoiData(bool aIncludeSettlements,
+                                                bool aIncludeGeneral,
+                                                const std::map<std::string, int32_t>& aPopData );
 
 private:
   std::string mPbfPath;
