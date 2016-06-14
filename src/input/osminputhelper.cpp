@@ -99,9 +99,19 @@ struct BlockParser
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
     // Filter to get all nodes that have an name tag
-    osmpbf::KeyOnlyTagFilter* nameFilter = new osmpbf::KeyOnlyTagFilter("name");
-
-    filter.reset(nameFilter);
+//     osmpbf::KeyOnlyTagFilter* nameFilter = new osmpbf::KeyOnlyTagFilter("name");
+//     filter.reset(nameFilter);
+    
+    // Filter to get all nodes that have an name and (amenity or place) tag
+    osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
+    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
+    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
+    
+    osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
+    andFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
+    andFilter->addChild(orFilter);
+    filter.reset(andFilter);
+    
     filter->assignInputAdaptor(&pbi);
 
     if (!(filter->rebuildCache())) {

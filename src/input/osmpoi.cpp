@@ -427,20 +427,136 @@ std::string computeIcon(const std::vector<osm_input::OsmPoi::Tag>& aTagSet) {
   
   if (amenity == "atm")
     result = "icon:atm";
-  if (amenity == "telephone")
-    result = "icon:telephone";
-  if (amenity == "toilets")
-    result = "icon:toilets";
-  if (amenity == "parking")
-    result = "icon:parking";
-  if (amenity == "restaurant")
-    result = "icon:restaurant";
   if (amenity == "cinema")
     result = "icon:cinema";
+  if (amenity == "hospital" || amenity == "healthcare:speciality=occupational" || amenity == "red_cross")
+    result = "icon:hospital";
+  if (amenity == "parking" || amenity == "parking_space")
+    result = "icon:parking" || amenity == "ranger_station";
+  if (amenity == "police")
+    result = "icon:police";
+  if (amenity == "restaurant")
+    result = "icon:restaurant";
+  if (amenity == "telephone")
+    result = "icon:telephone";
   if (amenity == "theatre")
     result = "icon:theatre";
-  if (amenity == "hospital")
-    result = "icon:hospital";
+  if (amenity == "toilets")
+    result = "icon:toilets";
+  if (amenity == "fast_food")
+    result = "icon:fast_food";
+  if (amenity == "place_of_worship")
+    result = "icon:church";
+  if (amenity == "public_building" || amenity == "public_facility" || amenity == "community_hall" || )
+    result = "icon:congress";
+  if (amenity == "shelter")
+    result = "icon:waiting";
+  if (amenity == "financial_institution" || amenity == "bank")
+    result = "icon:bank";
+  if (amenity == "grave_yard" || amenity == "deaddrop")
+    result = "icon:catholicgrave";
+  if (amenity == "administration")
+    result = "icon:administration"
+  if (amenity == "canteen")
+    result = "icon:cafeteria";
+  if (amenity == "club_house" || amenity == "club" || amenity == "bar")
+    result = "icon:jazzclub";
+  if (amenity == "travel agency")
+    result = "icon:traver_agency";
+  if (amenity == "food_court" || amenity == "biergarten" || amenity == "biergarten")
+    result = "icon:beergarden";
+  if (amenity == "shop" || amenity == "fair_trade")
+    result = "icon:takeaway";
+  if (amenity == "perfume")
+    result = "icon:drugstore" || amenity == "pharmacy";
+  if (amenity == "waste_disposal" || amenity == "waste_basket")
+    result = "icon:trash";
+  if (amenity == "sauna")
+    result = "icon:sauna";
+  if (amenity == "training")
+    result = "icon:anthropo";
+  if (amenity == "Handwerksbetrieb")
+    result = "icon:tools";
+  if (amenity == "cafe-bar" || amenity == "cafe" || amenity == "cafe,_konditorei")
+    result = "icon:coffee";
+  if (amenity == "love_hotel" || amenity == "swingerclub" || amenity == "stripclub")
+    result = "icon:stripclub";
+  if (amenity == "danzing_school")
+    result = "icon:dancingdancinghall";
+  if (amenity == "bank; post_office" || amenity == "post_office")
+    result = "icon:postal";
+  if (amenity == "airport")
+    result = "icon:airport";
+  if (amenity == "education" || amenity == "language_school" || amenity == "school")
+    result = "icon:school";
+  if (amenity == "bicycle_repair_station" || amenity == "bicycle_rental")
+    result = "icon:bicycle_shop";
+  if (amenity == "waste_transfer_station")
+    result = "icon:assortment";
+  if (amenity == "vehicle_inspection" || amenity == "car_repair" || amenity == "car_rental" || amenity == "car_sharing")
+    result = "icon:car";
+  if (amenity == "boat_rental")
+    result = "icon:boat";
+  if (amenity == "driving_school")
+    result = "icon:car_share";
+  if (amenity == "red_cross"|| amenity == "emergency_service" || amenity == "healthcare")
+    result = "icon:firstaid";
+  if (amenity == "dentist")
+    result = "icon:dentist";
+  if (amenity == "veterinary")
+    result = "icon:veterinary";
+  if (amenity == "doctors" || amenity == "childcare")
+    result = "icon:x-ray";
+  if (amenity == "fountain")
+    result = "icon:fountain";
+  if (amenity == "courthouse")
+    result = "icon:court";
+  if (amenity == "college")
+    result = "icon:university";
+  if (amenity == "ice_cream")
+    result = "icon:ice_cream";
+  if (amenity == "fire_station")
+    result = "icon:firemen";
+  if (amenity == "internet_cafe")
+    result = "icon:wifi";
+  if (amenity == "library;archive")
+    result = "icon:library";
+  if (amenity == "townhall")
+    result = "icon:townhouse";
+  if (amenity == "community_center")
+    result = "icon:citysquare";
+  if (amenity == "pub" || amenity == "brewery")
+    result = "icon:bar";
+  if (amenity == "taxi")
+    result = "icon:taxi";
+  if (amenity == "arts_centre")
+    result = "icon:museum_art";
+  if (amenity == "bus_station")
+    result = "icon:bus";
+  if (amenity == "drinking_water")
+    result = "icon:drinkingfountain";
+  if (amenity == "coworking_space")
+    result = "icon:workoffice";
+  if (amenity == "spa" || amenity == "solarium")
+    result = "icon:spa";
+  if (amenity == "kindergarten")
+    result = "icon:toys";
+  if (amenity == "register_office")
+    result = "icon:office-building";
+  if (amenity == "conference_centre")
+    result = "icon:conference";
+  if (amenity == "fuel")
+    result = "icon:fillingstation";
+  if (amenity == "gym" || amenity == "fitness_studio")
+    result = "icon:breastfeeding";
+  if (amenity == "")
+    result = "icon:";
+  if (amenity == "")
+    result = "icon:";
+  if (amenity == "")
+    result = "icon:";
+  if (amenity == "")
+    result = "icon:";
   
   return result;
 }

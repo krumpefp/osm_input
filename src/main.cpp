@@ -74,6 +74,16 @@ main(int argc, char** argv)
               \tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
 
+  std::unordered_set<std::string> amenities;
+  for (auto& poi : pois) {
+    std::string amenity = poi->getTagValue("amenity");
+    amenities.insert(amenity);
+  }
+  
+  for (auto& am : amenities) {
+    std::printf("%s\n", am.c_str());
+  }
+  
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
   for (auto& poi : pois) {
