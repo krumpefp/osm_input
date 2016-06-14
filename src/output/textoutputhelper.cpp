@@ -71,12 +71,17 @@ text_output::TextOutputHelper::writeCompleteFile(
   for (auto& poi : aPois) {
     osm_input::OsmPoi::LabelBall ball =
       poi->getCorrespondingBall(aSplitSize, aDelimiters);
+      
+    std::string label = ball.mLabel;
+    while (label.find("\n") != label.npos) {
+      label.replace(label.find('\n'), 1, " ");
+    }
 
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
          << std::fixed << std::setprecision(4) << ball.mBallRadius << aSep
-         << poi->getOsmId() << aSep << "'" << ball.mLabel << "'" << aSep
+         << poi->getOsmId() << aSep << "'" << label << "'" << aSep
          << ball.mLabelFactor;
   }
 

@@ -90,7 +90,7 @@ public:
   bool operator>(const OsmPoi& aOther) const;
   bool operator<=(const OsmPoi& aOther) const;
   bool operator>=(const OsmPoi& aOther) const;
-
+  
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 

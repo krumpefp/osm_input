@@ -122,7 +122,7 @@ computeGeneralPoiImportance(
   else if (amenity == "fuel")
     subImportance = 50;                  // factor 4
   else if (amenity == "shelter")
-    subImportance = 40;                  // factor 2
+    subImportance = 40;                  // factor 4
 
   return subImportance;
 }
@@ -187,10 +187,10 @@ double computeFontFactor (std::vector<osm_input::OsmPoi::Tag>& aTags, osm_input:
           factor = 4;
           break;
         case 40:
-          factor = 2;
+          factor = 4;
           break;
         default:
-          factor = 1;
+          factor = 3;
           break;
       }
       break;
@@ -358,11 +358,12 @@ osm_input::OsmPoi::operator>=(const osm_input::OsmPoi& aOther) const
   return !(*this < aOther);
 }
 
+
 namespace osmpoi {
 std::string
 computeSplit(std::string& aLabel, const std::unordered_set<char>& aDelims)
 {
-  std::string labelSplit = aLabel;
+  std::string labelSplit = aLabel; 
   // if the label already contains newline information use this
   if (aLabel.find("\r\n") != aLabel.npos) {
     labelSplit = aLabel.replace(aLabel.find("\r\n"), 2, "%");
@@ -400,6 +401,8 @@ computeSplit(std::string& aLabel, const std::unordered_set<char>& aDelims)
   return labelSplit;
 }
 
+
+
 double
 computeBallRadius(const std::string& aLabel)
 {
@@ -412,18 +415,51 @@ computeBallRadius(const std::string& aLabel)
                        : aLabel.size() - delimPos;
   return labelSize / 2;
 }
+
+std::string computeIcon(const std::vector<osm_input::OsmPoi::Tag>& aTagSet) {
+  std::string result = "";
+  std::string amenity = "";
+  
+  for (auto& tag : aTagSet) {
+    if (tag.mKey == "amenity")
+      amenity = tag.mValue;
+  }
+  
+  if (amenity == "atm")
+    result = "icon:atm";
+  if (amenity == "telephone")
+    result = "icon:telephone";
+  if (amenity == "toilets")
+    result = "icon:toilets";
+  if (amenity == "parking")
+    result = "icon:parking";
+  if (amenity == "restaurant")
+    result = "icon:restaurant";
+  if (amenity == "cinema")
+    result = "icon:cinema";
+  if (amenity == "theatre")
+    result = "icon:theatre";
+  if (amenity == "hospital")
+    result = "icon:hospital";
+  
+  return result;
+}
 }
 
 osm_input::OsmPoi::LabelBall
 osm_input::OsmPoi::getCorrespondingBall(
   std::size_t aSplitSize, const std::unordered_set<char>& aDelims) const
 {
-  // corresponds to a little icon
-  std::string label = getName();
-  double ballRadius = (double)label.size() / 2;
-  if (label.size() > aSplitSize) {
-    label = osmpoi::computeSplit(label, aDelims);
-    ballRadius = osmpoi::computeBallRadius(label);
+  std::string label = (mPoiType == osm_input::OsmPoi::SETTLEMENT) ? "" : osmpoi::computeIcon(mTags);
+  // initialize for an icon
+  double ballRadius = 2;
+  if (label == "") {
+    label = getName();
+    ballRadius = (double)label.size() / 2;
+    if (label.size() > aSplitSize) {
+      label = osmpoi::computeSplit(label, aDelims);
+      ballRadius = osmpoi::computeBallRadius(label);
+    }
   }
 
   ballRadius *= mLabelFactor;

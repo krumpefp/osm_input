@@ -70,7 +70,7 @@ struct BlockParser
 {
   SharedPOISet* globalPois;
   PoiSet localPois;
-  const std::map<std::string, int32_t>* aPopData;
+  const std::map<std::string, int32_t> mPopData;
   
   bool mIncludeSettlements;
   bool mIncludeGeneralPois;
@@ -82,15 +82,19 @@ struct BlockParser
     , mIncludeSettlements(aSettlements)
     , mIncludeGeneralPois(aGeneralPois){};
 
-  BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois, )
+  BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois, const std::map<std::string, int32_t>& aPopMap)
     : globalPois(aPoiGlobal)
     , mIncludeSettlements(aSettlements)
-    , mIncludeGeneralPois(aGeneralPois){};
+    , mIncludeGeneralPois(aGeneralPois)
+    , mPopData(aPopMap) {
+      int a = 0;
+    };
 
   BlockParser(const BlockParser& aOther)
     : globalPois(aOther.globalPois)
     , mIncludeSettlements(aOther.mIncludeSettlements)
-    , mIncludeGeneralPois(aOther.mIncludeGeneralPois){};
+    , mIncludeGeneralPois(aOther.mIncludeGeneralPois)
+    , mPopData(aOther.mPopData){};
 
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
@@ -115,12 +119,35 @@ struct BlockParser
           int64_t id = node.id();
           std::vector<osm_input::OsmPoi::Tag> tags;
 
+          bool city = false;
+          bool population = false;
+          std::string name = "";
+          
           for (uint32_t i = 0, s = node.tagsSize(); i < s; ++i) {
             std::string key = node.key(i);
             std::string value = node.value(i);
             if (key == "amenity" || key == "place" || key == "population" ||
-                key == "name" || key == "name:de"  || key == "name:en") {
+                key == "name" || key == "name:de"  || key == "name:en" ||
+                key == "capital") {
+              if (key == "place" && (value == "city" || value == "town")) {
+                city = true;
+              }
+              if (key == "population") {
+                population = true;
+              }
+              if (key == "name") {
+                name = value;
+              }
               tags.emplace_back(key, value);
+            }
+          }
+          
+          if (city && !population) {// && mPopData != nullptr) {
+            auto elem = mPopData.find(name);
+            if (elem != mPopData.end()) {
+              std::printf("Searching for population of city %s ...\n", name.c_str());
+              tags.emplace_back("population", std::to_string(elem->second));
+              std::printf("\t... found: %i\n", elem->second);
             }
           }
           
@@ -178,12 +205,12 @@ osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
   return mPois;
 }
 
-std::vector< osm_input::OsmPoi* > osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements, bool aIncludeGeneral, const std::map< std::__cxx11::string, int32_t >& aPopData)
+std::vector< osm_input::OsmPoi* > osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements, bool aIncludeGeneral, const std::map< std::string, int32_t >& aPopData)
 
 {
   mPois.clear();
 
-  printf("Trying to parse infile %s\n", mPbfPath.c_str());
+  printf("Trying to parse infile %s\nUsing population data.\n", mPbfPath.c_str());
 
   osmpbf::OSMFileIn osmFile(mPbfPath.c_str(), false);
 
@@ -208,5 +235,4 @@ std::vector< osm_input::OsmPoi* > osm_input::OsmInputHelper::importPoiData(bool 
   delete (pois.pois);
 
   return mPois;
-}
 }

@@ -62,7 +62,7 @@ main(int argc, char** argv)
   t.start();
   osm_input::OsmInputHelper input(path);
 
-  std::vector<osm_input::OsmPoi*> pois = input.importPoiData(true, true);
+  std::vector<osm_input::OsmPoi*> pois = input.importPoiData(true, true, populations);
 
   t.createTimepoint();
 

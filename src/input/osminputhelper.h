@@ -65,9 +65,7 @@ public:
   std::vector<osm_input::OsmPoi*> importPoiData(bool aIncludeSettlements,
                                                 bool aIncludeGeneral);
 
-  std::vector<osm_input::OsmPoi*> importPoiData(bool aIncludeSettlements,
-                                                bool aIncludeGeneral,
-                                                const std::map<std::string, int32_t>& aPopData );
+  std::vector<osm_input::OsmPoi*> importPoiData( bool aIncludeSettlements, bool aIncludeGeneral, const std::map< std::__cxx11::string, int32_t >& aPopData );
 
 private:
   std::string mPbfPath;
