@@ -23,6 +23,7 @@
 #include <string>
 #include <unordered_set>
 #include <vector>
+#include <boost/iterator/iterator_concepts.hpp>
 
 #include "osminputhelper.h"
 #include "osmpoi.h"
@@ -74,20 +75,26 @@ main(int argc, char** argv)
               \tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
 
-  std::unordered_set<std::string> amenities;
-  for (auto& poi : pois) {
-    std::string amenity = poi->getTagValue("amenity");
-    amenities.insert(amenity);
-  }
-  
-  for (auto& am : amenities) {
-    std::printf("%s\n", am.c_str());
-  }
+//   std::unordered_set<std::string> amenities;
+//   for (auto& poi : pois) {
+//     std::string amenity = poi->getTagValue("amenity");
+//     amenities.insert(amenity);
+//   }
+//   
+//   for (auto& am : amenities) {
+//     std::printf("%s\n", am.c_str());
+//   }
   
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
-  for (auto& poi : pois) {
-    balls.push_back(poi->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
+  for (auto it = pois.begin(), end = pois.end(); it != end;) {
+	  if ((*it)->getType() == osm_input::OsmPoi::Poi_Types::SETTLEMENT || (*it)->hasIcon()) {  
+			balls.push_back((*it)->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
+			++it;
+	  } else {
+		  it = pois.erase(it);
+		  end = pois.end();
+	  }
   }
 
   std::string outputname = (path.find("/") == path.npos)

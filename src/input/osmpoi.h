@@ -94,12 +94,16 @@ public:
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 
+  bool hasIcon() const;
+  
   LabelBall getCorrespondingBall(std::size_t aSplitSize,
                                  const std::unordered_set<char>& aDelims) const;
 
   std::string getTagValue(std::string aTagName) const;
 
   std::string getName() const;
+  
+  Poi_Types getType() const { return mPoiType; };
 private:
   int64_t mOsmId;
   Position mPos;
