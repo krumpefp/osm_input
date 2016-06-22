@@ -58,14 +58,15 @@ public:
 public:
   OsmInputHelper(std::string aPbfPath);
   OsmInputHelper(const OsmInputHelper& other) = delete;
-  ~OsmInputHelper();
   OsmInputHelper& operator=(const OsmInputHelper& other) = delete;
   bool operator==(const OsmInputHelper& other) const = delete;
 
   std::vector<osm_input::OsmPoi*> importPoiData(bool aIncludeSettlements,
                                                 bool aIncludeGeneral);
 
-  std::vector<osm_input::OsmPoi*> importPoiData( bool aIncludeSettlements, bool aIncludeGeneral, const std::map< std::__cxx11::string, int32_t >& aPopData );
+  std::vector<osm_input::OsmPoi*> importPoiData(
+    bool aIncludeSettlements, bool aIncludeGeneral,
+    const std::map<std::__cxx11::string, int32_t>& aPopData);
 
 private:
   std::string mPbfPath;

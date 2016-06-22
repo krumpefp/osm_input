@@ -71,7 +71,7 @@ text_output::TextOutputHelper::writeCompleteFile(
   for (auto& poi : aPois) {
     osm_input::OsmPoi::LabelBall ball =
       poi->getCorrespondingBall(aSplitSize, aDelimiters);
-      
+
     std::string label = ball.mLabel;
     while (label.find("\n") != label.npos) {
       label.replace(label.find('\n'), 1, " ");

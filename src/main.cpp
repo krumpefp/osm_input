@@ -50,20 +50,21 @@ main(int argc, char** argv)
   std::string path;
 
   debug_timer::Timer t;
-  
+
   std::map<std::string, int32_t> populations;
   if (argc > 2) {
     path = std::string(argv[2]);
     pop_input::PopulationInput popInput(path);
     populations = popInput.getPopulationsMap();
   }
-  
+
   path = std::string(argv[1]);
 
   t.start();
   osm_input::OsmInputHelper input(path);
 
-  std::vector<osm_input::OsmPoi*> pois = input.importPoiData(true, true, populations);
+  std::vector<osm_input::OsmPoi*> pois =
+    input.importPoiData(true, true, populations);
 
   t.createTimepoint();
 
@@ -80,11 +81,11 @@ main(int argc, char** argv)
 //     std::string amenity = poi->getTagValue("amenity");
 //     amenities.insert(amenity);
 //   }
-//   
+
 //   for (auto& am : amenities) {
 //     std::printf("%s\n", am.c_str());
 //   }
-  
+
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
   for (auto it = pois.begin(), end = pois.end(); it != end;) {

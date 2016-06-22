@@ -71,7 +71,7 @@ struct BlockParser
   SharedPOISet* globalPois;
   PoiSet localPois;
   const std::map<std::string, int32_t> mPopData;
-  
+
   bool mIncludeSettlements;
   bool mIncludeGeneralPois;
 
@@ -82,13 +82,15 @@ struct BlockParser
     , mIncludeSettlements(aSettlements)
     , mIncludeGeneralPois(aGeneralPois){};
 
-  BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois, const std::map<std::string, int32_t>& aPopMap)
+  BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois,
+              const std::map<std::string, int32_t>& aPopMap)
     : globalPois(aPoiGlobal)
     , mIncludeSettlements(aSettlements)
     , mIncludeGeneralPois(aGeneralPois)
-    , mPopData(aPopMap) {
-      int a = 0;
-    };
+    , mPopData(aPopMap)
+  {
+    int a = 0;
+  };
 
   BlockParser(const BlockParser& aOther)
     : globalPois(aOther.globalPois)
@@ -99,19 +101,20 @@ struct BlockParser
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
     // Filter to get all nodes that have an name tag
-//     osmpbf::KeyOnlyTagFilter* nameFilter = new osmpbf::KeyOnlyTagFilter("name");
-//     filter.reset(nameFilter);
-    
+    //     osmpbf::KeyOnlyTagFilter* nameFilter = new
+    //     osmpbf::KeyOnlyTagFilter("name");
+    //     filter.reset(nameFilter);
+
     // Filter to get all nodes that have an name and (amenity or place) tag
     osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
-    
+
     osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
     andFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
     andFilter->addChild(orFilter);
     filter.reset(andFilter);
-    
+
     filter->assignInputAdaptor(&pbi);
 
     if (!(filter->rebuildCache())) {
@@ -132,12 +135,12 @@ struct BlockParser
           bool city = false;
           bool population = false;
           std::string name = "";
-          
+
           for (uint32_t i = 0, s = node.tagsSize(); i < s; ++i) {
             std::string key = node.key(i);
             std::string value = node.value(i);
             if (key == "amenity" || key == "place" || key == "population" ||
-                key == "name" || key == "name:de"  || key == "name:en" ||
+                key == "name" || key == "name:de" || key == "name:en" ||
                 key == "capital") {
               if (key == "place" && (value == "city" || value == "town")) {
                 city = true;
@@ -151,16 +154,17 @@ struct BlockParser
               tags.emplace_back(key, value);
             }
           }
-          
-          if (city && !population) {// && mPopData != nullptr) {
+
+          if (city && !population) { // && mPopData != nullptr) {
             auto elem = mPopData.find(name);
             if (elem != mPopData.end()) {
-              std::printf("Searching for population of city %s ...\n", name.c_str());
+              std::printf("Searching for population of city %s ...\n",
+                          name.c_str());
               tags.emplace_back("population", std::to_string(elem->second));
               std::printf("\t... found: %i\n", elem->second);
             }
           }
-          
+
           localPois.emplace_back(new osm_input::OsmPoi(id, pos, tags));
         }
       }
@@ -175,10 +179,6 @@ struct BlockParser
 
 osm_input::OsmInputHelper::OsmInputHelper(std::string aPbfPath)
   : mPbfPath(std::string(aPbfPath))
-{
-}
-
-osm_input::OsmInputHelper::~OsmInputHelper()
 {
 }
 
@@ -215,12 +215,16 @@ osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
   return mPois;
 }
 
-std::vector< osm_input::OsmPoi* > osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements, bool aIncludeGeneral, const std::map< std::string, int32_t >& aPopData)
+std::vector<osm_input::OsmPoi*>
+osm_input::OsmInputHelper::importPoiData(
+  bool aIncludeSettlements, bool aIncludeGeneral,
+  const std::map<std::string, int32_t>& aPopData)
 
 {
   mPois.clear();
 
-  printf("Trying to parse infile %s\nUsing population data.\n", mPbfPath.c_str());
+  printf("Trying to parse infile %s\nUsing population data.\n",
+         mPbfPath.c_str());
 
   osmpbf::OSMFileIn osmFile(mPbfPath.c_str(), false);
 
@@ -236,8 +240,8 @@ std::vector< osm_input::OsmPoi* > osm_input::OsmInputHelper::importPoiData(bool 
   bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
 
   osmpbf::parseFileCPPThreads(
-    osmFile,
-    osm_parsing::BlockParser(&pois, aIncludeSettlements, aIncludeGeneral, aPopData),
+    osmFile, osm_parsing::BlockParser(&pois, aIncludeSettlements,
+                                      aIncludeGeneral, aPopData),
     threadCount, readBlobCount, threadPrivateProcessor);
 
   mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());

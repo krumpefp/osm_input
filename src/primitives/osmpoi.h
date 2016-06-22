@@ -27,8 +27,6 @@
 
 namespace osm_input {
 
-const double COORDINATE_SCALING = 10000000;
-
 class OsmPoi
 {
 public:
@@ -38,12 +36,15 @@ public:
     SETTLEMENT,
     UNDEFINED
   };
-  
-  struct Tag {
+
+  struct Tag
+  {
     std::string mKey;
     std::string mValue;
-    
-    Tag(std::string aKey, std::string aValue) : mKey(aKey), mValue(aValue) {};
+
+    Tag(std::string aKey, std::string aValue)
+      : mKey(aKey)
+      , mValue(aValue){};
   };
 
   struct Position
@@ -81,7 +82,8 @@ public:
 
 public:
   OsmPoi(int64_t aOsmId, Position aPos, std::vector<Tag> aTags);
-  OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType, std::vector<Tag> aTags);
+  OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType,
+         std::vector<Tag> aTags);
 
   // comparison operators
   bool operator==(const OsmPoi& aOther) const;
@@ -90,20 +92,21 @@ public:
   bool operator>(const OsmPoi& aOther) const;
   bool operator<=(const OsmPoi& aOther) const;
   bool operator>=(const OsmPoi& aOther) const;
-  
+
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 
-  bool hasIcon() const;
-  
   LabelBall getCorrespondingBall(std::size_t aSplitSize,
                                  const std::unordered_set<char>& aDelims) const;
 
   std::string getTagValue(std::string aTagName) const;
 
   std::string getName() const;
-  
+
   Poi_Types getType() const { return mPoiType; };
+
+  bool hasIcon() const;
+
 private:
   int64_t mOsmId;
   Position mPos;
