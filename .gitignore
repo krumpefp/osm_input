@@ -1,5 +1,5 @@
 debug/
 release/
-.kdev4/
-osm_input.kdev4
+*.kdev4
+*.gch
 vendor/
