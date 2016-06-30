@@ -1,0 +1,186 @@
+{
+  "level": "OSM_POI",
+  "sublevels": [
+    {
+      "level": "SETTLEMENT",
+      "sublevels": [
+        {
+          "level": "CITY",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "city"
+            }
+          ],
+          "sublevels": [
+            {
+              "level": "MEGA_CITY",
+              "constraints": [
+                {
+                  "tag":"population",
+                  "greater": 5000000
+                }
+              ]
+            },
+            {
+              "level": "LARGE_CITY",
+              "constraints": [
+                {
+                  "tag":"population",
+                  "greater": 1000000
+                }
+              ]
+            },
+            {
+              "level": "CITY",
+              "constraints": [
+                {
+                  "tag":"population",
+                  "greater": 500000
+                }
+              ]
+            },
+            {
+              "level": "SMALL_CITY"
+            }
+          ]
+        },{
+          "level": "TOWN",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "town"
+            }
+          ],
+          "sublevels": [
+            {
+              "level": "LARGE_TOWN",
+              "constraints": [
+                {
+                  "tag": "population",
+                  "greater": 100000
+                }
+              ]
+            },
+            {
+              "level": "TOWN",
+              "constraints": [
+                {
+                  "tag": "population",
+                  "greater": 25000
+                }
+              ]
+            },
+            {
+              "level": "SMALL_TOWN"
+            }
+          ]
+        },{
+          "level": "VILLAGE",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "village"
+            }
+          ]
+        },{
+          "level": "MUNICIPALITY",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "municipality"
+            }
+          ]
+        },{
+          "level": "BOROUGH",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "borough"
+            }
+          ]
+        },{
+          "level": "SUBURB",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "suburb"
+            }
+          ]
+        },{
+          "level": "QUARTER",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "quarter"
+            }
+          ]
+        },{
+          "level": "NEIGHBOURHOOD",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "neighbourhood"
+            }
+          ]
+        },{
+          "level": "CITY_BLOCK",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "city_block"
+            }
+          ]
+        },{
+          "level": "HAMLET",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "hamlet"
+            }
+          ]
+        },{
+          "level": "ISOLATED_DWELLING",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "isolated_dwelling"
+            }
+          ]
+        },{
+          "level": "FARM",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "farm"
+            }
+          ]
+        },{
+          "level": "ALLOTMENT",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "allotment"
+            }
+          ]
+        },{
+          "level": "PLOT",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "plot"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "level": "AMENITY",
+      "constraints": [
+        {
+          "tag": "amenity"
+        }
+      ]
+    }
+  ]
+}

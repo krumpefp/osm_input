@@ -11,8 +11,10 @@ include_directories(src
                     src/debughelpers
                     src/input
                     src/labelhelpers
+                    src/mapping
                     src/output
                     src/primitives
+                    vendor/jsoncpp/dist/json
                     vendor/osmpbf
                     vendor/osmpbf/osmpbf/include)
 
@@ -21,8 +23,10 @@ FILE(GLOB SOURCES_CPP src/*.cpp
                       src/debughelpers/*.cpp
                       src/input/*.cpp
                       src/labelhelpers/*.cpp
+                      src/mapping/*.cpp
                       src/output/*.cpp
-                      src/primitives/*.cpp)
+                      src/primitives/*.cpp
+                      vendor/jsoncpp/dist/*.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-variable -Wconversion -Wall")
