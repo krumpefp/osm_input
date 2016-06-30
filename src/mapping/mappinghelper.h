@@ -35,6 +35,7 @@ public:
   {
     enum ConstraintType
     {
+      DEFAULT,
       EQUALS,
       GREATER,
       LESS,
@@ -48,7 +49,7 @@ public:
     std::string mStringComp = "";
 
   public:
-    Constraint(Json::Value& aJson);
+    Constraint(const Json::Value& aJson);
 
     std::string toString() const;
   };
@@ -57,18 +58,42 @@ public:
   {
   private:
     std::string mName;
+    uint64_t mLevelId;
     std::vector<Constraint> mConstraints;
 
   public:
-    Level(const std::vector<Constraint>& aConstraints, Json::Value& aJson);
+    Level(const std::vector<Constraint>& aConstraints, const Json::Value& aJson,
+          uint64_t aId);
 
     std::string toString() const;
   };
 
+public:
   MappingHelper(std::string& aInputPath);
 
 private:
-  std::vector<Level> mLevels;
+  struct LevelTree
+  {
+  public:
+    LevelTree(const LevelTree* aParent, const Json::Value& aData,
+              const std::vector<Constraint>& aParentConstraints,
+              std::vector<Level>& aLevelList, uint64_t aNodeId);
+
+    std::string toString(int32_t aDepth) const;
+
+  private:
+    const LevelTree* mParent;
+    std::vector<LevelTree> mChildren;
+    Level* mLevel;
+
+    bool mIsLeaf;
+    std::string mName;
+    uint64_t mNodeId;
+    std::vector<Constraint> mConstraints;
+  };
+
+  LevelTree* mLevelTree;
+  std::vector<Level> mLevelList;
 };
 }
 

@@ -27,7 +27,7 @@
 typedef mapping_helper::MappingHelper::Constraint Constraint;
 typedef mapping_helper::MappingHelper::Level Level;
 
-mapping_helper::MappingHelper::Constraint::Constraint(Json::Value& aJson)
+mapping_helper::MappingHelper::Constraint::Constraint(const Json::Value& aJson)
 {
   if (aJson.isMember("equals")) {
     mType = Constraint::ConstraintType::EQUALS;
@@ -72,12 +72,14 @@ mapping_helper::MappingHelper::Constraint::toString() const
 }
 
 mapping_helper::MappingHelper::Level::Level(
-  const std::vector<Constraint>& aConstraints, Json::Value& aJson)
+  const std::vector<Constraint>& aConstraints, const Json::Value& aJson,
+  uint64_t aId)
 {
   mName = aJson["level"].asString();
+  mLevelId = aId;
   mConstraints = aConstraints;
   if (aJson.isMember("constraints")) {
-    for (auto& c : aJson["constraints"]) {
+    for (const auto& c : aJson["constraints"]) {
       mConstraints.emplace_back(c);
     }
   }
@@ -87,66 +89,93 @@ std::string
 mapping_helper::MappingHelper::Level::toString() const
 {
   std::string constraints = "";
-  for (auto& c : mConstraints) {
+  for (const auto& c : mConstraints) {
     if (constraints != "")
       constraints += ", ";
     constraints += c.toString();
   }
-
   return "(Level name " + mName + ", constraints: [" + constraints + "])";
 }
 
-namespace mappinghelper {
-std::vector<Level>
-importLevel(Json::Value aJson, const std::vector<Constraint>& aConstraints)
+mapping_helper::MappingHelper::LevelTree::LevelTree(
+  const LevelTree* aParent, const Json::Value& aData,
+  const std::vector<Constraint>& aParentConstraints,
+  std::vector<Level>& aLevels, uint64_t aNodeId)
+  : mParent(aParent)
+  , mLevel(nullptr)
 {
-  std::vector<Level> result;
-  if (!aJson.isMember("sublevels")) {
-    result.emplace_back(aConstraints, aJson);
-  } else {
-    std::vector<Constraint> localConstraints = aConstraints;
-    if (aJson.isMember("constraints")) {
-      for (auto& c : aJson["constraints"]) {
-        localConstraints.emplace_back(c);
-      }
-    }
-    for (auto& lvl : aJson["sublevels"]) {
-      auto sublevels = importLevel(lvl, localConstraints);
-      result.insert(result.end(), sublevels.begin(), sublevels.end());
+  mName = aData["level"].asString();
+  mNodeId = aNodeId;
+
+  // handle the level constraints
+  if (aData.isMember("constraints")) {
+    for (const auto& c : aData["constraints"]) {
+      mConstraints.emplace_back(c);
     }
   }
+
+  // handle the sublevels and construct corresponding subtrees
+  if (aData.isMember("sublevels")) {
+    mIsLeaf = false;
+
+    std::vector<Constraint> localConstraints = aParentConstraints;
+    localConstraints.insert(localConstraints.begin(), mConstraints.begin(),
+                            mConstraints.end());
+    uint32_t aChildId = 1;
+    for (const auto& lvl : aData["sublevels"]) {
+      mChildren.emplace_back(this, lvl, localConstraints, aLevels,
+                             aNodeId * 100 + aChildId);
+      ++aChildId;
+    }
+  } else {
+    // ... if no sublevels are available construct a leaf node
+    mIsLeaf = true;
+    aLevels.emplace_back(aParentConstraints, aData, aNodeId);
+    mLevel = &aLevels.at(aLevels.size() - 1);
+  }
+}
+
+std::string
+mapping_helper::MappingHelper::LevelTree::toString(int32_t aDepth) const
+{
+  std::string constraints = "";
+  for (const auto& c : mConstraints) {
+    if (constraints != "")
+      constraints += ", ";
+    constraints += c.toString();
+  }
+  std::string prefix = std::string(aDepth, '\t');
+
+  std::string result = "";
+  if (mIsLeaf) {
+    result = "\n" + prefix + "LEAF " + std::to_string(mNodeId) + " '" + mName +
+             "', constraints: [" + constraints + "]";
+  } else {
+    std::string subtree = "";
+    for (const auto& child : mChildren) {
+      subtree += child.toString(aDepth + 1);
+    }
+    result = "\n" + prefix + "SUBTREE " + std::to_string(mNodeId) + " '" +
+             mName + "', constraints: [" + constraints + "]: " + subtree;
+  }
+
   return result;
 }
 
-std::vector<Level>
-importLevels(std::string& aInputPath)
+mapping_helper::MappingHelper::MappingHelper(std::string& aInputPath)
 {
-  std::vector<Level> result;
-
   std::ifstream inputFile(aInputPath);
   if (!inputFile.is_open()) {
     std::printf("[ERROR] Input file %s could not be opened!\n",
                 aInputPath.c_str());
-    return result;
+    return;
   }
 
   Json::Value root;
   Json::Reader inputReader;
   inputReader.parse(inputFile, root);
+  mLevelTree =
+    new LevelTree(nullptr, root, std::vector<Constraint>(), mLevelList, 0);
 
-  result = importLevel(root, std::vector<Constraint>());
-
-  return result;
-}
-}
-
-mapping_helper::MappingHelper::MappingHelper(std::string& aInputPath)
-{
-  mLevels = mappinghelper::importLevels(aInputPath);
-
-  int counter = 1;
-  for (Level& lvl : mLevels) {
-    printf("Level %d: %s\n", counter, lvl.toString().c_str());
-    ++counter;
-  }
+  printf("%s\n", mLevelTree->toString(0).c_str());
 }
