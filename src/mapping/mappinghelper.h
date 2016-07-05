@@ -71,6 +71,8 @@ public:
 public:
   MappingHelper(std::string& aInputPath);
 
+  void test() const;
+
 private:
   struct LevelTree
   {

@@ -66,6 +66,8 @@ mapping_helper::MappingHelper::Constraint::toString() const
       result = "(tag " + mTag + " exists)";
       break;
     }
+    default:
+      break;
   }
 
   return result;
@@ -178,4 +180,10 @@ mapping_helper::MappingHelper::MappingHelper(std::string& aInputPath)
     new LevelTree(nullptr, root, std::vector<Constraint>(), mLevelList, 0);
 
   printf("%s\n", mLevelTree->toString(0).c_str());
+}
+
+void
+mapping_helper::MappingHelper::test() const
+{
+  std::printf("Mapping Helper Test function\n");
 }

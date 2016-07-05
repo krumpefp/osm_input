@@ -50,6 +50,7 @@ main(int argc, char** argv)
 
   std::string jsonPath = "../mapping/tagToClass.json";
   mapping_helper::MappingHelper mh(jsonPath);
+  mh.test();
 
   return 1;
 
