@@ -48,13 +48,8 @@ main(int argc, char** argv)
 {
   std::printf("Hallo!\n");
 
-  std::string jsonPath = "../mapping/tagToClass.json";
-  mapping_helper::MappingHelper mh(jsonPath);
-  mh.test();
-
-  return 1;
-
   std::string path;
+  std::string jsonPath = "../mapping/tagToClass.json";
 
   debug_timer::Timer t;
 
@@ -68,7 +63,7 @@ main(int argc, char** argv)
   path = std::string(argv[1]);
 
   t.start();
-  osm_input::OsmInputHelper input(path);
+  osm_input::OsmInputHelper input(path, jsonPath);
 
   std::vector<osm_input::OsmPoi*> pois =
     input.importPoiData(true, true, populations);

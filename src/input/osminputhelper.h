@@ -56,7 +56,7 @@ public:
   };
 
 public:
-  OsmInputHelper(std::string aPbfPath);
+  OsmInputHelper(std::string aPbfPath, std::string aClassDescriptionPath);
   OsmInputHelper(const OsmInputHelper& other) = delete;
   OsmInputHelper& operator=(const OsmInputHelper& other) = delete;
   bool operator==(const OsmInputHelper& other) const = delete;
@@ -70,6 +70,7 @@ public:
 
 private:
   std::string mPbfPath;
+  std::string mClassDescriptionPath;
 
   BoundingBox mDataBox;
 

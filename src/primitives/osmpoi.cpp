@@ -167,10 +167,12 @@ computeFontFactor(const osm_input::OsmPoi* aPoi,
 }
 
 osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
-                          const std::vector<Tag> aTags)
-  : OsmPoi(aOsmId, aPos, UNDEFINED, aTags)
+                          const std::vector<Tag> aTags,
+                          const mapping_helper::MappingHelper& aMh)
+  : OsmPoi(aOsmId, aPos, UNDEFINED, aTags, aMh)
 {
   mPoiType = osmpoi::computeType(this);
+  // mPoiLevel = aMh.computeLevel(aTags);
   switch (mPoiType) {
     case osm_input::OsmPoi::GENERAL_POI:
       mSubImportance = osmpoi::computeGeneralPoiImportance(this);
@@ -186,12 +188,15 @@ osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
 
 osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
                           osm_input::OsmPoi::Poi_Types aType,
-                          const std::vector<osm_input::OsmPoi::Tag> aTags)
+                          const std::vector<osm_input::Tag> aTags,
+                          const mapping_helper::MappingHelper& aMh)
   : mOsmId(aOsmId)
   , mPos(aPos)
   , mPoiType(aType)
+  , mPoiLevel(aMh.computeLevel(aTags))
   , mTags(aTags)
 {
+  // mPoiLevel = aMh.computeLevel(aTags);
   if (mPoiType == Poi_Types::UNDEFINED)
     mPoiType = osmpoi::computeType(this);
   switch (mPoiType) {
@@ -222,37 +227,40 @@ osm_input::OsmPoi::operator!=(const osm_input::OsmPoi& aOther) const
 bool
 osm_input::OsmPoi::operator<(const osm_input::OsmPoi& aOther) const
 {
-  if (*this == aOther) {
-    return false;
-  }
-
-  bool less = false;
-
-  if (mPoiType == aOther.mPoiType) {
-    if (this->mSubImportance == aOther.mSubImportance) {
-      if (this->mPoiType == Poi_Types::SETTLEMENT) {
-        // search for population tag and compare
-        std::string szPop = this->getTagValue("population");
-        std::string szOtherPop = aOther.getTagValue("population");
-        int32_t pop = (szPop != "<undefined>") ? std::atoi(szPop.c_str()) : 0;
-        int32_t otherPop =
-          (szOtherPop != "<undefined>") ? std::atoi(szOtherPop.c_str()) : 0;
-        if (pop == otherPop)
-          less = mOsmId < aOther.mOsmId;
-        else
-          less = pop < otherPop;
-      } else {
-        // if both elements can not be distinguished fall back to id comparison
-        less = mOsmId < aOther.mOsmId;
-      }
-    } else {
-      less = this->mSubImportance < aOther.mSubImportance;
-    }
-  } else {
-    less = mPoiType < aOther.mPoiType;
-  }
-
-  return less;
+  return (this->mPoiLevel.mLevelId < aOther.mPoiLevel.mLevelId);
+  // if (*this == aOther) {
+  //   return false;
+  // }
+  //
+  // bool less = false;
+  //
+  // if (mPoiType == aOther.mPoiType) {
+  //   if (this->mSubImportance == aOther.mSubImportance) {
+  //     if (this->mPoiType == Poi_Types::SETTLEMENT) {
+  //       // search for population tag and compare
+  //       std::string szPop = this->getTagValue("population");
+  //       std::string szOtherPop = aOther.getTagValue("population");
+  //       int32_t pop = (szPop != "<undefined>") ? std::atoi(szPop.c_str()) :
+  //       0;
+  //       int32_t otherPop =
+  //         (szOtherPop != "<undefined>") ? std::atoi(szOtherPop.c_str()) : 0;
+  //       if (pop == otherPop)
+  //         less = mOsmId < aOther.mOsmId;
+  //       else
+  //         less = pop < otherPop;
+  //     } else {
+  //       // if both elements can not be distinguished fall back to id
+  //       comparison
+  //       less = mOsmId < aOther.mOsmId;
+  //     }
+  //   } else {
+  //     less = this->mSubImportance < aOther.mSubImportance;
+  //   }
+  // } else {
+  //   less = mPoiType < aOther.mPoiType;
+  // }
+  //
+  // return less;
 }
 
 bool
@@ -322,14 +330,13 @@ computeBallRadius(const std::string& aLabel)
   if (delimPos == aLabel.npos)
     delimPos = aLabel.size();
 
-  double labelSize = (double)(delimPos > aLabel.size() / 2)
-                       ? delimPos
-                       : aLabel.size() - delimPos;
+  double labelSize =
+    (delimPos > aLabel.size() / 2) ? delimPos : aLabel.size() - delimPos;
   return labelSize / 2;
 }
 
 std::string
-computeIcon(const std::vector<osm_input::OsmPoi::Tag>& aTagSet)
+computeIcon(const std::vector<osm_input::Tag>& aTagSet)
 {
   std::string result = "";
   std::string amenity = "";

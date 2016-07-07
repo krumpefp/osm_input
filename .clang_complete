@@ -4,4 +4,7 @@
 -Isrc/mapping
 -Isrc/output
 -Isrc/primitives
--Isrc/vendor
+-Ivendor
+-Ivendor/jsoncpp/dist/json
+-Ivendor/osmpbf/
+-Ivendor/osmpbf/osmpbf/include

@@ -25,6 +25,9 @@
 #include <unordered_set>
 #include <vector>
 
+#include "mappinghelper.h"
+#include "tag.h"
+
 namespace osm_input {
 
 class OsmPoi
@@ -35,16 +38,6 @@ public:
     GENERAL_POI,
     SETTLEMENT,
     UNDEFINED
-  };
-
-  struct Tag
-  {
-    std::string mKey;
-    std::string mValue;
-
-    Tag(std::string aKey, std::string aValue)
-      : mKey(aKey)
-      , mValue(aValue){};
   };
 
   struct Position
@@ -81,9 +74,10 @@ public:
   };
 
 public:
-  OsmPoi(int64_t aOsmId, Position aPos, std::vector<Tag> aTags);
-  OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType,
-         std::vector<Tag> aTags);
+  OsmPoi(int64_t aOsmId, Position aPos, std::vector<Tag> aTags,
+         const mapping_helper::MappingHelper& aMh);
+  OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType, std::vector<Tag> aTags,
+         const mapping_helper::MappingHelper& aMh);
 
   // comparison operators
   bool operator==(const OsmPoi& aOther) const;
@@ -111,6 +105,8 @@ private:
   int64_t mOsmId;
   Position mPos;
   Poi_Types mPoiType;
+  const mapping_helper::MappingHelper::Level& mPoiLevel;
+
   int32_t mSubImportance = -1;
   double mLabelFactor = 1;
 

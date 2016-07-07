@@ -21,11 +21,13 @@
 #ifndef MAPPINGHELPER_H
 #define MAPPINGHELPER_H
 
+#include <list>
 #include <stdint.h>
 #include <string>
 #include <vector>
 
 #include "json.h"
+#include "tag.h"
 
 namespace mapping_helper {
 class MappingHelper
@@ -42,13 +44,11 @@ public:
       TAG
     };
 
-  private:
     ConstraintType mType;
     std::string mTag;
     int32_t mNumericComp = 0;
     std::string mStringComp = "";
 
-  public:
     Constraint(const Json::Value& aJson);
 
     std::string toString() const;
@@ -56,12 +56,9 @@ public:
 
   struct Level
   {
-  private:
     std::string mName;
     uint64_t mLevelId;
     std::vector<Constraint> mConstraints;
-
-  public:
     Level(const std::vector<Constraint>& aConstraints, const Json::Value& aJson,
           uint64_t aId);
 
@@ -71,7 +68,9 @@ public:
 public:
   MappingHelper(std::string& aInputPath);
 
-  void test() const;
+  const Level& computeLevel(const std::vector<osm_input::Tag>& aTags) const;
+
+  void test();
 
 private:
   struct LevelTree
@@ -79,9 +78,12 @@ private:
   public:
     LevelTree(const LevelTree* aParent, const Json::Value& aData,
               const std::vector<Constraint>& aParentConstraints,
-              std::vector<Level>& aLevelList, uint64_t aNodeId);
+              std::list<Level>& aLevelList, uint64_t aNodeId);
 
-    std::string toString(int32_t aDepth) const;
+    const Level& computeLevel(const std::vector<osm_input::Tag>& aTags,
+                              const Level& aDefault) const;
+
+    std::string toString(std::size_t aDepth) const;
 
   private:
     const LevelTree* mParent;
@@ -95,7 +97,7 @@ private:
   };
 
   LevelTree* mLevelTree;
-  std::vector<Level> mLevelList;
+  std::list<Level> mLevelList;
 };
 }
 

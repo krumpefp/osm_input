@@ -181,6 +181,9 @@
           "tag": "amenity"
         }
       ]
+    },
+    {
+      "level": "UNDEFINED"
     }
   ]
 }

@@ -22,6 +22,8 @@
 
 #include <algorithm>
 
+#include "mappinghelper.h"
+
 #include "osmpbf/filter.h"
 #include "osmpbf/inode.h"
 #include "osmpbf/irelation.h"
@@ -71,32 +73,35 @@ struct BlockParser
   SharedPOISet* globalPois;
   PoiSet localPois;
   const std::map<std::string, int32_t> mPopData;
+  const mapping_helper::MappingHelper& mMappingHelper;
 
   bool mIncludeSettlements;
   bool mIncludeGeneralPois;
 
   osmpbf::RCFilterPtr filter;
 
-  BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois)
+  BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois,
+              const mapping_helper::MappingHelper& aMappingHelper)
     : globalPois(aPoiGlobal)
+    , mMappingHelper(aMappingHelper)
     , mIncludeSettlements(aSettlements)
     , mIncludeGeneralPois(aGeneralPois){};
 
   BlockParser(SharedPOISet* aPoiGlobal, bool aSettlements, bool aGeneralPois,
-              const std::map<std::string, int32_t>& aPopMap)
+              const std::map<std::string, int32_t>& aPopMap,
+              const mapping_helper::MappingHelper& aMappingHelper)
     : globalPois(aPoiGlobal)
-    , mIncludeSettlements(aSettlements)
-    , mIncludeGeneralPois(aGeneralPois)
     , mPopData(aPopMap)
-  {
-    int a = 0;
-  };
+    , mMappingHelper(aMappingHelper)
+    , mIncludeSettlements(aSettlements)
+    , mIncludeGeneralPois(aGeneralPois){};
 
   BlockParser(const BlockParser& aOther)
     : globalPois(aOther.globalPois)
+    , mPopData(aOther.mPopData)
+    , mMappingHelper(aOther.mMappingHelper)
     , mIncludeSettlements(aOther.mIncludeSettlements)
-    , mIncludeGeneralPois(aOther.mIncludeGeneralPois)
-    , mPopData(aOther.mPopData){};
+    , mIncludeGeneralPois(aOther.mIncludeGeneralPois){};
 
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
@@ -130,7 +135,7 @@ struct BlockParser
         if (filter->matches(node)) {
           osm_input::OsmPoi::Position pos(node.latd(), node.lond());
           int64_t id = node.id();
-          std::vector<osm_input::OsmPoi::Tag> tags;
+          std::vector<osm_input::Tag> tags;
 
           bool city = false;
           bool population = false;
@@ -165,7 +170,8 @@ struct BlockParser
             }
           }
 
-          localPois.emplace_back(new osm_input::OsmPoi(id, pos, tags));
+          localPois.push_back(
+            new osm_input::OsmPoi(id, pos, tags, mMappingHelper));
         }
       }
     }
@@ -177,8 +183,11 @@ struct BlockParser
 };
 }
 
-osm_input::OsmInputHelper::OsmInputHelper(std::string aPbfPath)
-  : mPbfPath(std::string(aPbfPath))
+osm_input::OsmInputHelper::OsmInputHelper(std::string aPbfPath,
+                                          std::string aClassDescriptionPath)
+  : mPbfPath(aPbfPath)
+  , mClassDescriptionPath(aClassDescriptionPath)
+
 {
 }
 
@@ -198,14 +207,16 @@ osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
     return PoiSet();
   }
 
+  mapping_helper::MappingHelper mappingHelper(mClassDescriptionPath);
+
   osm_parsing::SharedPOISet pois;
   uint32_t threadCount = 4;   // use 4 threads, usually 4 are more than enough
   uint32_t readBlobCount = 2; // parse 2 blocks at once
   bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
 
   osmpbf::parseFileCPPThreads(
-    osmFile,
-    osm_parsing::BlockParser(&pois, aIncludeSettlements, aIncludeGeneral),
+    osmFile, osm_parsing::BlockParser(&pois, aIncludeSettlements,
+                                      aIncludeGeneral, mappingHelper),
     threadCount, readBlobCount, threadPrivateProcessor);
 
   mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());
@@ -227,6 +238,7 @@ osm_input::OsmInputHelper::importPoiData(
          mPbfPath.c_str());
 
   osmpbf::OSMFileIn osmFile(mPbfPath.c_str(), false);
+  mapping_helper::MappingHelper mappHelp(mClassDescriptionPath);
 
   if (!osmFile.open()) {
     printf("Failed to open infile %s\n", mPbfPath.c_str());
@@ -241,7 +253,7 @@ osm_input::OsmInputHelper::importPoiData(
 
   osmpbf::parseFileCPPThreads(
     osmFile, osm_parsing::BlockParser(&pois, aIncludeSettlements,
-                                      aIncludeGeneral, aPopData),
+                                      aIncludeGeneral, aPopData, mappHelp),
     threadCount, readBlobCount, threadPrivateProcessor);
 
   mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());
