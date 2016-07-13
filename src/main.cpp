@@ -54,13 +54,14 @@ main(int argc, char** argv)
   debug_timer::Timer t;
 
   std::map<std::string, int32_t> populations;
-  if (argc > 2) {
+  if (argc > 3) {
     path = std::string(argv[2]);
     pop_input::PopulationInput popInput(path);
     populations = popInput.getPopulationsMap();
   }
 
   path = std::string(argv[1]);
+  jsonPath = std::string(argv[2]);
 
   t.start();
   osm_input::OsmInputHelper input(path, jsonPath);
