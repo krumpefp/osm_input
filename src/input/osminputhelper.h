@@ -24,6 +24,7 @@
 #include <map>
 #include <stdint.h>
 
+#include "mappinghelper.h"
 #include "osmpoi.h"
 
 namespace osm_input {
@@ -68,11 +69,15 @@ public:
     bool aIncludeSettlements, bool aIncludeGeneral,
     const std::map<std::__cxx11::string, int32_t>& aPopData);
 
+  const mapping_helper::MappingHelper& getMappingHelper() const;
+
 private:
   std::string mPbfPath;
   std::string mClassDescriptionPath;
 
   BoundingBox mDataBox;
+
+  mapping_helper::MappingHelper mMappingHelper;
 
   std::vector<osm_input::OsmPoi*> mPois;
 };

@@ -22,8 +22,6 @@
 
 #include <algorithm>
 
-#include "mappinghelper.h"
-
 #include "osmpbf/filter.h"
 #include "osmpbf/inode.h"
 #include "osmpbf/irelation.h"
@@ -187,7 +185,7 @@ osm_input::OsmInputHelper::OsmInputHelper(std::string aPbfPath,
                                           std::string aClassDescriptionPath)
   : mPbfPath(aPbfPath)
   , mClassDescriptionPath(aClassDescriptionPath)
-
+  , mMappingHelper(aClassDescriptionPath)
 {
 }
 
@@ -207,8 +205,6 @@ osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
     return PoiSet();
   }
 
-  mapping_helper::MappingHelper mappingHelper(mClassDescriptionPath);
-
   osm_parsing::SharedPOISet pois;
   uint32_t threadCount = 4;   // use 4 threads, usually 4 are more than enough
   uint32_t readBlobCount = 2; // parse 2 blocks at once
@@ -216,7 +212,7 @@ osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
 
   osmpbf::parseFileCPPThreads(
     osmFile, osm_parsing::BlockParser(&pois, aIncludeSettlements,
-                                      aIncludeGeneral, mappingHelper),
+                                      aIncludeGeneral, mMappingHelper),
     threadCount, readBlobCount, threadPrivateProcessor);
 
   mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());
@@ -261,4 +257,9 @@ osm_input::OsmInputHelper::importPoiData(
   delete (pois.pois);
 
   return mPois;
+}
+const mapping_helper::MappingHelper&
+osm_input::OsmInputHelper::getMappingHelper() const
+{
+  return mMappingHelper;
 }

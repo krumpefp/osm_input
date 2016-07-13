@@ -221,10 +221,10 @@ checkConstraint(const Constraint& aConstraint,
       result = (aConstraint.mStringComp == tagValue);
       break;
     case ConstraintType::GREATER:
-      result = (aConstraint.mNumericComp >= std::atoi(tagValue.c_str()));
+      result = (aConstraint.mNumericComp <= std::atoi(tagValue.c_str()));
       break;
     case ConstraintType::LESS:
-      result = (aConstraint.mNumericComp < std::atoi(tagValue.c_str()));
+      result = (aConstraint.mNumericComp > std::atoi(tagValue.c_str()));
       break;
     case ConstraintType::TAG:
       result = (tagValue != "<undefined>");
@@ -283,6 +283,12 @@ mapping_helper::MappingHelper::computeLevel(
   assert(checkConstraints(level, aTags));
 
   return level;
+}
+
+const std::list<Level>&
+mapping_helper::MappingHelper::getLevelList() const
+{
+  return mLevelList;
 }
 
 void

@@ -70,6 +70,8 @@ public:
 
   const Level& computeLevel(const std::vector<osm_input::Tag>& aTags) const;
 
+  const std::list<Level>& getLevelList() const;
+
   void test();
 
 private:

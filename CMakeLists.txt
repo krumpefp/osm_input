@@ -14,6 +14,7 @@ include_directories(src
                     src/mapping
                     src/output
                     src/primitives
+                    src/statistics
                     vendor/jsoncpp/dist/json
                     vendor/osmpbf
                     vendor/osmpbf/osmpbf/include)
@@ -26,6 +27,7 @@ FILE(GLOB SOURCES_CPP src/*.cpp
                       src/mapping/*.cpp
                       src/output/*.cpp
                       src/primitives/*.cpp
+                      src/statistics/*.cpp
                       vendor/jsoncpp/dist/*.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")

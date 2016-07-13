@@ -546,6 +546,12 @@ osm_input::OsmPoi::getCorrespondingBall(
   return LabelBall(mPos, ballRadius, label, mLabelFactor);
 }
 
+const mapping_helper::MappingHelper::Level&
+osm_input::OsmPoi::getLevel() const
+{
+  return mPoiLevel;
+}
+
 std::string
 osm_input::OsmPoi::getTagValue(std::string aTagName) const
 {

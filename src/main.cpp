@@ -28,6 +28,7 @@
 #include "mappinghelper.h"
 #include "osminputhelper.h"
 #include "osmpoi.h"
+#include "poistatistics.h"
 #include "populationinput.h"
 #include "textoutputhelper.h"
 #include "timer.h"
@@ -79,15 +80,9 @@ main(int argc, char** argv)
               \tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
 
-  //   std::unordered_set<std::string> amenities;
-  //   for (auto& poi : pois) {
-  //     std::string amenity = poi->getTagValue("amenity");
-  //     amenities.insert(amenity);
-  //   }
+  statistics::PoiStatistics stats(input.getMappingHelper(), pois);
 
-  //   for (auto& am : amenities) {
-  //     std::printf("%s\n", am.c_str());
-  //   }
+  printf("%s\n", stats.toString().c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
