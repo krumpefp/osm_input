@@ -179,6 +179,801 @@
       "constraints": [
         {
           "tag": "amenity"
+        },
+        {
+          "tag": "placeuo"
+        }
+      ],
+      "sublevels": [
+        {
+          "level": "ATM",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "atm"
+            }
+          ]
+        },
+        {
+          "level": "CINEMA",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "cinema"
+            }
+          ]
+        },
+        {
+          "level": "HOSPITAL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "hospital"
+            }
+          ]
+        },
+        {
+          "level": "PARKING",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "parking"
+            },
+            {
+              "tag": "amenity",
+              "value": "parking_space"
+            }
+          ]
+        },
+        {
+          "level": "POLICE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "police"
+            },
+            {
+              "tag": "amenity",
+              "value": "ranger_station"
+            }
+          ]
+        },
+        {
+          "level": "RESTAURANT",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "restaurant"
+            }
+          ]
+        },
+        {
+          "level": "TELEPHONE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "telephone"
+            }
+          ]
+        },
+        {
+          "level": "THEATRE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "theatre"
+            }
+          ]
+        },
+        {
+          "level": "TOILETS",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "toilets"
+            }
+          ]
+        },
+        {
+          "level": "FAST_FOOD",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "fast_food"
+            }
+          ]
+        },
+        {
+          "level": "PLACE_OF_WORSHIP",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "place_of_worship"
+            }
+          ]
+        },
+        {
+          "level": "PUBLIC_BUILDING",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "public_building"
+            },
+            {
+              "tag": "amenity",
+              "value": "public_facility"
+            },
+            {
+              "tag": "amenity",
+              "value": "community_hall"
+            }
+          ]
+        },
+        {
+          "level": "SHELTER",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "shelter"
+            }
+          ]
+        },
+        {
+          "level": "BANK",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "bank"
+            },
+            {
+              "tag": "amenity",
+              "value": "financial_institution"
+            }
+          ]
+        },
+        {
+          "level": "GRAVE_YARD",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "grave_yard"
+            },
+            {
+              "tag": "amenity",
+              "value": "deaddrop"
+            }
+          ]
+        },
+        {
+          "level": "ADMINISTRATION",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "administration"
+            }
+          ]
+        },
+        {
+          "level": "CAFETERIA",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "canteen"
+            }
+          ]
+        },
+        {
+          "level": "BAR",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "pub"
+            },
+            {
+              "tag": "amenity",
+              "value": "club_house"
+            },
+            {
+              "tag": "amenity",
+              "value": "club"
+            },
+            {
+              "tag": "amenity",
+              "value": "bar"
+            }
+          ]
+        },
+        {
+          "level": "TRAVEL_AGENCY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "travel_agency"
+            }
+          ]
+        },
+        {
+          "level": "BEERGARDEN",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "foud_court"
+            },
+            {
+              "tag": "amenity",
+              "value": "biergarden"
+            },
+            {
+              "tag": "amenity",
+              "value": "biergarten"
+            }
+          ]
+        },
+        {
+          "level": "SHOP",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "shop"
+            },
+            {
+              "tag": "amenity",
+              "value": "fair_trade"
+            }
+          ]
+        },
+        {
+          "level": "PARFUMERY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "perfume"
+            }
+          ]
+        },
+        {
+          "level": "WASTE_BASKET",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "waste_disposal"
+            },
+            {
+              "tag": "amenity",
+              "value": "waste_basket"
+            }
+          ]
+        },
+        {
+          "level": "SAUNA",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "sauna"
+            }
+          ]
+        },
+        {
+          "level": "PHARMACY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "pharmacy"
+            }
+          ]
+        },
+        {
+          "level": "HANDWERK",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "Handwerksbetrieb"
+            }
+          ]
+        },
+        {
+          "level": "CAFE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "cafe-bar"
+            },
+            {
+              "tag": "amenity",
+              "value": "cafe"
+            }
+          ]
+        },
+        {
+          "level": "BAKERY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "bakery"
+            }
+          ]
+        },
+        {
+          "level": "STIP",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "love_hotel"
+            },
+            {
+              "tag": "amenity",
+              "value": "swingerclub"
+            },
+            {
+              "tag": "amenity",
+              "value": "stripclub"
+            }
+          ]
+        },
+        {
+          "level": "DANCE_SCHOOL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "dancing_school"
+            }
+          ]
+        },
+        {
+          "level": "DANCING_HALL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "dancing_club"
+            },
+            {
+              "tag": "amenity",
+              "value": "nightclub"
+            }
+          ]
+        },
+        {
+          "level": "POST_OFFICE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "post_office"
+            }
+          ]
+        },
+        {
+          "level": "CHARGING_STATION",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "charging_station"
+            }
+          ]
+        },
+        {
+          "level": "FERRY_TERMINAL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "ferry_terminal"
+            }
+          ]
+        },
+        {
+          "level": "AIRPORT",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "airport"
+            }
+          ]
+        },
+        {
+          "level": "SCHOOL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "education"
+            },
+            {
+              "tag": "amenity",
+              "value": "language_school"
+            },
+            {
+              "tag": "amenity",
+              "value": "school"
+            }
+          ]
+        },
+        {
+          "level": "BICYCLE_SHOP",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "bicycle_repair_station"
+            },
+            {
+              "tag": "amenity",
+              "value": "bicycle_rental"
+            }
+          ]
+        },
+        {
+          "level": "ASSORTMENT",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "waste_transfer_station"
+            }
+          ]
+        },
+        {
+          "level": "GARAGE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "vehicle_inspection"
+            },
+            {
+              "tag": "amenity",
+              "value": "car_repair"
+            }
+          ]
+        },
+        {
+          "level": "CAR_SHARING",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "car_rental"
+            },
+            {
+              "tag": "amenity",
+              "value": "car_sharing"
+            }
+          ]
+        },
+        {
+          "level": "BOAT_RENTAL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "boat_rental"
+            }
+          ]
+        },
+        {
+          "level": "DRIVING_SCHOOL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "driving_school"
+            }
+          ]
+        },
+        {
+          "level": "FIRSTAID",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "red_cross"
+            },
+            {
+              "tag": "amenity",
+              "value": "emergency_service"
+            },
+            {
+              "tag": "amenity",
+              "value": "healthcare"
+            }
+          ]
+        },
+        {
+          "level": "THERAPY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "Beratungsstellen"
+            }
+          ]
+        },
+        {
+          "level": "MARKET",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "marketplace"
+            }
+          ]
+        },
+        {
+          "level": "MUSIC_SCHOOL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "music_school"
+            }
+          ]
+        },
+        {
+          "level": "NURSERY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "nursery"
+            }
+          ]
+        },
+        {
+          "level": "NURSING_HOME",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "nursing_home"
+            }
+          ]
+        },
+        {
+          "level": "BICYCLE_PARKING",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "bicycle_parking"
+            }
+          ]
+        },
+        {
+          "level": "DENTIST",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "dentist"
+            }
+          ]
+        },
+        {
+          "level": "VETERINARY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "veterinary"
+            }
+          ]
+        },
+        {
+          "level": "DOCTOR",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "doctor"
+            }
+          ]
+        },
+        {
+          "level": "FOUNTAIN",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "fountain"
+            }
+          ]
+        },
+        {
+          "level": "COURT",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "COURT_HOUSE"
+            }
+          ]
+        },
+        {
+          "level": "COLLEGE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "college"
+            }
+          ]
+        },
+        {
+          "level": "UNIVERSITY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "university"
+            }
+          ]
+        },
+        {
+          "level": "ICE_CREAM",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "ice_cream"
+            }
+          ]
+        },
+        {
+          "level": "FIRE_STATION",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "fire_station"
+            }
+          ]
+        },
+        {
+          "level": "INTERNET_CAFE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "internet_cafe"
+            }
+          ]
+        },
+        {
+          "level": "LIBRARY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "library"
+            }
+          ]
+        },
+        {
+          "level": "COMMUNITY_CENTRE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "community_center"
+            },
+            {
+              "tag": "amenity",
+              "value": "social_centre"
+            }
+          ]
+        },
+        {
+          "level": "TAXI",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "taxi"
+            }
+          ]
+        },
+        {
+          "level": "CASINO",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "casino"
+            }
+          ]
+        },
+        {
+          "level": "CLOCK",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "clock"
+            }
+          ]
+        },
+        {
+          "level": "ARTS_CENTRE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "arts_centre"
+            },
+            {
+              "tag": "amenity",
+              "value": "artwork"
+            }
+          ]
+        },
+        {
+          "level": "BUS_STATION",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "bus_station"
+            }
+          ]
+        },
+        {
+          "level": "DRINKING_FOUNTAIN",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "drinking_fountain"
+            }
+          ]
+        },
+        {
+          "level": "COWORKING_SPACE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "coworking_space"
+            }
+          ]
+        },
+        {
+          "level": "SPA",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "spa"
+            },
+            {
+              "tag": "amenity",
+              "value": "solarium"
+            }
+          ]
+        },
+        {
+          "level": "KINDERGARDEN",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "kindergarten"
+            },
+            {
+              "tag": "amenity",
+              "value": "kindergarden"
+            },
+            {
+              "tag": "amenity",
+              "value": "childcare"
+            }
+          ]
+        },
+        {
+          "level": "REGISTER_OFFICE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "register_office"
+            }
+          ]
+        },
+        {
+          "level": "CONFERENCE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "conference_centre"
+            }
+          ]
+        },
+        {
+          "level": "FUEL",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "fuel"
+            }
+          ]
+        },
+        {
+          "level": "GYM",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "value": "gym"
+            },
+            {
+              "tag": "amenity",
+              "value": "fitness_studio"
+            },
+            {
+              "tag": "amenity",
+              "value": "training"
+            }
+          ]
         }
       ]
     },
