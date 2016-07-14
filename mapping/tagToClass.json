@@ -197,7 +197,9 @@
               "tag": "amenity",
               "equals": "atm"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "atm"
         },
         {
           "level": "CINEMA",
@@ -206,7 +208,9 @@
               "tag": "amenity",
               "equals": "cinema"
             }
-          ]
+          ],
+          "factor": 7,
+          "icon": "cinema"
         },
         {
           "level": "HOSPITAL",
@@ -215,7 +219,9 @@
               "tag": "amenity",
               "equals": "hospital"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "hospital"
         },
         {
           "level": "PARKING",
@@ -228,7 +234,9 @@
               "tag": "amenity",
               "equals": "parking_space"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "parking"
         },
         {
           "level": "PARKING_DECK",
@@ -237,7 +245,9 @@
               "tag": "amenity",
               "equals": "parking_entrance"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "parking"
         },
         {
           "level": "POLICE",
@@ -250,7 +260,9 @@
               "tag": "amenity",
               "equals": "ranger_station"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "police"
         },
         {
           "level": "RESTAURANT",
@@ -259,7 +271,9 @@
               "tag": "amenity",
               "equals": "restaurant"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "restaurant"
         },
         {
           "level": "TELEPHONE",
@@ -268,7 +282,9 @@
               "tag": "amenity",
               "equals": "telephone"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "telephone"
         },
         {
           "level": "THEATRE",
@@ -277,7 +293,9 @@
               "tag": "amenity",
               "equals": "theatre"
             }
-          ]
+          ],
+          "factor": 7,
+          "icon": "theatre"
         },
         {
           "level": "TOILETS",
@@ -286,7 +304,9 @@
               "tag": "amenity",
               "equals": "toilets"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "toilets"
         },
         {
           "level": "FAST_FOOD",
@@ -295,7 +315,9 @@
               "tag": "amenity",
               "equals": "fast_food"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "fast_food"
         },
         {
           "level": "PLACE_OF_WORSHIP",
@@ -304,7 +326,9 @@
               "tag": "amenity",
               "equals": "place_of_worship"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "church"
         },
         {
           "level": "PUBLIC_BUILDING",
@@ -329,7 +353,9 @@
               "tag": "amenity",
               "equals": "townhall"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "congress"
         },
         {
           "level": "SHELTER",
@@ -338,7 +364,9 @@
               "tag": "amenity",
               "equals": "shelter"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "waiting"
         },
         {
           "level": "BANK",
@@ -351,7 +379,9 @@
               "tag": "amenity",
               "equals": "financial_institution"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "bank"
         },
         {
           "level": "GRAVE_YARD",
@@ -364,7 +394,9 @@
               "tag": "amenity",
               "equals": "deaddrop"
             }
-          ]
+          ],
+          "factor": 7,
+          "icon": "catholicgrave"
         },
         {
           "level": "ADMINISTRATION",
@@ -373,7 +405,9 @@
               "tag": "amenity",
               "equals": "administration"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "administration"
         },
         {
           "level": "CAFETERIA",
@@ -382,7 +416,9 @@
               "tag": "amenity",
               "equals": "canteen"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "cafeteria"
         },
         {
           "level": "BAR",
@@ -403,7 +439,9 @@
               "tag": "amenity",
               "equals": "bar"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "bar"
         },
         {
           "level": "TRAVEL_AGENCY",
@@ -412,7 +450,9 @@
               "tag": "amenity",
               "equals": "travel_agency"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "travel_agency"
         },
         {
           "level": "BEERGARDEN",
@@ -429,7 +469,9 @@
               "tag": "amenity",
               "equals": "biergarten"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "beergarden"
         },
         {
           "level": "SHOP",
@@ -442,7 +484,9 @@
               "tag": "amenity",
               "equals": "fair_trade"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "mall"
         },
         {
           "level": "PARFUMERY",
@@ -451,7 +495,9 @@
               "tag": "amenity",
               "equals": "perfume"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "perfumery"
         },
         {
           "level": "WASTE_BASKET",
@@ -464,7 +510,9 @@
               "tag": "amenity",
               "equals": "waste_basket"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "trash"
         },
         {
           "level": "SAUNA",
@@ -473,7 +521,9 @@
               "tag": "amenity",
               "equals": "sauna"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "sauna"
         },
         {
           "level": "PHARMACY",
@@ -482,7 +532,9 @@
               "tag": "amenity",
               "equals": "pharmacy"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "medicalstore"
         },
         {
           "level": "HANDCRAFT",
@@ -491,7 +543,9 @@
               "tag": "amenity",
               "equals": "Handwerksbetrieb"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "tools"
         },
         {
           "level": "CAFE",
@@ -504,7 +558,9 @@
               "tag": "amenity",
               "equals": "cafe"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "coffee"
         },
         {
           "level": "BAKERY",
@@ -513,7 +569,9 @@
               "tag": "amenity",
               "equals": "bakery"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "bread"
         },
         {
           "level": "LOVE_HOTEL",
@@ -522,7 +580,9 @@
               "tag": "amenity",
               "equals": "love_hotel"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "stripclub"
         },
         {
           "level": "BROTHEL",
@@ -531,7 +591,9 @@
               "tag": "amenity",
               "equals": "brothel"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "stripclub"
         },
         {
           "level": "STRIPCLUB",
@@ -540,7 +602,9 @@
               "tag": "amenity",
               "equals": "stripclub"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "stripclub"
         },
         {
           "level": "SWINGERCLUB",
@@ -549,7 +613,9 @@
               "tag": "amenity",
               "equals": "swingerclub"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "stripclub"
         },
         {
           "level": "DANCE_SCHOOL",
@@ -558,7 +624,9 @@
               "tag": "amenity",
               "equals": "dancing_school"
             }
-          ]
+          ],
+          "factor": 7,
+          "icon": "dance_class"
         },
         {
           "level": "DANCING_HALL",
@@ -571,7 +639,9 @@
               "tag": "amenity",
               "equals": "nightclub"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "dancinghall"
         },
         {
           "level": "POST_OFFICE",
@@ -580,7 +650,9 @@
               "tag": "amenity",
               "equals": "post_office"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "postal"
         },
         {
           "level": "CHARGING_STATION",
@@ -589,7 +661,9 @@
               "tag": "amenity",
               "equals": "charging_station"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "e-bike-charging"
         },
         {
           "level": "FERRY_TERMINAL",
@@ -598,7 +672,9 @@
               "tag": "amenity",
               "equals": "ferry_terminal"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "ferry"
         },
         {
           "level": "AIRPORT",
@@ -607,7 +683,9 @@
               "tag": "amenity",
               "equals": "airport"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "airport"
         },
         {
           "level": "SCHOOL",
@@ -624,7 +702,9 @@
               "tag": "amenity",
               "equals": "school"
             }
-          ]
+          ],
+          "factor": 8,
+          "icon": "school"
         },
         {
           "level": "BICYCLE_SHOP",
@@ -637,7 +717,9 @@
               "tag": "amenity",
               "equals": "bicycle_rental"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "bicycle_shop"
         },
         {
           "level": "RECYCLING",
@@ -646,7 +728,9 @@
               "tag": "amenity",
               "equals": "recycling"
             },
-          ]
+          ],
+          "factor": 3,
+          "icon": "assortment"
         },
         {
           "level": "WASTE_TRANSFER_STATION",
@@ -655,7 +739,9 @@
               "tag": "amenity",
               "equals": "waste_transfer_station"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "assortment"
         },
         {
           "level": "GARAGE",
@@ -668,7 +754,9 @@
               "tag": "amenity",
               "equals": "car_repair"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "car"
         },
         {
           "level": "CAR_SHARING",
@@ -681,7 +769,9 @@
               "tag": "amenity",
               "equals": "car_sharing"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "car"
         },
         {
           "level": "CAR_WASH",
@@ -690,7 +780,9 @@
               "tag": "amenity",
               "equals": "car_wash"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "car"
         },
         {
           "level": "BOAT_RENTAL",
@@ -699,7 +791,9 @@
               "tag": "amenity",
               "equals": "boat_rental"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "boat"
         },
         {
           "level": "DRIVING_SCHOOL",
@@ -708,7 +802,9 @@
               "tag": "amenity",
               "equals": "driving_school"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "car_share"
         },
         {
           "level": "FIRSTAID",
@@ -725,7 +821,9 @@
               "tag": "amenity",
               "equals": "healthcare"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "firstaid"
         },
         {
           "level": "THERAPY",
@@ -734,7 +832,9 @@
               "tag": "amenity",
               "equals": "Beratungsstellen"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "therapy"
         },
         {
           "level": "MARKET",
@@ -743,7 +843,9 @@
               "tag": "amenity",
               "equals": "marketplace"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "market"
         },
         {
           "level": "MUSIC_SCHOOL",
@@ -752,7 +854,9 @@
               "tag": "amenity",
               "equals": "music_school"
             }
-          ]
+          ],
+          "factor": 8,
+          "icon": "music_classical"
         },
         {
           "level": "NURSERY",
@@ -761,7 +865,9 @@
               "tag": "amenity",
               "equals": "nursery"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "nursery"
         },
         {
           "level": "NURSING_HOME",
@@ -770,7 +876,9 @@
               "tag": "amenity",
               "equals": "nursing_home"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "nursing_home_icon"
         },
         {
           "level": "BICYCLE_PARKING",
@@ -779,7 +887,9 @@
               "tag": "amenity",
               "equals": "bicycle_parking"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "parking_bicycle"
         },
         {
           "level": "DENTIST",
@@ -788,7 +898,9 @@
               "tag": "amenity",
               "equals": "dentist"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "dentist"
         },
         {
           "level": "VETERINARY",
@@ -797,7 +909,9 @@
               "tag": "amenity",
               "equals": "veterinary"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "veterinary"
         },
         {
           "level": "DOCTOR",
@@ -810,7 +924,9 @@
               "tag": "amenity",
               "equals": "doctors"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "medicine"
         },
         {
           "level": "FOUNTAIN",
@@ -819,7 +935,9 @@
               "tag": "amenity",
               "equals": "fountain"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "fountain"
         },
         {
           "level": "COURT",
@@ -828,7 +946,9 @@
               "tag": "amenity",
               "equals": "COURT_HOUSE"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "court"
         },
         {
           "level": "COLLEGE",
@@ -837,7 +957,9 @@
               "tag": "amenity",
               "equals": "college"
             }
-          ]
+          ],
+          "factor": 8,
+          "icon": "university"
         },
         {
           "level": "UNIVERSITY",
@@ -846,7 +968,9 @@
               "tag": "amenity",
               "equals": "university"
             }
-          ]
+          ],
+          "factor": 8,
+          "icon": "university"
         },
         {
           "level": "ICE_CREAM",
@@ -855,7 +979,9 @@
               "tag": "amenity",
               "equals": "ice_cream"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "ice_cream"
         },
         {
           "level": "FIRE_STATION",
@@ -864,7 +990,9 @@
               "tag": "amenity",
               "equals": "fire_station"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "firemen"
         },
         {
           "level": "INTERNET_CAFE",
@@ -873,7 +1001,9 @@
               "tag": "amenity",
               "equals": "internet_cafe"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "wifi"
         },
         {
           "level": "LIBRARY",
@@ -882,7 +1012,9 @@
               "tag": "amenity",
               "equals": "library"
             }
-          ]
+          ],
+          "factor": 7,
+          "icon": "library"
         },
         {
           "level": "COMMUNITY_CENTRE",
@@ -899,7 +1031,9 @@
               "tag": "amenity",
               "equals": "social_centre"
             }
-          ]
+          ],
+          "factor": 7,
+          "icon": "communitycentre"
         },
         {
           "level": "TAXI",
@@ -908,7 +1042,9 @@
               "tag": "amenity",
               "equals": "taxi"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "taxi"
         },
         {
           "level": "CASINO",
@@ -917,7 +1053,9 @@
               "tag": "amenity",
               "equals": "casino"
             }
-          ]
+          ],
+          "factor": 5,
+          "icon": "casino"
         },
         {
           "level": "CLOCK",
@@ -926,7 +1064,9 @@
               "tag": "amenity",
               "equals": "clock"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "clock"
         },
         {
           "level": "ARTS_CENTRE",
@@ -939,7 +1079,9 @@
               "tag": "amenity",
               "equals": "artwork"
             }
-          ]
+          ],
+          "factor": 7,
+          "icon": "artgallery"
         },
         {
           "level": "BUS_STATION",
@@ -948,7 +1090,9 @@
               "tag": "amenity",
               "equals": "bus_station"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "bus"
         },
         {
           "level": "TICKET_MACHINE",
@@ -957,7 +1101,9 @@
               "tag": "amenity",
               "equals": "vending_machine"
             }
-          ]
+          ],
+          "factor": 4,
+          "icon": "atm"
         },
 
         {
@@ -971,7 +1117,9 @@
                 "tag": "amenity",
                 "equals": "drinking_water"
               }
-          ]
+          ],
+          "factor": 6,
+          "icon": "drinkingfountain"
         },
         {
           "level": "COWORKING_SPACE",
@@ -980,7 +1128,9 @@
               "tag": "amenity",
               "equals": "coworking_space"
             }
-          ]
+          ],
+          "factor": 6,
+          "icon": "workoffice"
         },
         {
           "level": "SPA",
@@ -993,7 +1143,9 @@
               "tag": "amenity",
               "equals": "solarium"
             }
-          ]
+          ],
+        "factor": 6,
+        "icon": "spa"
         },
         {
           "level": "KINDERGARDEN",
@@ -1010,7 +1162,9 @@
               "tag": "amenity",
               "equals": "childcare"
             }
-          ]
+          ],
+        "factor": 6,
+        "icon": "daycare"
         },
         {
           "level": "REGISTER_OFFICE",
@@ -1019,7 +1173,9 @@
               "tag": "amenity",
               "equals": "register_office"
             }
-          ]
+          ],
+        "factor": 6,
+        "icon": "reception"
         },
         {
           "level": "CONFERENCE",
@@ -1028,7 +1184,9 @@
               "tag": "amenity",
               "equals": "conference_centre"
             }
-          ]
+          ],
+        "factor": 6,
+        "icon": "conference"
         },
         {
           "level": "FUEL",
@@ -1037,7 +1195,9 @@
               "tag": "amenity",
               "equals": "fuel"
             }
-          ]
+          ],
+        "factor": 4,
+        "icon": "fillingstation"
         },
         {
           "level": "GYM",
@@ -1054,7 +1214,9 @@
               "tag": "amenity",
               "equals": "training"
             }
-          ]
+          ],
+        "factor": 5,
+        "icon": "breastfeeding"
         },
         {
           "level": "LOCALITY",
@@ -1063,7 +1225,9 @@
               "tag": "place",
               "equals": "locality"
             }
-          ]
+          ],
+          "factor": 3,
+          "icon": "aboriginal"
         }
       ]
     },
