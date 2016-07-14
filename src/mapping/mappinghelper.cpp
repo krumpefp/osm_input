@@ -101,13 +101,14 @@ mapping_helper::MappingHelper::Level::toString() const
 }
 
 mapping_helper::MappingHelper::LevelTree::LevelTree(
-  const LevelTree* aParent, const Json::Value& aData,
-  const std::vector<Constraint>& aParentConstraints, std::list<Level>& aLevels,
-  uint64_t aNodeId)
+  const mapping_helper::MappingHelper::LevelTree* aParent,
+  const Json::Value& aData,
+  const std::vector<mapping_helper::MappingHelper::Constraint>&
+    aParentConstraints,
+  std::list<Level>& aLevelList, uint32_t& aNodeId)
   : mParent(aParent)
 {
   mName = aData["level"].asString();
-  mNodeId = aNodeId;
 
   // handle the level constraints
   if (aData.isMember("constraints")) {
@@ -119,24 +120,22 @@ mapping_helper::MappingHelper::LevelTree::LevelTree(
   // handle the sublevels and construct corresponding subtrees
   if (aData.isMember("sublevels")) {
     mIsLeaf = false;
+    mNodeId = 0;
 
     std::vector<Constraint> localConstraints = aParentConstraints;
     localConstraints.insert(localConstraints.begin(), mConstraints.begin(),
                             mConstraints.end());
 
     // determine the number of sublevels
-    uint32_t aChildId = 1;
     for (const auto& lvl : aData["sublevels"]) {
-      mChildren.emplace_back(this, lvl, localConstraints, aLevels,
-                             aNodeId * 100 + aChildId);
-      ++aChildId;
+      mChildren.emplace_back(this, lvl, localConstraints, aLevelList, aNodeId);
     }
   } else {
     // ... if no sublevels are available construct a leaf node
     mIsLeaf = true;
-    aLevels.emplace(aLevels.end(), aParentConstraints, aData, aNodeId);
-    // mLevelIt = aLevels.back();
-    mLevel = &aLevels.back();
+    mNodeId = aNodeId++;
+    aLevelList.emplace(aLevelList.end(), aParentConstraints, aData, mNodeId);
+    mLevel = &aLevelList.back();
   }
 }
 
@@ -179,8 +178,9 @@ mapping_helper::MappingHelper::MappingHelper(std::string& aInputPath)
   Json::Value root;
   Json::Reader inputReader;
   inputReader.parse(inputFile, root);
+  uint32_t id = 1;
   mLevelTree =
-    new LevelTree(nullptr, root, std::vector<Constraint>(), mLevelList, 0);
+    new LevelTree(nullptr, root, std::vector<Constraint>(), mLevelList, id);
 
   // printf("%s\n", mLevelTree->toString(0).c_str());
 }
@@ -280,7 +280,9 @@ mapping_helper::MappingHelper::computeLevel(
 {
   auto& level = mLevelTree->computeLevel(aTags, mLevelList.back());
 
-  assert(checkConstraints(level, aTags));
+  // if (!checkConstraints(level, aTags)) {
+  //   printf("Level check failed for level: %s\n", level.toString().c_str());
+  // }
 
   return level;
 }

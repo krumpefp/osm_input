@@ -18,6 +18,8 @@
  *
  */
 
+#include <bitset>
+
 #include "poistatistics.h"
 
 statistics::PoiStatistics::StatisticElement::StatisticElement(
@@ -39,7 +41,9 @@ statistics::PoiStatistics::StatisticElement::toString() const
 {
   std::string result = "";
 
-  result += "Level " + mLevel.toString() + "\n";
+  result += "Level " + mLevel.mName + " with id: " +
+            // std::bitset<64>(mLevel.mLevelId).to_string();
+            std::to_string(mLevel.mLevelId);
   result += "\tcontains " + std::to_string(mCount) + " elements";
 
   return result;
@@ -54,11 +58,6 @@ statistics::PoiStatistics::PoiStatistics(
   }
 
   for (auto& poi : aPois) {
-    if (poi->getLevel().mName == "MEGA_CITY") {
-      printf("Found mega city: %s with id: %ld\n", poi->getName().c_str(),
-             poi->getOsmId());
-    }
-
     mStatsMap.at(poi->getLevel().mLevelId).addPoi(*poi);
   }
 }
@@ -67,10 +66,15 @@ std::string
 statistics::PoiStatistics::toString() const
 {
   std::string result = "Poi statistics contains:";
+  std::size_t total = 0;
 
   for (auto& lvl : mStatsMap) {
-    result += "\n" + lvl.second.toString();
+    if (lvl.second.mCount != 0) {
+      result += "\n" + lvl.second.toString();
+      total += lvl.second.mCount;
+    }
   }
+  result += "\n\t\tTotal:\t" + std::to_string(total);
 
   return result;
 }

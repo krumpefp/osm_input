@@ -56,6 +56,7 @@ public:
 
   struct Level
   {
+
     std::string mName;
     uint64_t mLevelId;
     std::vector<Constraint> mConstraints;
@@ -80,7 +81,7 @@ private:
   public:
     LevelTree(const LevelTree* aParent, const Json::Value& aData,
               const std::vector<Constraint>& aParentConstraints,
-              std::list<Level>& aLevelList, uint64_t aNodeId);
+              std::list<Level>& aLevelList, uint32_t& aNodeId);
 
     const Level& computeLevel(const std::vector<osm_input::Tag>& aTags,
                               const Level& aDefault) const;
