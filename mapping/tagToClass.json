@@ -3,6 +3,11 @@
   "sublevels": [
     {
       "level": "SETTLEMENT",
+      "constraints": [
+        {
+          "tag": "place"
+        }
+      ],
       "sublevels": [
         {
           "level": "CITY",
@@ -181,7 +186,7 @@
           "tag": "amenity"
         },
         {
-          "tag": "placeuo"
+          "tag": "place"
         }
       ],
       "sublevels": [
@@ -190,7 +195,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "atm"
+              "equals": "atm"
             }
           ]
         },
@@ -199,7 +204,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "cinema"
+              "equals": "cinema"
             }
           ]
         },
@@ -208,7 +213,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "hospital"
+              "equals": "hospital"
             }
           ]
         },
@@ -217,11 +222,20 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "parking"
+              "equals": "parking"
             },
             {
               "tag": "amenity",
-              "value": "parking_space"
+              "equals": "parking_space"
+            }
+          ]
+        },
+        {
+          "level": "PARKING_DECK",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "parking_entrance"
             }
           ]
         },
@@ -230,11 +244,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "police"
+              "equals": "police"
             },
             {
               "tag": "amenity",
-              "value": "ranger_station"
+              "equals": "ranger_station"
             }
           ]
         },
@@ -243,7 +257,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "restaurant"
+              "equals": "restaurant"
             }
           ]
         },
@@ -252,7 +266,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "telephone"
+              "equals": "telephone"
             }
           ]
         },
@@ -261,7 +275,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "theatre"
+              "equals": "theatre"
             }
           ]
         },
@@ -270,7 +284,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "toilets"
+              "equals": "toilets"
             }
           ]
         },
@@ -279,7 +293,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "fast_food"
+              "equals": "fast_food"
             }
           ]
         },
@@ -288,7 +302,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "place_of_worship"
+              "equals": "place_of_worship"
             }
           ]
         },
@@ -297,15 +311,23 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "public_building"
+              "equals": "public_building"
             },
             {
               "tag": "amenity",
-              "value": "public_facility"
+              "equals": "public_facility"
             },
             {
               "tag": "amenity",
-              "value": "community_hall"
+              "equals": "community_hall"
+            },
+            {
+              "tag": "amenity",
+              "equals": "social_facility"
+            },
+            {
+              "tag": "amenity",
+              "equals": "townhall"
             }
           ]
         },
@@ -314,7 +336,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "shelter"
+              "equals": "shelter"
             }
           ]
         },
@@ -323,11 +345,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "bank"
+              "equals": "bank"
             },
             {
               "tag": "amenity",
-              "value": "financial_institution"
+              "equals": "financial_institution"
             }
           ]
         },
@@ -336,11 +358,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "grave_yard"
+              "equals": "grave_yard"
             },
             {
               "tag": "amenity",
-              "value": "deaddrop"
+              "equals": "deaddrop"
             }
           ]
         },
@@ -349,7 +371,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "administration"
+              "equals": "administration"
             }
           ]
         },
@@ -358,7 +380,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "canteen"
+              "equals": "canteen"
             }
           ]
         },
@@ -367,19 +389,19 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "pub"
+              "equals": "pub"
             },
             {
               "tag": "amenity",
-              "value": "club_house"
+              "equals": "club_house"
             },
             {
               "tag": "amenity",
-              "value": "club"
+              "equals": "club"
             },
             {
               "tag": "amenity",
-              "value": "bar"
+              "equals": "bar"
             }
           ]
         },
@@ -388,7 +410,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "travel_agency"
+              "equals": "travel_agency"
             }
           ]
         },
@@ -397,15 +419,15 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "foud_court"
+              "equals": "foud_court"
             },
             {
               "tag": "amenity",
-              "value": "biergarden"
+              "equals": "biergarden"
             },
             {
               "tag": "amenity",
-              "value": "biergarten"
+              "equals": "biergarten"
             }
           ]
         },
@@ -414,11 +436,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "shop"
+              "equals": "shop"
             },
             {
               "tag": "amenity",
-              "value": "fair_trade"
+              "equals": "fair_trade"
             }
           ]
         },
@@ -427,7 +449,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "perfume"
+              "equals": "perfume"
             }
           ]
         },
@@ -436,11 +458,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "waste_disposal"
+              "equals": "waste_disposal"
             },
             {
               "tag": "amenity",
-              "value": "waste_basket"
+              "equals": "waste_basket"
             }
           ]
         },
@@ -449,7 +471,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "sauna"
+              "equals": "sauna"
             }
           ]
         },
@@ -458,16 +480,16 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "pharmacy"
+              "equals": "pharmacy"
             }
           ]
         },
         {
-          "level": "HANDWERK",
+          "level": "HANDCRAFT",
           "constraints": [
             {
               "tag": "amenity",
-              "value": "Handwerksbetrieb"
+              "equals": "Handwerksbetrieb"
             }
           ]
         },
@@ -476,11 +498,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "cafe-bar"
+              "equals": "cafe-bar"
             },
             {
               "tag": "amenity",
-              "value": "cafe"
+              "equals": "cafe"
             }
           ]
         },
@@ -489,24 +511,43 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "bakery"
+              "equals": "bakery"
             }
           ]
         },
         {
-          "level": "STIP",
+          "level": "LOVE_HOTEL",
           "constraints": [
             {
               "tag": "amenity",
-              "value": "love_hotel"
-            },
+              "equals": "love_hotel"
+            }
+          ]
+        },
+        {
+          "level": "BROTHEL",
+          "constraints": [
             {
               "tag": "amenity",
-              "value": "swingerclub"
-            },
+              "equals": "brothel"
+            }
+          ]
+        },
+        {
+          "level": "STRIPCLUB",
+          "constraints": [
             {
               "tag": "amenity",
-              "value": "stripclub"
+              "equals": "stripclub"
+            }
+          ]
+        },
+        {
+          "level": "SWINGERCLUB",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "swingerclub"
             }
           ]
         },
@@ -515,7 +556,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "dancing_school"
+              "equals": "dancing_school"
             }
           ]
         },
@@ -524,11 +565,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "dancing_club"
+              "equals": "dancing_club"
             },
             {
               "tag": "amenity",
-              "value": "nightclub"
+              "equals": "nightclub"
             }
           ]
         },
@@ -537,7 +578,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "post_office"
+              "equals": "post_office"
             }
           ]
         },
@@ -546,7 +587,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "charging_station"
+              "equals": "charging_station"
             }
           ]
         },
@@ -555,7 +596,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "ferry_terminal"
+              "equals": "ferry_terminal"
             }
           ]
         },
@@ -564,7 +605,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "airport"
+              "equals": "airport"
             }
           ]
         },
@@ -573,15 +614,15 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "education"
+              "equals": "education"
             },
             {
               "tag": "amenity",
-              "value": "language_school"
+              "equals": "language_school"
             },
             {
               "tag": "amenity",
-              "value": "school"
+              "equals": "school"
             }
           ]
         },
@@ -590,20 +631,29 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "bicycle_repair_station"
+              "equals": "bicycle_repair_station"
             },
             {
               "tag": "amenity",
-              "value": "bicycle_rental"
+              "equals": "bicycle_rental"
             }
           ]
         },
         {
-          "level": "ASSORTMENT",
+          "level": "RECYCLING",
           "constraints": [
             {
               "tag": "amenity",
-              "value": "waste_transfer_station"
+              "equals": "recycling"
+            },
+          ]
+        },
+        {
+          "level": "WASTE_TRANSFER_STATION",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "waste_transfer_station"
             }
           ]
         },
@@ -612,11 +662,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "vehicle_inspection"
+              "equals": "vehicle_inspection"
             },
             {
               "tag": "amenity",
-              "value": "car_repair"
+              "equals": "car_repair"
             }
           ]
         },
@@ -625,11 +675,20 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "car_rental"
+              "equals": "car_rental"
             },
             {
               "tag": "amenity",
-              "value": "car_sharing"
+              "equals": "car_sharing"
+            }
+          ]
+        },
+        {
+          "level": "CAR_WASH",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "car_wash"
             }
           ]
         },
@@ -638,7 +697,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "boat_rental"
+              "equals": "boat_rental"
             }
           ]
         },
@@ -647,7 +706,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "driving_school"
+              "equals": "driving_school"
             }
           ]
         },
@@ -656,15 +715,15 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "red_cross"
+              "equals": "red_cross"
             },
             {
               "tag": "amenity",
-              "value": "emergency_service"
+              "equals": "emergency_service"
             },
             {
               "tag": "amenity",
-              "value": "healthcare"
+              "equals": "healthcare"
             }
           ]
         },
@@ -673,7 +732,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "Beratungsstellen"
+              "equals": "Beratungsstellen"
             }
           ]
         },
@@ -682,7 +741,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "marketplace"
+              "equals": "marketplace"
             }
           ]
         },
@@ -691,7 +750,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "music_school"
+              "equals": "music_school"
             }
           ]
         },
@@ -700,7 +759,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "nursery"
+              "equals": "nursery"
             }
           ]
         },
@@ -709,7 +768,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "nursing_home"
+              "equals": "nursing_home"
             }
           ]
         },
@@ -718,7 +777,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "bicycle_parking"
+              "equals": "bicycle_parking"
             }
           ]
         },
@@ -727,7 +786,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "dentist"
+              "equals": "dentist"
             }
           ]
         },
@@ -736,7 +795,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "veterinary"
+              "equals": "veterinary"
             }
           ]
         },
@@ -745,7 +804,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "doctor"
+              "equals": "doctor"
+            },
+            {
+              "tag": "amenity",
+              "equals": "doctors"
             }
           ]
         },
@@ -754,7 +817,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "fountain"
+              "equals": "fountain"
             }
           ]
         },
@@ -763,7 +826,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "COURT_HOUSE"
+              "equals": "COURT_HOUSE"
             }
           ]
         },
@@ -772,7 +835,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "college"
+              "equals": "college"
             }
           ]
         },
@@ -781,7 +844,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "university"
+              "equals": "university"
             }
           ]
         },
@@ -790,7 +853,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "ice_cream"
+              "equals": "ice_cream"
             }
           ]
         },
@@ -799,7 +862,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "fire_station"
+              "equals": "fire_station"
             }
           ]
         },
@@ -808,7 +871,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "internet_cafe"
+              "equals": "internet_cafe"
             }
           ]
         },
@@ -817,7 +880,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "library"
+              "equals": "library"
             }
           ]
         },
@@ -826,11 +889,15 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "community_center"
+              "equals": "community_center"
             },
             {
               "tag": "amenity",
-              "value": "social_centre"
+              "equals": "community_centre"
+            },
+            {
+              "tag": "amenity",
+              "equals": "social_centre"
             }
           ]
         },
@@ -839,7 +906,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "taxi"
+              "equals": "taxi"
             }
           ]
         },
@@ -848,7 +915,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "casino"
+              "equals": "casino"
             }
           ]
         },
@@ -857,7 +924,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "clock"
+              "equals": "clock"
             }
           ]
         },
@@ -866,11 +933,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "arts_centre"
+              "equals": "arts_centre"
             },
             {
               "tag": "amenity",
-              "value": "artwork"
+              "equals": "artwork"
             }
           ]
         },
@@ -879,17 +946,31 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "bus_station"
+              "equals": "bus_station"
             }
           ]
         },
+        {
+          "level": "TICKET_MACHINE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "vending_machine"
+            }
+          ]
+        },
+
         {
           "level": "DRINKING_FOUNTAIN",
           "constraints": [
             {
               "tag": "amenity",
-              "value": "drinking_fountain"
-            }
+              "equals": "drinking_fountain"
+            },
+              {
+                "tag": "amenity",
+                "equals": "drinking_water"
+              }
           ]
         },
         {
@@ -897,7 +978,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "coworking_space"
+              "equals": "coworking_space"
             }
           ]
         },
@@ -906,11 +987,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "spa"
+              "equals": "spa"
             },
             {
               "tag": "amenity",
-              "value": "solarium"
+              "equals": "solarium"
             }
           ]
         },
@@ -919,15 +1000,15 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "kindergarten"
+              "equals": "kindergarten"
             },
             {
               "tag": "amenity",
-              "value": "kindergarden"
+              "equals": "kindergarden"
             },
             {
               "tag": "amenity",
-              "value": "childcare"
+              "equals": "childcare"
             }
           ]
         },
@@ -936,7 +1017,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "register_office"
+              "equals": "register_office"
             }
           ]
         },
@@ -945,7 +1026,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "conference_centre"
+              "equals": "conference_centre"
             }
           ]
         },
@@ -954,7 +1035,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "fuel"
+              "equals": "fuel"
             }
           ]
         },
@@ -963,15 +1044,24 @@
           "constraints": [
             {
               "tag": "amenity",
-              "value": "gym"
+              "equals": "gym"
             },
             {
               "tag": "amenity",
-              "value": "fitness_studio"
+              "equals": "fitness_studio"
             },
             {
               "tag": "amenity",
-              "value": "training"
+              "equals": "training"
+            }
+          ]
+        },
+        {
+          "level": "LOCALITY",
+          "constraints": [
+            {
+              "tag": "place",
+              "equals": "locality"
             }
           ]
         }
