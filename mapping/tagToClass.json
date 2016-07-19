@@ -1151,7 +1151,7 @@
             {
               "tag": "amenity",
               "equals": "recycling"
-            },
+            }
           ],
           "factor": 3,
           "icon": "assortment"
@@ -1214,11 +1214,12 @@
           ],
           "factor": 3,
           "icon": "trash"
-        },
+        }
       ]
     },
     {
-      "level": "UNDEFINED"
+      "level": "UNDEFINED",
+      "factor":1
     }
   ]
 }
