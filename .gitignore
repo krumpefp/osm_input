@@ -3,4 +3,3 @@ debug_clang
 release/
 *.kdev4
 *.gch
-vendor/
