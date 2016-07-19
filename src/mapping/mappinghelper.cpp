@@ -74,6 +74,8 @@ mapping_helper::MappingHelper::Constraint::toString() const
   return result;
 }
 
+// Level
+
 mapping_helper::MappingHelper::Level::Level(
   const std::vector<Constraint>& aConstraints, const Json::Value& aJson,
   uint64_t aId)
@@ -88,7 +90,7 @@ mapping_helper::MappingHelper::Level::Level(
 	  mLevelFactor = aJson["factor"].asInt();
   } else {
 	  std::printf("Level description does not contain any factor information:\n\t\
-	  %s", aJson.asString());
+	  Level name %s and id %lu\n", mName.c_str(), mLevelId);
   }
   
   // check for icon
@@ -96,7 +98,7 @@ mapping_helper::MappingHelper::Level::Level(
 	  mIconName = aJson["icon"].asString();
   }
   
-  // check constraints
+  // check for constraints
   if (aJson.isMember("constraints")) {
     for (const auto& c : aJson["constraints"]) {
       mConstraints.emplace_back(c);
@@ -115,6 +117,40 @@ mapping_helper::MappingHelper::Level::toString() const
   }
   return "(Level name " + mName + ", constraints: [" + constraints + "])";
 }
+
+bool Level::operator==(const mapping_helper::MappingHelper::Level& aOther) const
+{
+	return this->mLevelId == aOther.mLevelId;
+}
+
+bool Level::operator!=(const mapping_helper::MappingHelper::Level& aOther) const
+{
+	return !(*this == aOther);
+}
+
+bool Level::operator<(const mapping_helper::MappingHelper::Level& aOther) const
+{
+	return this->mLevelId > aOther.mLevelId;
+}
+
+bool Level::operator<=(const mapping_helper::MappingHelper::Level& aOther) const
+{
+	return (*this < aOther || *this == aOther);
+}
+
+bool Level::operator>(const mapping_helper::MappingHelper::Level& aOther) const
+{
+	return ! (*this <= aOther);
+}
+
+bool Level::operator>=(const mapping_helper::MappingHelper::Level& aOther) const
+{
+	return ! (*this < aOther);
+}
+
+
+
+// end Level
 
 mapping_helper::MappingHelper::LevelTree::LevelTree(
   const mapping_helper::MappingHelper::LevelTree* aParent,

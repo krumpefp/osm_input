@@ -24,8 +24,10 @@
 #include <math.h>
 #include <unordered_map>
 
+// TODO: remove
 namespace osmpoi {
-
+	
+	// TODO: remove
 std::unordered_map<std::string, int32_t> settlementSubImp = {
   { "city", 200 },
   { "town", 190 },
@@ -43,6 +45,7 @@ std::unordered_map<std::string, int32_t> settlementSubImp = {
   { "plot", 70 }
 };
 
+// TODO: remove
 int32_t
 computeSettlementImportance(const osm_input::OsmPoi* aPoi)
 {
@@ -53,6 +56,7 @@ computeSettlementImportance(const osm_input::OsmPoi* aPoi)
   return (subImp != settlementSubImp.end()) ? subImp->second : 0;
 }
 
+// TODO: remove
 std::unordered_map<std::string, int32_t> amenitySubImp = {
   { "kindergarden", 200 },
   { "kindergarten", 200 },
@@ -74,6 +78,7 @@ std::unordered_map<std::string, int32_t> amenitySubImp = {
   { "shelter", 40 }
 };
 
+// TODO: remove
 int32_t
 computeGeneralPoiImportance(const osm_input::OsmPoi* aPoi)
 {
@@ -84,6 +89,7 @@ computeGeneralPoiImportance(const osm_input::OsmPoi* aPoi)
   return (subImp != amenitySubImp.end()) ? subImp->second : 0;
 }
 
+// TODO: remove
 osm_input::OsmPoi::Poi_Types
 computeType(const osm_input::OsmPoi* aPoi)
 {
@@ -96,8 +102,10 @@ computeType(const osm_input::OsmPoi* aPoi)
            : osm_input::OsmPoi::Poi_Types::GENERAL_POI;
 }
 
+// TODO: remove
 std::unordered_map<int32_t, double> settlementFactors;
 
+// TODO: remove
 double
 computeFontFactor(const osm_input::OsmPoi* aPoi,
                   osm_input::OsmPoi::Poi_Types& aType, int32_t aSubtype)
@@ -166,6 +174,7 @@ computeFontFactor(const osm_input::OsmPoi* aPoi,
 }
 }
 
+// TODO: remove
 osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
                           const std::vector<Tag> aTags,
                           const mapping_helper::MappingHelper& aMh)
@@ -196,6 +205,7 @@ osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
   , mPoiLevel(aMh.computeLevel(aTags))
   , mTags(aTags)
 {
+  // TODO: remove
   // mPoiLevel = aMh.computeLevel(aTags);
   if (mPoiType == Poi_Types::UNDEFINED)
     mPoiType = osmpoi::computeType(this);
@@ -227,7 +237,7 @@ osm_input::OsmPoi::operator!=(const osm_input::OsmPoi& aOther) const
 bool
 osm_input::OsmPoi::operator<(const osm_input::OsmPoi& aOther) const
 {
-  return (this->mPoiLevel.mLevelId < aOther.mPoiLevel.mLevelId);
+  return (this->mPoiLevel < aOther.mPoiLevel);
   // if (*this == aOther) {
   //   return false;
   // }
@@ -335,6 +345,7 @@ computeBallRadius(const std::string& aLabel)
   return labelSize / 2;
 }
 
+// TODO: remove
 std::string
 computeIcon(const std::vector<osm_input::Tag>& aTagSet)
 {
@@ -512,6 +523,7 @@ computeIcon(const std::vector<osm_input::Tag>& aTagSet)
 }
 }
 
+// TODO: redefine
 bool
 osm_input::OsmPoi::hasIcon() const
 {

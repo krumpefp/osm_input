@@ -67,7 +67,15 @@ public:
     Level(const std::vector<Constraint>& aConstraints, const Json::Value& aJson,
           uint64_t aId);
 
-    std::string toString() const;
+	std::string toString() const;
+	
+	// comparison operators
+	bool operator==(const Level& aOther) const;
+	bool operator!=(const Level& aOther) const;
+	bool operator<(const Level& aOther) const;
+	bool operator>(const Level& aOther) const;
+	bool operator<=(const Level& aOther) const;
+	bool operator>=(const Level& aOther) const;
   };
 
 public:
