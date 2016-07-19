@@ -77,10 +77,26 @@ mapping_helper::MappingHelper::Constraint::toString() const
 mapping_helper::MappingHelper::Level::Level(
   const std::vector<Constraint>& aConstraints, const Json::Value& aJson,
   uint64_t aId)
+: mIconName("")
 {
   mName = aJson["level"].asString();
   mLevelId = aId;
   mConstraints = aConstraints;
+  
+  // check factor information
+  if (aJson.isMember("factor")) {
+	  mLevelFactor = aJson["factor"].asInt();
+  } else {
+	  std::printf("Level description does not contain any factor information:\n\t\
+	  %s", aJson.asString());
+  }
+  
+  // check for icon
+  if (aJson.isMember("icon")) {
+	  mIconName = aJson["icon"].asString();
+  }
+  
+  // check constraints
   if (aJson.isMember("constraints")) {
     for (const auto& c : aJson["constraints"]) {
       mConstraints.emplace_back(c);

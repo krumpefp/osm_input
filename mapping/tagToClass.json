@@ -25,7 +25,8 @@
                   "tag":"population",
                   "greater": 5000000
                 }
-              ]
+              ],
+              "factor":30
             },
             {
               "level": "LARGE_CITY",
@@ -34,7 +35,8 @@
                   "tag":"population",
                   "greater": 1000000
                 }
-              ]
+              ],
+              "factor":26
             },
             {
               "level": "CITY",
@@ -43,10 +45,12 @@
                   "tag":"population",
                   "greater": 500000
                 }
-              ]
+              ],
+              "factor":24
             },
             {
-              "level": "SMALL_CITY"
+              "level": "SMALL_CITY",
+              "factor":22
             }
           ]
         },{
@@ -65,7 +69,8 @@
                   "tag": "population",
                   "greater": 100000
                 }
-              ]
+              ],
+              "factor":20
             },
             {
               "level": "TOWN",
@@ -74,10 +79,12 @@
                   "tag": "population",
                   "greater": 25000
                 }
-              ]
+              ],
+              "factor":19
             },
             {
-              "level": "SMALL_TOWN"
+              "level": "SMALL_TOWN",
+              "factor":18
             }
           ]
         },{
@@ -87,7 +94,8 @@
               "tag": "place",
               "equals": "village"
             }
-          ]
+          ],
+		  "factor":16
         },{
           "level": "MUNICIPALITY",
           "constraints": [
@@ -95,7 +103,8 @@
               "tag": "place",
               "equals": "municipality"
             }
-          ]
+          ],
+          "factor":14
         },{
           "level": "BOROUGH",
           "constraints": [
@@ -103,7 +112,8 @@
               "tag": "place",
               "equals": "borough"
             }
-          ]
+          ],
+          "factor":13
         },{
           "level": "SUBURB",
           "constraints": [
@@ -111,7 +121,8 @@
               "tag": "place",
               "equals": "suburb"
             }
-          ]
+          ],
+          "factor":12
         },{
           "level": "QUARTER",
           "constraints": [
@@ -119,7 +130,8 @@
               "tag": "place",
               "equals": "quarter"
             }
-          ]
+          ],
+          "factor":11
         },{
           "level": "NEIGHBOURHOOD",
           "constraints": [
@@ -127,7 +139,8 @@
               "tag": "place",
               "equals": "neighbourhood"
             }
-          ]
+          ],
+          "factor":11
         },{
           "level": "CITY_BLOCK",
           "constraints": [
@@ -135,7 +148,8 @@
               "tag": "place",
               "equals": "city_block"
             }
-          ]
+          ],
+          "factor":11
         },{
           "level": "HAMLET",
           "constraints": [
@@ -143,7 +157,8 @@
               "tag": "place",
               "equals": "hamlet"
             }
-          ]
+          ],
+          "factor":10
         },{
           "level": "ISOLATED_DWELLING",
           "constraints": [
@@ -151,7 +166,8 @@
               "tag": "place",
               "equals": "isolated_dwelling"
             }
-          ]
+          ],
+          "factor":10
         },{
           "level": "FARM",
           "constraints": [
@@ -159,7 +175,8 @@
               "tag": "place",
               "equals": "farm"
             }
-          ]
+          ],
+          "factor":10
         },{
           "level": "ALLOTMENT",
           "constraints": [
@@ -167,7 +184,8 @@
               "tag": "place",
               "equals": "allotment"
             }
-          ]
+          ],
+          "factor":10
         },{
           "level": "PLOT",
           "constraints": [
@@ -175,7 +193,8 @@
               "tag": "place",
               "equals": "plot"
             }
-          ]
+          ],
+          "factor":10
         }
       ]
     },
