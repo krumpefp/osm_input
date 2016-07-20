@@ -273,6 +273,17 @@
           "icon": "library"
         },
         {
+          "level": "PUBLIC_BOOKCASE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "public_bookcase"
+            }
+          ],
+          "factor": 7,
+          "icon": "library"
+        },
+        {
           "level": "COMMUNITY_CENTRE",
           "constraints": [
             {
@@ -327,6 +338,10 @@
             {
               "tag": "amenity",
               "equals": "deaddrop"
+            },
+            {
+              "tag": "amenity",
+              "equals": "grave"
             }
           ],
           "factor": 7,
@@ -360,6 +375,10 @@
             {
               "tag": "amenity",
               "equals": "hospital"
+            },
+            {
+              "tag": "amenity",
+              "equals": "clinic"
             }
           ],
           "factor": 6,
@@ -381,11 +400,33 @@
           "icon": "police"
         },
         {
+          "level": "FIRESTATION",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "fire_station"
+            }
+          ],
+          "factor": 6,
+          "icon": "firemen"
+        },
+        {
           "level": "ADMINISTRATION",
           "constraints": [
             {
               "tag": "amenity",
               "equals": "administration"
+            }
+          ],
+          "factor": 6,
+          "icon": "administration"
+        },
+        {
+          "level": "EMBASSY",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "embassy"
             }
           ],
           "factor": 6,
@@ -449,6 +490,10 @@
             {
               "tag": "amenity",
               "equals": "nursing_home"
+            },
+            {
+              "tag": "amenity",
+              "equals": "retirement_home"
             }
           ],
           "factor": 6,
@@ -485,7 +530,11 @@
           "constraints": [
             {
               "tag": "amenity",
-              "equals": "COURT_HOUSE"
+              "equals": "court_house"
+            },
+            {
+              "tag": "amenity",
+              "equals": "courthouse"
             }
           ],
           "factor": 6,
@@ -530,6 +579,28 @@
           "icon": "workoffice"
         },
         {
+          "level": "OFFICE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "office"
+            }
+          ],
+          "factor": 6,
+          "icon": "workoffice"
+        },
+        {
+          "level": "STUDIO",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "studio"
+            }
+          ],
+          "factor": 6,
+          "icon": "workoffice"
+        },
+        {
           "level": "SPA",
           "constraints": [
             {
@@ -539,6 +610,10 @@
             {
               "tag": "amenity",
               "equals": "solarium"
+            },
+            {
+              "tag": "amenity",
+              "equals": "swimming_pool"
             }
           ],
         "factor": 6,
@@ -558,6 +633,10 @@
             {
               "tag": "amenity",
               "equals": "childcare"
+            },
+            {
+              "tag": "amenity",
+              "equals": "preschool"
             }
           ],
         "factor": 6,
@@ -662,6 +741,10 @@
             {
               "tag": "amenity",
               "equals": "canteen"
+            },
+            {
+              "tag": "amenity",
+              "equals": "imbiss"
             }
           ],
           "factor": 5,
@@ -696,6 +779,10 @@
             {
               "tag": "amenity",
               "equals": "travel_agency"
+            },
+            {
+              "tag": "amenity",
+              "equals": "travel agency"
             }
           ],
           "factor": 5,
@@ -706,7 +793,7 @@
           "constraints": [
             {
               "tag": "amenity",
-              "equals": "foud_court"
+              "equals": "food_court"
             },
             {
               "tag": "amenity",
@@ -797,6 +884,10 @@
             {
               "tag": "amenity",
               "equals": "casino"
+            },
+            {
+              "tag": "amenity",
+              "equals": "gambling"
             }
           ],
           "factor": 5,
@@ -833,6 +924,17 @@
           "icon": "coffee"
         },
         {
+          "level": "INTERNET_CAFE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "internet_cafe"
+            }
+          ],
+          "factor": 5,
+          "icon": "wifi"
+        },
+        {
           "level": "BAKERY",
           "constraints": [
             {
@@ -853,6 +955,21 @@
             {
               "tag": "amenity",
               "equals": "financial_institution"
+            },
+            {
+              "tag": "amenity",
+              "equals": "financial_service"
+            }
+          ],
+          "factor": 5,
+          "icon": "bank"
+        },
+        {
+          "level": "BUREAU_DE_CHANGE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "bureau_de_change"
             }
           ],
           "factor": 5,
@@ -868,6 +985,28 @@
           ],
           "factor": 5,
           "icon": "restaurant"
+        },
+        {
+          "level": "ICE_CREAM",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "ice_cream"
+            }
+          ],
+          "factor": 5,
+          "icon": "ice_cream"
+        },
+        {
+          "level": "BARBECUE",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "bbq"
+            }
+          ],
+          "factor": 5,
+          "icon": "bbq"
         },
         {
           "level": "ATM",
@@ -929,22 +1068,30 @@
           "icon": "toilets"
         },
         {
-          "level": "SHELTER",
+          "level": "BENCH",
           "constraints": [
             {
               "tag": "amenity",
               "equals": "shelter"
+            },
+            {
+              "tag": "amenity",
+              "equals": "bench"
             }
           ],
           "factor": 4,
           "icon": "waiting"
         },
         {
-          "level": "HANDCRAFT",
+          "level": "CRAFTSMAN",
           "constraints": [
             {
               "tag": "amenity",
               "equals": "Handwerksbetrieb"
+            },
+            {
+              "tag": "amenity",
+              "equals": "craftsman"
             }
           ],
           "factor": 4,
@@ -956,6 +1103,17 @@
             {
               "tag": "amenity",
               "equals": "post_office"
+            }
+          ],
+          "factor": 4,
+          "icon": "postal"
+        },
+        {
+          "level": "POST_BOX",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "post_box"
             }
           ],
           "factor": 4,
@@ -1201,6 +1359,17 @@
           "icon": "fountain"
         },
         {
+          "level": "HUNTING_STAND",
+          "constraints": [
+            {
+              "tag": "amenity",
+              "equals": "hunting_stand"
+            }
+          ],
+          "factor": 3,
+          "icon": "undefined"
+        },
+        {
           "level": "WASTE_BASKET",
           "constraints": [
             {
@@ -1219,7 +1388,8 @@
     },
     {
       "level": "UNDEFINED",
-      "factor":1
+      "factor":1,
+      "icon": "undefined"
     }
   ]
 }
