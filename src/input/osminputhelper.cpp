@@ -234,7 +234,6 @@ osm_input::OsmInputHelper::importPoiData(
          mPbfPath.c_str());
 
   osmpbf::OSMFileIn osmFile(mPbfPath.c_str(), false);
-  mapping_helper::MappingHelper mappHelp(mClassDescriptionPath);
 
   if (!osmFile.open()) {
     printf("Failed to open infile %s\n", mPbfPath.c_str());
@@ -251,7 +250,7 @@ osm_input::OsmInputHelper::importPoiData(
 
   osmpbf::parseFileCPPThreads(
     osmFile, osm_parsing::BlockParser(&pois, aIncludeSettlements,
-                                      aIncludeGeneral, aPopData, mappHelp),
+                                      aIncludeGeneral, aPopData, mMappingHelper),
     threadCount, readBlobCount, threadPrivateProcessor);
 
   mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());

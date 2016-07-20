@@ -59,16 +59,16 @@ public:
 
     std::string mName;
     uint64_t mLevelId;
-	
+
 	int32_t mLevelFactor;
 	std::string mIconName;
-	
+
     std::vector<Constraint> mConstraints;
     Level(const std::vector<Constraint>& aConstraints, const Json::Value& aJson,
           uint64_t aId);
 
 	std::string toString() const;
-	
+
 	// comparison operators
 	bool operator==(const Level& aOther) const;
 	bool operator!=(const Level& aOther) const;
@@ -80,6 +80,9 @@ public:
 
 public:
   MappingHelper(std::string& aInputPath);
+  MappingHelper( const MappingHelper& ) = delete;
+  MappingHelper( MappingHelper&& ) = delete;
+
 
   const Level& computeLevel(const std::vector<osm_input::Tag>& aTags) const;
 
