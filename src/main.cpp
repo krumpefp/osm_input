@@ -87,14 +87,14 @@ main(int argc, char** argv)
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
   for (auto it = pois.begin(), end = pois.end(); it != end;) {
-    if ((*it)->getType() == osm_input::OsmPoi::Poi_Types::SETTLEMENT ||
-        (*it)->hasIcon()) {
+//     if ((*it)->getType() == osm_input::OsmPoi::Poi_Types::SETTLEMENT ||
+//         (*it)->hasIcon()) {
       balls.push_back((*it)->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
       ++it;
-    } else {
-      it = pois.erase(it);
-      end = pois.end();
-    }
+//     } else {
+//       it = pois.erase(it);
+//       end = pois.end();
+//     }
   }
 
   std::string outputname = (path.find("/") == path.npos)

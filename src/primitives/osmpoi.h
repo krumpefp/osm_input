@@ -74,10 +74,9 @@ public:
   };
 
 public:
-  OsmPoi(int64_t aOsmId, Position aPos, std::vector<Tag> aTags,
-         const mapping_helper::MappingHelper& aMh);
-  OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType, std::vector<Tag> aTags,
-         const mapping_helper::MappingHelper& aMh);
+//   OsmPoi(int64_t aOsmId, Position aPos, std::vector<Tag> aTags,
+//          const mapping_helper::MappingHelper& aMh);
+  OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos, const std::vector< osm_input::Tag > aTags, const mapping_helper::MappingHelper& aMh);
 
   // comparison operators
   bool operator==(const OsmPoi& aOther) const;
@@ -99,18 +98,16 @@ public:
 
   std::string getName() const;
 
-  Poi_Types getType() const { return mPoiType; };
-
   bool hasIcon() const;
 
 private:
   int64_t mOsmId;
   Position mPos;
-  Poi_Types mPoiType;
+//   Poi_Types mPoiType;
   const mapping_helper::MappingHelper::Level& mPoiLevel;
 
-  int32_t mSubImportance = -1;
-  double mLabelFactor = 1;
+//   int32_t mSubImportance = -1;
+//   double mLabelFactor = 1;
 
   std::vector<Tag> mTags;
 };
