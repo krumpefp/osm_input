@@ -109,14 +109,21 @@ struct BlockParser
     //     filter.reset(nameFilter);
 
     // Filter to get all nodes that have an name and (amenity or place) tag
-    osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
+    //     osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
+    //     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
+    //     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
+    //
+    //     osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
+    //     andFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
+    //     andFilter->addChild(orFilter);
+    //     filter.reset(andFilter);
 
-    osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
-    andFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
-    andFilter->addChild(orFilter);
-    filter.reset(andFilter);
+//     Filter to get all nodes that have an name and (amenity or place) tag
+	osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
+    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
+	orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
+	orFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
+	filter.reset(orFilter);
 
     filter->assignInputAdaptor(&pbi);
 
@@ -249,8 +256,9 @@ osm_input::OsmInputHelper::importPoiData(
   bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
 
   osmpbf::parseFileCPPThreads(
-    osmFile, osm_parsing::BlockParser(&pois, aIncludeSettlements,
-                                      aIncludeGeneral, aPopData, mMappingHelper),
+    osmFile,
+    osm_parsing::BlockParser(&pois, aIncludeSettlements, aIncludeGeneral,
+                             aPopData, mMappingHelper),
     threadCount, readBlobCount, threadPrivateProcessor);
 
   mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());

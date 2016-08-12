@@ -24,16 +24,14 @@
 #include <math.h>
 #include <unordered_map>
 
-
 osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
                           const std::vector<osm_input::Tag> aTags,
                           const mapping_helper::MappingHelper& aMh)
   : mOsmId(aOsmId)
   , mPos(aPos)
-//   , mPoiType(aType)
+  //   , mPoiType(aType)
   , mPoiLevel(aMh.computeLevel(aTags))
-  , mTags(aTags)
-{};
+  , mTags(aTags){};
 
 bool
 osm_input::OsmPoi::operator==(const osm_input::OsmPoi& aOther) const
@@ -50,20 +48,19 @@ osm_input::OsmPoi::operator!=(const osm_input::OsmPoi& aOther) const
 bool
 osm_input::OsmPoi::operator<(const osm_input::OsmPoi& aOther) const
 {
-	if (this->mPoiLevel != aOther.mPoiLevel) {
-		return (this->mPoiLevel < aOther.mPoiLevel);
-	} else {
-		std::string szPop = this->getTagValue("population");
-		std::string szOtherPop = aOther.getTagValue("population");
-		int32_t pop = (szPop != "<undefined>") ? std::atoi(szPop.c_str()) :
-		0;
-		int32_t otherPop =
-		(szOtherPop != "<undefined>") ? std::atoi(szOtherPop.c_str()) : 0;
-		if (pop == otherPop)
-			return mOsmId < aOther.mOsmId;
-		else
-			return pop < otherPop;
-	}
+  if (this->mPoiLevel != aOther.mPoiLevel) {
+    return (this->mPoiLevel < aOther.mPoiLevel);
+  } else {
+    std::string szPop = this->getTagValue("population");
+    std::string szOtherPop = aOther.getTagValue("population");
+    int32_t pop = (szPop != "<undefined>") ? std::atoi(szPop.c_str()) : 0;
+    int32_t otherPop =
+      (szOtherPop != "<undefined>") ? std::atoi(szOtherPop.c_str()) : 0;
+    if (pop == otherPop)
+      return mOsmId < aOther.mOsmId;
+    else
+      return pop < otherPop;
+  }
 }
 
 bool
@@ -88,33 +85,33 @@ namespace osmpoi {
 std::string
 computeSplit(const std::string& aLabel, const std::unordered_set<char>& aDelims)
 {
-	std::string tmpLabel = aLabel;
+  std::string tmpLabel = aLabel;
   std::string labelSplit = aLabel;
   // if the label already contains newline information use this
   if (tmpLabel.find("\r\n") != tmpLabel.npos) {
-	  labelSplit = tmpLabel.replace(tmpLabel.find("\r\n"), 2, "%");
+    labelSplit = tmpLabel.replace(tmpLabel.find("\r\n"), 2, "%");
   } else if (tmpLabel.find("\n") != tmpLabel.npos) {
-	  labelSplit = tmpLabel.replace(tmpLabel.find("\n"), 2, "%");
+    labelSplit = tmpLabel.replace(tmpLabel.find("\n"), 2, "%");
   } else if (tmpLabel.find("\r") != tmpLabel.npos) {
-	  labelSplit = tmpLabel.replace(tmpLabel.find("\r"), 2, "%");
+    labelSplit = tmpLabel.replace(tmpLabel.find("\r"), 2, "%");
   } else if (tmpLabel.find("^M") != tmpLabel.npos) {
-	  labelSplit = tmpLabel.replace(tmpLabel.find("^M"), 2, "%");
+    labelSplit = tmpLabel.replace(tmpLabel.find("^M"), 2, "%");
   } else {
     // otherwise split at one of the delimiters
 
-	  std::size_t centerPos = tmpLabel.size() / 2;
+    std::size_t centerPos = tmpLabel.size() / 2;
     std::size_t pos = 0;
     while (pos < centerPos / 2) {
-		char c = tmpLabel[centerPos + pos];
+      char c = tmpLabel[centerPos + pos];
       if (aDelims.count(c) > 0) {
-		  labelSplit = tmpLabel.substr(0, centerPos + pos + 1) + "%" +
-		  tmpLabel.substr(centerPos + pos + 1, tmpLabel.size());
+        labelSplit = tmpLabel.substr(0, centerPos + pos + 1) + "%" +
+                     tmpLabel.substr(centerPos + pos + 1, tmpLabel.size());
         break;
       }
       c = tmpLabel[centerPos - pos];
       if (aDelims.count(c) > 0) {
-		  labelSplit = tmpLabel.substr(0, centerPos - pos + 1) + "%" +
-		  tmpLabel.substr(centerPos - pos + 1, tmpLabel.size());
+        labelSplit = tmpLabel.substr(0, centerPos - pos + 1) + "%" +
+                     tmpLabel.substr(centerPos - pos + 1, tmpLabel.size());
         break;
       }
 
@@ -153,10 +150,15 @@ osm_input::OsmPoi::getCorrespondingBall(
   std::string label;
   double ballRadius = 4;
   if (mPoiLevel.mIconName != "") {
-	  label = "icon:" + mPoiLevel.mIconName;
+    label = "icon:" + mPoiLevel.mIconName;
   } else {
-	  label = osmpoi::computeSplit(getName(), aDelims);
-	  ballRadius = osmpoi::computeBallRadius(label);
+    if (getName().size() > aSplitSize) {
+      label = osmpoi::computeSplit(getName(), aDelims);
+    } else {
+      label = getName();
+    }
+
+    ballRadius = osmpoi::computeBallRadius(label);
   }
 
   ballRadius *= mPoiLevel.mLevelFactor;

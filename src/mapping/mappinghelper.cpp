@@ -79,25 +79,26 @@ mapping_helper::MappingHelper::Constraint::toString() const
 mapping_helper::MappingHelper::Level::Level(
   const std::vector<Constraint>& aConstraints, const Json::Value& aJson,
   uint64_t aId)
-: mIconName("")
+  : mIconName("")
 {
   mName = aJson["level"].asString();
   mLevelId = aId;
   mConstraints = aConstraints;
-  
+
   // check factor information
   if (aJson.isMember("factor")) {
-	  mLevelFactor = aJson["factor"].asInt();
+    mLevelFactor = aJson["factor"].asInt();
   } else {
-	  std::printf("Level description does not contain any factor information:\n\t\
-	  Level name %s and id %lu\n", mName.c_str(), mLevelId);
+    std::printf("Level description does not contain any factor information:\n\t\
+	  Level name %s and id %lu\n",
+                mName.c_str(), mLevelId);
   }
-  
+
   // check for icon
   if (aJson.isMember("icon")) {
-	  mIconName = aJson["icon"].asString();
+    mIconName = aJson["icon"].asString();
   }
-  
+
   // check for constraints
   if (aJson.isMember("constraints")) {
     for (const auto& c : aJson["constraints"]) {
@@ -118,37 +119,41 @@ mapping_helper::MappingHelper::Level::toString() const
   return "(Level name " + mName + ", constraints: [" + constraints + "])";
 }
 
-bool Level::operator==(const mapping_helper::MappingHelper::Level& aOther) const
+bool
+Level::operator==(const mapping_helper::MappingHelper::Level& aOther) const
 {
-	return this->mLevelId == aOther.mLevelId;
+  return this->mLevelId == aOther.mLevelId;
 }
 
-bool Level::operator!=(const mapping_helper::MappingHelper::Level& aOther) const
+bool
+Level::operator!=(const mapping_helper::MappingHelper::Level& aOther) const
 {
-	return !(*this == aOther);
+  return !(*this == aOther);
 }
 
-bool Level::operator<(const mapping_helper::MappingHelper::Level& aOther) const
+bool
+Level::operator<(const mapping_helper::MappingHelper::Level& aOther) const
 {
-	return this->mLevelId > aOther.mLevelId;
+  return this->mLevelId > aOther.mLevelId;
 }
 
-bool Level::operator<=(const mapping_helper::MappingHelper::Level& aOther) const
+bool
+Level::operator<=(const mapping_helper::MappingHelper::Level& aOther) const
 {
-	return (*this < aOther || *this == aOther);
+  return (*this < aOther || *this == aOther);
 }
 
-bool Level::operator>(const mapping_helper::MappingHelper::Level& aOther) const
+bool
+Level::operator>(const mapping_helper::MappingHelper::Level& aOther) const
 {
-	return ! (*this <= aOther);
+  return !(*this <= aOther);
 }
 
-bool Level::operator>=(const mapping_helper::MappingHelper::Level& aOther) const
+bool
+Level::operator>=(const mapping_helper::MappingHelper::Level& aOther) const
 {
-	return ! (*this < aOther);
+  return !(*this < aOther);
 }
-
-
 
 // end Level
 
