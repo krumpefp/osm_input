@@ -24,9 +24,7 @@
 #include <vector>
 
 namespace popinput {
-std::vector<std::string>
-split(const std::string& aInput, char aDelim)
-{
+std::vector<std::string> split(const std::string &aInput, char aDelim) {
   std::vector<std::string> result;
 
   std::stringstream stream(aInput);
@@ -39,8 +37,7 @@ split(const std::string& aInput, char aDelim)
 }
 }
 
-pop_input::PopulationInput::PopulationInput(std::string aInputPath)
-{
+pop_input::PopulationInput::PopulationInput(std::string aInputPath) {
   std::ifstream file(aInputPath);
 
   if (!file.is_open()) {

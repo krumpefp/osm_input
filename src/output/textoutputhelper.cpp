@@ -23,10 +23,8 @@
 
 #include "osmpoi.h"
 
-bool
-text_output::TextOutputHelper::writeBallsFile(
-  std::vector<osm_input::OsmPoi::LabelBall>& aBalls, char aSep)
-{
+bool text_output::TextOutputHelper::writeBallsFile(
+    std::vector<osm_input::OsmPoi::LabelBall> &aBalls, char aSep) {
   std::ofstream file(mOutputPath.c_str());
 
   if (!file.is_open()) {
@@ -38,7 +36,7 @@ text_output::TextOutputHelper::writeBallsFile(
   //   file << "Longitude [-180, 180] Latitude [-90, 90] Importance Radius";
   file << aBalls.size();
 
-  for (auto& ball : aBalls) {
+  for (auto &ball : aBalls) {
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
@@ -50,11 +48,9 @@ text_output::TextOutputHelper::writeBallsFile(
   return true;
 }
 
-bool
-text_output::TextOutputHelper::writeCompleteFile(
-  std::vector<osm_input::OsmPoi*>& aPois, std::size_t aSplitSize,
-  const std::unordered_set<char>& aDelimiters, char aSep)
-{
+bool text_output::TextOutputHelper::writeCompleteFile(
+    std::vector<osm_input::OsmPoi *> &aPois, std::size_t aSplitSize,
+    const std::unordered_set<char> &aDelimiters, char aSep) {
   std::ofstream file(mOutputPath.c_str());
 
   if (!file.is_open()) {
@@ -68,9 +64,9 @@ text_output::TextOutputHelper::writeCompleteFile(
   //     name";
   file << aPois.size();
 
-  for (auto& poi : aPois) {
+  for (auto &poi : aPois) {
     osm_input::OsmPoi::LabelBall ball =
-      poi->getCorrespondingBall(aSplitSize, aDelimiters);
+        poi->getCorrespondingBall(aSplitSize, aDelimiters);
 
     std::string label = ball.mLabel;
     while (label.find("\n") != label.npos) {

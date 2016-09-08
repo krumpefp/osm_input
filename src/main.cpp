@@ -35,44 +35,45 @@
 
 namespace {
 const std::size_t SPLIT_SIZE = 15;
-const std::unordered_set<char> DELIMITERS({ ' ', '-', '/' });
+const std::unordered_set<char> DELIMITERS({' ', '-', '/'});
 
-bool
-osmPoiComp(osm_input::OsmPoi* aLhs, osm_input::OsmPoi* aRhs)
-{
+bool osmPoiComparatorASC(osm_input::OsmPoi *aLhs, osm_input::OsmPoi *aRhs) {
   return *aLhs < *aRhs;
 }
 }
 
-int
-main(int argc, char** argv)
-{
-  std::printf("Hallo!\n");
+int main(int argc, char **argv) {
+  if (argc < 3) {
+    std::printf("To few arguments given.\nPlease use: osm_input <osm.pbf> "
+                "<mapping> <population (optional)>");
+    return 0;
+  }
 
-  std::string path;
-  std::string jsonPath = "../mapping/tagToClass.json";
+  std::string pbfPath;
+  std::string jsonPath;
+  std::string popPath;
 
   debug_timer::Timer t;
 
   std::map<std::string, int32_t> populations;
   if (argc > 3) {
-    path = std::string(argv[2]);
-    pop_input::PopulationInput popInput(path);
+    popPath = std::string(argv[2]);
+    pop_input::PopulationInput popInput(popPath);
     populations = popInput.getPopulationsMap();
   }
 
-  path = std::string(argv[1]);
+  pbfPath = std::string(argv[1]);
   jsonPath = std::string(argv[2]);
 
   t.start();
-  osm_input::OsmInputHelper input(path, jsonPath);
+  osm_input::OsmInputHelper input(pbfPath, jsonPath);
 
-  std::vector<osm_input::OsmPoi*> pois =
-    input.importPoiData(true, true, populations);
+  std::vector<osm_input::OsmPoi *> pois =
+      input.importPoiData(true, true, populations);
 
   t.createTimepoint();
 
-  std::sort(pois.begin(), pois.end(), osmPoiComp);
+  std::sort(pois.begin(), pois.end(), osmPoiComparatorASC);
 
   t.stop();
 
@@ -98,8 +99,8 @@ main(int argc, char** argv)
   }
 
   std::string outputname = (path.find("/") == path.npos)
-                             ? path.substr(0, path.size())
-                             : path.substr(path.rfind('/') + 1, path.size());
+                               ? path.substr(0, path.size())
+                               : path.substr(path.rfind('/') + 1, path.size());
 
   std::string outputpath = outputname + ".balls.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());

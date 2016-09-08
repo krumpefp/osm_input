@@ -26,28 +26,21 @@
 
 osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
                           const std::vector<osm_input::Tag> aTags,
-                          const mapping_helper::MappingHelper& aMh)
-  : mOsmId(aOsmId)
-  , mPos(aPos)
-  //   , mPoiType(aType)
-  , mPoiLevel(aMh.computeLevel(aTags))
-  , mTags(aTags){};
+                          const mapping_helper::MappingHelper &aMh)
+    : mOsmId(aOsmId), mPos(aPos)
+      //   , mPoiType(aType)
+      ,
+      mPoiLevel(aMh.computeLevel(aTags)), mTags(aTags){};
 
-bool
-osm_input::OsmPoi::operator==(const osm_input::OsmPoi& aOther) const
-{
+bool osm_input::OsmPoi::operator==(const osm_input::OsmPoi &aOther) const {
   return aOther.mOsmId == mOsmId;
 }
 
-bool
-osm_input::OsmPoi::operator!=(const osm_input::OsmPoi& aOther) const
-{
+bool osm_input::OsmPoi::operator!=(const osm_input::OsmPoi &aOther) const {
   return !(*this == aOther);
 }
 
-bool
-osm_input::OsmPoi::operator<(const osm_input::OsmPoi& aOther) const
-{
+bool osm_input::OsmPoi::operator<(const osm_input::OsmPoi &aOther) const {
   if (this->mPoiLevel != aOther.mPoiLevel) {
     return (this->mPoiLevel < aOther.mPoiLevel);
   } else {
@@ -55,7 +48,7 @@ osm_input::OsmPoi::operator<(const osm_input::OsmPoi& aOther) const
     std::string szOtherPop = aOther.getTagValue("population");
     int32_t pop = (szPop != "<undefined>") ? std::atoi(szPop.c_str()) : 0;
     int32_t otherPop =
-      (szOtherPop != "<undefined>") ? std::atoi(szOtherPop.c_str()) : 0;
+        (szOtherPop != "<undefined>") ? std::atoi(szOtherPop.c_str()) : 0;
     if (pop == otherPop)
       return mOsmId < aOther.mOsmId;
     else
@@ -63,28 +56,21 @@ osm_input::OsmPoi::operator<(const osm_input::OsmPoi& aOther) const
   }
 }
 
-bool
-osm_input::OsmPoi::operator>(const osm_input::OsmPoi& aOther) const
-{
+bool osm_input::OsmPoi::operator>(const osm_input::OsmPoi &aOther) const {
   return *this != aOther && !(*this < aOther);
 }
 
-bool
-osm_input::OsmPoi::operator<=(const osm_input::OsmPoi& aOther) const
-{
+bool osm_input::OsmPoi::operator<=(const osm_input::OsmPoi &aOther) const {
   return !(*this > aOther);
 }
 
-bool
-osm_input::OsmPoi::operator>=(const osm_input::OsmPoi& aOther) const
-{
+bool osm_input::OsmPoi::operator>=(const osm_input::OsmPoi &aOther) const {
   return !(*this < aOther);
 }
 
 namespace osmpoi {
-std::string
-computeSplit(const std::string& aLabel, const std::unordered_set<char>& aDelims)
-{
+std::string computeSplit(const std::string &aLabel,
+                         const std::unordered_set<char> &aDelims) {
   std::string tmpLabel = aLabel;
   std::string labelSplit = aLabel;
   // if the label already contains newline information use this
@@ -124,29 +110,21 @@ computeSplit(const std::string& aLabel, const std::unordered_set<char>& aDelims)
   return labelSplit;
 }
 
-double
-computeBallRadius(const std::string& aLabel)
-{
+double computeBallRadius(const std::string &aLabel) {
   std::size_t delimPos = aLabel.find("%");
   if (delimPos == aLabel.npos)
     delimPos = aLabel.size();
 
   double labelSize =
-    (delimPos > aLabel.size() / 2) ? delimPos : aLabel.size() - delimPos;
+      (delimPos > aLabel.size() / 2) ? delimPos : aLabel.size() - delimPos;
   return labelSize / 2;
 }
 }
 
-bool
-osm_input::OsmPoi::hasIcon() const
-{
-  return mPoiLevel.mIconName != "";
-}
+bool osm_input::OsmPoi::hasIcon() const { return mPoiLevel.mIconName != ""; }
 
-osm_input::OsmPoi::LabelBall
-osm_input::OsmPoi::getCorrespondingBall(
-  std::size_t aSplitSize, const std::unordered_set<char>& aDelims) const
-{
+osm_input::OsmPoi::LabelBall osm_input::OsmPoi::getCorrespondingBall(
+    std::size_t aSplitSize, const std::unordered_set<char> &aDelims) const {
   std::string label;
   double ballRadius = 4;
   if (mPoiLevel.mIconName != "") {
@@ -166,16 +144,13 @@ osm_input::OsmPoi::getCorrespondingBall(
   return LabelBall(mPos, ballRadius, label, mPoiLevel.mLevelFactor);
 }
 
-const mapping_helper::MappingHelper::Level&
-osm_input::OsmPoi::getLevel() const
-{
+const mapping_helper::MappingHelper::Level &
+osm_input::OsmPoi::getLevel() const {
   return mPoiLevel;
 }
 
-std::string
-osm_input::OsmPoi::getTagValue(std::string aTagName) const
-{
-  for (auto& tag : mTags) {
+std::string osm_input::OsmPoi::getTagValue(std::string aTagName) const {
+  for (auto &tag : mTags) {
     if (tag.mKey == aTagName) {
       return tag.mValue;
     }
@@ -184,21 +159,13 @@ osm_input::OsmPoi::getTagValue(std::string aTagName) const
   return "<undefined>";
 }
 
-std::string
-osm_input::OsmPoi::getName() const
-{
+std::string osm_input::OsmPoi::getName() const {
   std::string name = "<undefined>";
 
-  enum Dom
-  {
-    UNDEF,
-    NAME,
-    NAME_DE,
-    NAME_EN
-  };
+  enum Dom { UNDEF, NAME, NAME_DE, NAME_EN };
   Dom d = Dom::UNDEF;
 
-  for (auto& tag : mTags) {
+  for (auto &tag : mTags) {
     if (tag.mKey == "name" && d < Dom::NAME) {
       name = tag.mValue;
       d = Dom::NAME;

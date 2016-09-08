@@ -30,62 +30,53 @@
 
 namespace osm_input {
 
-class OsmPoi
-{
+class OsmPoi {
 public:
-  struct Position
-  {
+  struct Position {
     double mLat;
     double mLon;
 
-    Position()
-      : mLat(0)
-      , mLon(0){};
+    Position() : mLat(0), mLon(0){};
 
-    Position(double aLat, double aLon)
-      : mLat(aLat)
-      , mLon(aLon){};
+    Position(double aLat, double aLon) : mLat(aLat), mLon(aLon){};
 
     double getLatDegree() { return mLat; };
     double getLonDegree() { return mLon; };
   };
 
-  struct LabelBall
-  {
+  struct LabelBall {
     Position mPos;
     double mBallRadius;
 
     std::string mLabel;
     double mLabelFactor;
 
-    LabelBall(const Position& aCenter, double aRadius, std::string aLabel,
+    LabelBall(const Position &aCenter, double aRadius, std::string aLabel,
               double aFactor)
-      : mPos(aCenter)
-      , mBallRadius(aRadius)
-      , mLabel(aLabel)
-      , mLabelFactor(aFactor){};
+        : mPos(aCenter), mBallRadius(aRadius), mLabel(aLabel),
+          mLabelFactor(aFactor){};
   };
 
 public:
   OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
          const std::vector<osm_input::Tag> aTags,
-         const mapping_helper::MappingHelper& aMh);
+         const mapping_helper::MappingHelper &aMh);
 
   // comparison operators
-  bool operator==(const OsmPoi& aOther) const;
-  bool operator!=(const OsmPoi& aOther) const;
-  bool operator<(const OsmPoi& aOther) const;
-  bool operator>(const OsmPoi& aOther) const;
-  bool operator<=(const OsmPoi& aOther) const;
-  bool operator>=(const OsmPoi& aOther) const;
+  bool operator==(const OsmPoi &aOther) const;
+  bool operator!=(const OsmPoi &aOther) const;
+  bool operator<(const OsmPoi &aOther) const;
+  bool operator>(const OsmPoi &aOther) const;
+  bool operator<=(const OsmPoi &aOther) const;
+  bool operator>=(const OsmPoi &aOther) const;
 
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 
   LabelBall getCorrespondingBall(std::size_t aSplitSize,
-                                 const std::unordered_set<char>& aDelims) const;
+                                 const std::unordered_set<char> &aDelims) const;
 
-  const mapping_helper::MappingHelper::Level& getLevel() const;
+  const mapping_helper::MappingHelper::Level &getLevel() const;
 
   std::string getTagValue(std::string aTagName) const;
 
@@ -96,7 +87,7 @@ public:
 private:
   int64_t mOsmId;
   Position mPos;
-  const mapping_helper::MappingHelper::Level& mPoiLevel;
+  const mapping_helper::MappingHelper::Level &mPoiLevel;
 
   std::vector<Tag> mTags;
 };

@@ -25,14 +25,11 @@
 
 namespace osm_input {
 
-struct Tag
-{
+struct Tag {
   std::string mKey;
   std::string mValue;
 
-  Tag(std::string aKey, std::string aValue)
-    : mKey(aKey)
-    , mValue(aValue){};
+  Tag(std::string aKey, std::string aValue) : mKey(aKey), mValue(aValue){};
 };
 }
 

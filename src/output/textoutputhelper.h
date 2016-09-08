@@ -28,21 +28,19 @@
 
 namespace text_output {
 
-class TextOutputHelper
-{
+class TextOutputHelper {
 public:
-  TextOutputHelper(std::string aOutputPath)
-    : mOutputPath(aOutputPath){};
-  TextOutputHelper(const TextOutputHelper& other) = delete;
-  TextOutputHelper& operator=(const TextOutputHelper& other) = delete;
-  bool operator==(const TextOutputHelper& other) const = delete;
+  TextOutputHelper(std::string aOutputPath) : mOutputPath(aOutputPath){};
+  TextOutputHelper(const TextOutputHelper &other) = delete;
+  TextOutputHelper &operator=(const TextOutputHelper &other) = delete;
+  bool operator==(const TextOutputHelper &other) const = delete;
 
-  bool writeBallsFile(std::vector<osm_input::OsmPoi::LabelBall>& aBalls,
+  bool writeBallsFile(std::vector<osm_input::OsmPoi::LabelBall> &aBalls,
                       char aSep);
 
-  bool writeCompleteFile(std::vector<osm_input::OsmPoi*>& aPois,
+  bool writeCompleteFile(std::vector<osm_input::OsmPoi *> &aPois,
                          std::size_t aSplitSize,
-                         const std::unordered_set<char>& aDelimiters,
+                         const std::unordered_set<char> &aDelimiters,
                          char aSep);
 
 private:
