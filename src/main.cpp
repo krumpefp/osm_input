@@ -45,7 +45,7 @@ bool osmPoiComparatorASC(osm_input::OsmPoi *aLhs, osm_input::OsmPoi *aRhs) {
 int main(int argc, char **argv) {
   if (argc < 3) {
     std::printf("To few arguments given.\nPlease use: osm_input <osm.pbf> "
-                "<mapping> <population (optional)>");
+                "<mapping> <population (optional)>\n");
     return 0;
   }
 
@@ -98,9 +98,9 @@ int main(int argc, char **argv) {
     //     }
   }
 
-  std::string outputname = (path.find("/") == path.npos)
-                               ? path.substr(0, path.size())
-                               : path.substr(path.rfind('/') + 1, path.size());
+  std::string outputname = (pbfPath.find("/") == pbfPath.npos)
+                               ? pbfPath.substr(0, pbfPath.size())
+                               : pbfPath.substr(pbfPath.rfind('/') + 1, pbfPath.size());
 
   std::string outputpath = outputname + ".balls.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());
