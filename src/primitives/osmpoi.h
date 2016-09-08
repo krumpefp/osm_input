@@ -25,79 +25,71 @@
 #include <unordered_set>
 #include <vector>
 
+#include "mappinghelper.h"
+#include "tag.h"
+
 namespace osm_input {
 
-const double COORDINATE_SCALING = 10000000;
-
-class OsmPoi
-{
+class OsmPoi {
 public:
-  enum Poi_Types
-  {
-    GENERAL_POI,
-    SETTLEMENT,
-    UNDEFINED
-  };
-
-  struct Position
-  {
+  struct Position {
     double mLat;
     double mLon;
 
-    Position()
-      : mLat(0)
-      , mLon(0){};
+    Position() : mLat(0), mLon(0){};
 
-    Position(double aLat, double aLon)
-      : mLat(aLat)
-      , mLon(aLon){};
+    Position(double aLat, double aLon) : mLat(aLat), mLon(aLon){};
 
     double getLatDegree() { return mLat; };
     double getLonDegree() { return mLon; };
   };
 
-  struct LabelBall
-  {
+  struct LabelBall {
     Position mPos;
-    int32_t mBallRadius;
-    std::string mLabel;
+    double mBallRadius;
 
-    LabelBall(const Position& aCenter, int32_t aRadius, std::string aLabel)
-      : mPos(aCenter)
-      , mBallRadius(aRadius)
-      , mLabel(aLabel){};
+    std::string mLabel;
+    double mLabelFactor;
+
+    LabelBall(const Position &aCenter, double aRadius, std::string aLabel,
+              double aFactor)
+        : mPos(aCenter), mBallRadius(aRadius), mLabel(aLabel),
+          mLabelFactor(aFactor){};
   };
 
 public:
-  OsmPoi(int64_t aOsmId, Position aPos);
-  OsmPoi(int64_t aOsmId, Position aPos, Poi_Types aType);
+  OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
+         const std::vector<osm_input::Tag> aTags,
+         const mapping_helper::MappingHelper &aMh);
 
   // comparison operators
-  bool operator==(const OsmPoi& aOther) const;
-  bool operator!=(const OsmPoi& aOther) const;
-  bool operator<(const OsmPoi& aOther) const;
-  bool operator>(const OsmPoi& aOther) const;
-  bool operator<=(const OsmPoi& aOther) const;
-  bool operator>=(const OsmPoi& aOther) const;
-
-  void addTag(std::string aKey, std::string aValue);
-  Poi_Types computeType(bool aUpdateType);
+  bool operator==(const OsmPoi &aOther) const;
+  bool operator!=(const OsmPoi &aOther) const;
+  bool operator<(const OsmPoi &aOther) const;
+  bool operator>(const OsmPoi &aOther) const;
+  bool operator<=(const OsmPoi &aOther) const;
+  bool operator>=(const OsmPoi &aOther) const;
 
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 
   LabelBall getCorrespondingBall(std::size_t aSplitSize,
-                                 const std::unordered_set<char>& aDelims) const;
+                                 const std::unordered_set<char> &aDelims) const;
+
+  const mapping_helper::MappingHelper::Level &getLevel() const;
 
   std::string getTagValue(std::string aTagName) const;
+
+  std::string getName() const;
+
+  bool hasIcon() const;
 
 private:
   int64_t mOsmId;
   Position mPos;
-  Poi_Types mPoiType;
-  int32_t mSubImportance = -1;
+  const mapping_helper::MappingHelper::Level &mPoiLevel;
 
-  std::vector<std::pair<std::string, std::string>> mTags;
+  std::vector<Tag> mTags;
 };
 }
 

@@ -17,35 +17,29 @@
  *
  */
 
-#ifndef TEXTOUTPUTHELPER_H
-#define TEXTOUTPUTHELPER_H
+#ifndef POPULATIONINPUT_H
+#define POPULATIONINPUT_H
 
-#include <fstream>
+#include <map>
+#include <stdint.h>
 #include <string>
-#include <vector>
 
-#include "osmpoi.h"
+namespace pop_input {
 
-namespace text_output {
-
-class TextOutputHelper {
+class PopulationInput {
 public:
-  TextOutputHelper(std::string aOutputPath) : mOutputPath(aOutputPath){};
-  TextOutputHelper(const TextOutputHelper &other) = delete;
-  TextOutputHelper &operator=(const TextOutputHelper &other) = delete;
-  bool operator==(const TextOutputHelper &other) const = delete;
+  PopulationInput(std::string aInputPath);
+  PopulationInput(const PopulationInput &other) = delete;
+  PopulationInput &operator=(const PopulationInput &other) = delete;
+  bool operator==(const PopulationInput &other) const = delete;
 
-  bool writeBallsFile(std::vector<osm_input::OsmPoi::LabelBall> &aBalls,
-                      char aSep);
-
-  bool writeCompleteFile(std::vector<osm_input::OsmPoi *> &aPois,
-                         std::size_t aSplitSize,
-                         const std::unordered_set<char> &aDelimiters,
-                         char aSep);
+  std::map<std::string, int32_t> getPopulationsMap() const {
+    return mPopulations;
+  };
 
 private:
-  std::string mOutputPath;
+  std::map<std::string, int32_t> mPopulations;
 };
 }
 
-#endif // TEXTOUTPUTHELPER_H
+#endif // POPULATIONINPUT_H

@@ -19,44 +19,61 @@
  */
 
 #include <algorithm>
+#include <boost/iterator/iterator_concepts.hpp>
 #include <iostream>
 #include <string>
 #include <unordered_set>
 #include <vector>
 
+#include "mappinghelper.h"
 #include "osminputhelper.h"
 #include "osmpoi.h"
+#include "poistatistics.h"
+#include "populationinput.h"
 #include "textoutputhelper.h"
 #include "timer.h"
 
 namespace {
 const std::size_t SPLIT_SIZE = 15;
-const std::unordered_set<char> DELIMITERS({ ' ', '-', '/' });
+const std::unordered_set<char> DELIMITERS({' ', '-', '/'});
 
-bool
-osmPoiComp(const osm_input::OsmPoi* aLhs, const osm_input::OsmPoi* aRhs)
-{
+bool osmPoiComparatorASC(osm_input::OsmPoi *aLhs, osm_input::OsmPoi *aRhs) {
   return *aLhs < *aRhs;
 }
 }
 
-int
-main(int argc, char** argv)
-{
-  std::printf("Hallo!\n");
+int main(int argc, char **argv) {
+  if (argc < 3) {
+    std::printf("To few arguments given.\nPlease use: osm_input <osm.pbf> "
+                "<mapping> <population (optional)>\n");
+    return 0;
+  }
 
-  std::string path = std::string(argv[1]);
+  std::string pbfPath;
+  std::string jsonPath;
+  std::string popPath;
 
   debug_timer::Timer t;
 
-  t.start();
-  osm_input::OsmInputHelper input(path);
+  std::map<std::string, int32_t> populations;
+  if (argc > 3) {
+    popPath = std::string(argv[2]);
+    pop_input::PopulationInput popInput(popPath);
+    populations = popInput.getPopulationsMap();
+  }
 
-  std::vector<const osm_input::OsmPoi*> pois = input.importPoiData(true, true);
+  pbfPath = std::string(argv[1]);
+  jsonPath = std::string(argv[2]);
+
+  t.start();
+  osm_input::OsmInputHelper input(pbfPath, jsonPath);
+
+  std::vector<osm_input::OsmPoi *> pois =
+      input.importPoiData(true, true, populations);
 
   t.createTimepoint();
 
-  std::sort(pois.begin(), pois.end(), osmPoiComp);
+  std::sort(pois.begin(), pois.end(), osmPoiComparatorASC);
 
   t.stop();
 
@@ -64,15 +81,26 @@ main(int argc, char** argv)
               \tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
 
+  statistics::PoiStatistics stats(input.getMappingHelper(), pois);
+
+  printf("%s\n", stats.toString().c_str());
+
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
-  for (auto& poi : pois) {
-    balls.push_back(poi->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
+  for (auto it = pois.begin(), end = pois.end(); it != end;) {
+    //     if ((*it)->getType() == osm_input::OsmPoi::Poi_Types::SETTLEMENT ||
+    //         (*it)->hasIcon()) {
+    balls.push_back((*it)->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
+    ++it;
+    //     } else {
+    //       it = pois.erase(it);
+    //       end = pois.end();
+    //     }
   }
 
-  std::string outputname = (path.find("/") == path.npos)
-                             ? path.substr(0, path.size())
-                             : path.substr(path.rfind('/') + 1, path.size());
+  std::string outputname = (pbfPath.find("/") == pbfPath.npos)
+                               ? pbfPath.substr(0, pbfPath.size())
+                               : pbfPath.substr(pbfPath.rfind('/') + 1, pbfPath.size());
 
   std::string outputpath = outputname + ".balls.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());

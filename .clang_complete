@@ -1,0 +1,10 @@
+-Isrc
+-Isrc/debughelpers
+-Isrc/input
+-Isrc/mapping
+-Isrc/output
+-Isrc/primitives
+-Ivendor
+-Ivendor/jsoncpp/dist/json
+-Ivendor/osmpbf/
+-Ivendor/osmpbf/osmpbf/include

@@ -1,5 +1,5 @@
 debug/
+debug_clang
 release/
-.kdev4/
-osm_input.kdev4
-vendor/
+*.kdev4
+*.gch

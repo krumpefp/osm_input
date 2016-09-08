@@ -1,0 +1,1266 @@
+[
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "atm"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "atm"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "cinema"
+                    }
+                ]
+            }
+        ],
+        "factor": 7,
+        "icon": "cinema"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "hospital"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "hospital"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "parking"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "parking_space"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "parking"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "police"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "ranger_station"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "police"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "restaurant"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "restaurant"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "telephone"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "telephone"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "theatre"
+                    }
+                ]
+            }
+        ],
+        "factor": 7,
+        "icon": "theatre"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "toilets"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "toilets"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "fast_food"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "fast_food"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "place_of_worship"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "church"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "public_building"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "public_facility"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "community_hall"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "congress"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "shelter"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "waiting"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "financial_institution"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "bank"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "bank"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "grave_yard"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "deaddrop"
+                    }
+                ]
+            }
+        ],
+        "factor": 7,
+        "icon": "catholicgrave"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "administration"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "administration"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "canteen"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "cafeteria"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "pub"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "club_house"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "club"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "bar"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "bar"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "travel_agency"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "travel_agency"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "food_court"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "biergarten"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "beergarden"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "shop"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "fair_trade"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "mall"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "perfume"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "perfumery"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "waste_disposal"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "waste_basket"
+                    }
+                ]
+            }
+        ],
+        "factor": 3,
+        "icon": "trash"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "sauna"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "sauna"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "pharmacy"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "medicalstore"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "Handwerksbetrieb"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "tools"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "cafe-bar"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "cafe"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "coffee"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "bakery"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "bread"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "love_hotel"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "swingerclub"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "stripclub"
+                    }
+                ]
+            }
+        ],
+        "factor": 3,
+        "icon": "stripclub"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "dancing_school"
+                    }
+                ]
+            }
+        ],
+        "factor": 7,
+        "icon": "dance_class"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "dancing_club"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "nightclub"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "dancinghall"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "post_office"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "postal"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "charging_station"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "e-bike-charging"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "ferry_terminal"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "ferry"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "airport"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "airport"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "education"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "language_school"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "school"
+                    }
+                ]
+            }
+        ],
+        "factor": 8,
+        "icon": "school"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "bicycle_repair_station"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "bicycle_rental"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "bicycle_shop"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "waste_transfer_station"
+                    }
+                ]
+            }
+        ],
+        "factor": 3,
+        "icon": "assortment"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "vehicle_inspection"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "car_repair"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "car_rental"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "car_sharing"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "car"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "boat_rental"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "boat"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "driving_school"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "car_share"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "red_cross"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "emergency_service"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "healthcare"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "firstaid"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "Beratungsstellen"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "therapy"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "marketplace"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "market"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "music_school"
+                    }
+                ]
+            }
+        ],
+        "factor": 8,
+        "icon": "music_classical"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "nursery"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "nursery"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "nursing_home"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "nursing_home_icon"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "bicycle_parking"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "parking_bicycle"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "dentist"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "dentist"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "veterinary"
+                    }
+                ]
+            }
+        ],
+        "factor": 3,
+        "icon": "veterinary"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "doctor"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "medicine"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "fountain"
+                    }
+                ]
+            }
+        ],
+        "factor": 3,
+        "icon": "fountain"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "courthouse"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "court"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "college"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "university"
+                    }
+                ]
+            }
+        ],
+        "factor": 8,
+        "icon": "university"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "ice_cream"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "ice_cream"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "fire_station"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "firemen"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "internet_cafe"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "wifi"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "library"
+                    }
+                ]
+            }
+        ],
+        "factor": 7,
+        "icon": "library"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "community_center"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "social_centre"
+                    }
+                ]
+            }
+        ],
+        "factor": 7,
+        "icon": "communitycentre"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "taxi"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "taxi"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "casino"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "casino"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "clock"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "clock"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "arts_centre"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "artwork"
+                    }
+                ]
+            }
+        ],
+        "factor": 7,
+        "icon": "artgallery"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "bus_station"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "bus"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "drinking_fountain"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "drinkingfountain"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "coworking_space"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "workoffice"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "spa"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "solarium"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "spa"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "kindergarten"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "kindergarden"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "childcare"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "daycare"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "register_office"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "reception"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "conference_centre"
+                    }
+                ]
+            }
+        ],
+        "factor": 6,
+        "icon": "conference"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "fuel"
+                    }
+                ]
+            }
+        ],
+        "factor": 4,
+        "icon": "fillingstation"
+    },
+    {
+        "conditions": [
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "gym"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "fitness_studio"
+                    }
+                ]
+            },
+            {
+                "tags": [
+                    {
+                        "tag": "amenity",
+                        "value": "training"
+                    }
+                ]
+            }
+        ],
+        "factor": 5,
+        "icon": "breastfeeding"
+    }
+]
