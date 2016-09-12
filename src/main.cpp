@@ -81,9 +81,9 @@ int main(int argc, char **argv) {
               \tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
 
-  statistics::PoiStatistics stats(input.getMappingHelper(), pois);
+  statistics::PoiStatistics stats(pois);
 
-  printf("%s\n", stats.toString().c_str());
+  printf("%s\n", stats.mappingStatistics(input.getMappingHelper()).c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
@@ -98,9 +98,10 @@ int main(int argc, char **argv) {
     //     }
   }
 
-  std::string outputname = (pbfPath.find("/") == pbfPath.npos)
-                               ? pbfPath.substr(0, pbfPath.size())
-                               : pbfPath.substr(pbfPath.rfind('/') + 1, pbfPath.size());
+  std::string outputname =
+      (pbfPath.find("/") == pbfPath.npos)
+          ? pbfPath.substr(0, pbfPath.size())
+          : pbfPath.substr(pbfPath.rfind('/') + 1, pbfPath.size());
 
   std::string outputpath = outputname + ".balls.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());

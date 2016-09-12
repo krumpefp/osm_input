@@ -22,16 +22,30 @@
 
 #include "poistatistics.h"
 
-statistics::PoiStatistics::StatisticElement::StatisticElement(
+statistics::PoiStatistics::PoiStatistics(
+    std::vector<osm_input::OsmPoi *> &aPois)
+    : mPois(aPois) {}
+
+namespace {
+struct StatisticElement {
+  const mapping_helper::MappingHelper::Level &mLevel;
+
+  std::size_t mCount;
+
+  StatisticElement(const mapping_helper::MappingHelper::Level &aLevel);
+
+  void addPoi(const osm_input::OsmPoi &aPoi);
+
+  std::string toString() const;
+};
+
+StatisticElement::StatisticElement(
     const mapping_helper::MappingHelper::Level &aLevel)
     : mLevel(aLevel), mCount(0) {}
 
-void statistics::PoiStatistics::StatisticElement::addPoi(
-    const osm_input::OsmPoi &aPoi) {
-  ++mCount;
-}
+void StatisticElement::addPoi(const osm_input::OsmPoi &aPoi) { ++mCount; }
 
-std::string statistics::PoiStatistics::StatisticElement::toString() const {
+std::string StatisticElement::toString() const {
   std::string result = "";
 
   result += "Level " + mLevel.mName + " with id: " +
@@ -41,24 +55,24 @@ std::string statistics::PoiStatistics::StatisticElement::toString() const {
 
   return result;
 }
-
-statistics::PoiStatistics::PoiStatistics(
-    const mapping_helper::MappingHelper &aMapping,
-    std::vector<osm_input::OsmPoi *> &aPois) {
-  for (auto &lvl : aMapping.getLevelList()) {
-    mStatsMap.insert(std::make_pair(lvl.mLevelId, StatisticElement(lvl)));
-  }
-
-  for (auto &poi : aPois) {
-    mStatsMap.at(poi->getLevel().mLevelId).addPoi(*poi);
-  }
 }
 
-std::string statistics::PoiStatistics::toString() const {
+std::string statistics::PoiStatistics::mappingStatistics(
+    const mapping_helper::MappingHelper &aMapping) const {
+  std::map<uint64_t, StatisticElement> statsMap;
+  for (const auto& lvl : aMapping.getLevelList()) {
+      statsMap.emplace(lvl.mLevelId, StatisticElement(lvl));
+    }
+  
+  for (const auto& poi : mPois) {
+      statsMap.at(poi->getLevel().mLevelId).addPoi(*poi);
+  }
+  
+  
   std::string result = "Poi statistics contains:";
   std::size_t total = 0;
 
-  for (auto &lvl : mStatsMap) {
+  for (auto &lvl : statsMap) {
     if (lvl.second.mCount != 0) {
       result += "\n" + lvl.second.toString();
       total += lvl.second.mCount;
