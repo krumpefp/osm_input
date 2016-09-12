@@ -23,20 +23,20 @@
 #include "poistatistics.h"
 
 statistics::PoiStatistics::StatisticElement::StatisticElement(
-    const mapping_helper::MappingHelper::Level &aLevel)
+    const mapping_helper::MappingHelper::Level *aLevel)
     : mLevel(aLevel), mCount(0) {}
 
 void statistics::PoiStatistics::StatisticElement::addPoi(
-    const osm_input::OsmPoi &aPoi) {
+    const osm_input::OsmPoi *aPoi) {
   ++mCount;
 }
 
 std::string statistics::PoiStatistics::StatisticElement::toString() const {
   std::string result = "";
 
-  result += "Level " + mLevel.mName + " with id: " +
+  result += "Level " + mLevel->mName + " with id: " +
             // std::bitset<64>(mLevel.mLevelId).to_string();
-            std::to_string(mLevel.mLevelId);
+            std::to_string(mLevel->mLevelId);
   result += "\tcontains " + std::to_string(mCount) + " elements";
 
   return result;
@@ -44,13 +44,13 @@ std::string statistics::PoiStatistics::StatisticElement::toString() const {
 
 statistics::PoiStatistics::PoiStatistics(
     const mapping_helper::MappingHelper &aMapping,
-    std::vector<osm_input::OsmPoi *> &aPois) {
-  for (auto &lvl : aMapping.getLevelList()) {
-    mStatsMap.insert(std::make_pair(lvl.mLevelId, StatisticElement(lvl)));
+    std::vector<osm_input::OsmPoi> &aPois) {
+  for (auto lvl : aMapping.getLevelList()) {
+    mStatsMap.insert(std::make_pair(lvl.mLevelId, StatisticElement(&lvl)));
   }
 
   for (auto &poi : aPois) {
-    mStatsMap.at(poi->getLevel().mLevelId).addPoi(*poi);
+    mStatsMap.at(poi.getLevel()->mLevelId).addPoi(&poi);
   }
 }
 

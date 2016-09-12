@@ -47,7 +47,7 @@ void osm_input::OsmInputHelper::BoundingBox::adapt(double aLat, double aLon) {
 }
 
 // ---- OsmInputHelper
-typedef std::vector<osm_input::OsmPoi *> PoiSet;
+typedef std::vector<osm_input::OsmPoi> PoiSet;
 
 // osm.pbf parsing
 namespace osm_parsing {
@@ -133,7 +133,7 @@ struct BlockParser {
           bool population = false;
           std::string name = "";
 
-          for (uint32_t i = 0, s = node.tagsSize(); i < s; ++i) {
+          for (std::size_t i = 0, s = node.tagsSize(); i < s; ++i) {
             std::string key = node.key(i);
             std::string value = node.value(i);
             if (key == "amenity" || key == "place" || key == "population" ||
@@ -162,8 +162,7 @@ struct BlockParser {
             }
           }
 
-          localPois.push_back(
-              new osm_input::OsmPoi(id, pos, tags, mMappingHelper));
+          localPois.push_back(osm_input::OsmPoi(id, pos, tags, mMappingHelper));
         }
       }
     }
@@ -182,49 +181,25 @@ osm_input::OsmInputHelper::OsmInputHelper(std::string aPbfPath,
 
 PoiSet osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
                                                 bool aIncludeGeneral) {
-  mPois.clear();
 
-  printf("Trying to parse infile %s\n", mPbfPath.c_str());
+  // use an empty map of population information
+  std::map<std::string, int32_t> populations;
 
-  osmpbf::OSMFileIn osmFile(mPbfPath.c_str(), false);
-
-  if (!osmFile.open()) {
-    printf("Failed to open infile %s\n", mPbfPath.c_str());
-
-    return PoiSet();
-  }
-
-  osm_parsing::SharedPOISet pois;
-  uint32_t threadCount = 4;   // use 4 threads, usually 4 are more than enough
-  uint32_t readBlobCount = 2; // parse 2 blocks at once
-  bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
-
-  osmpbf::parseFileCPPThreads(
-      osmFile, osm_parsing::BlockParser(&pois, aIncludeSettlements,
-                                        aIncludeGeneral, mMappingHelper),
-      threadCount, readBlobCount, threadPrivateProcessor);
-
-  mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());
-
-  delete (pois.pois);
-
-  return mPois;
+  return importPoiData(aIncludeSettlements, aIncludeGeneral, populations);
 }
 
-std::vector<osm_input::OsmPoi *> osm_input::OsmInputHelper::importPoiData(
+PoiSet osm_input::OsmInputHelper::importPoiData(
     bool aIncludeSettlements, bool aIncludeGeneral,
-    const std::map<std::string, int32_t> &aPopData)
-
-{
-  mPois.clear();
-
-  printf("Trying to parse infile %s\nUsing population data.\n",
-         mPbfPath.c_str());
+    const std::map<std::string, int32_t> &aPopData) {
+  if (aPopData.size() > 0) {
+    printf("Trying to parse infile %s\nUsing population data.\n",
+           mPbfPath.c_str());
+  }
 
   osmpbf::OSMFileIn osmFile(mPbfPath.c_str(), false);
 
   if (!osmFile.open()) {
-    printf("Failed to open infile %s\n", mPbfPath.c_str());
+    printf("Failed to open input osm file %s\n", mPbfPath.c_str());
 
     return PoiSet();
   }
@@ -242,12 +217,13 @@ std::vector<osm_input::OsmPoi *> osm_input::OsmInputHelper::importPoiData(
                                aPopData, mMappingHelper),
       threadCount, readBlobCount, threadPrivateProcessor);
 
-  mPois.insert(mPois.end(), pois.pois->begin(), pois.pois->end());
+  PoiSet result;
+  result.reserve(pois.pois->size());
+  result.insert(result.end(), pois.pois->begin(), pois.pois->end());
 
-  delete (pois.pois);
-
-  return mPois;
+  return result;
 }
+
 const mapping_helper::MappingHelper &
 osm_input::OsmInputHelper::getMappingHelper() const {
   return mMappingHelper;

@@ -73,7 +73,7 @@ public:
   MappingHelper(const MappingHelper &) = delete;
   MappingHelper(MappingHelper &&) = delete;
 
-  const Level &computeLevel(const std::vector<osm_input::Tag> &aTags) const;
+  const Level *computeLevel(const std::vector<osm_input::Tag> &aTags) const;
 
   const std::list<Level> &getLevelList() const;
 
@@ -82,17 +82,17 @@ public:
 private:
   struct LevelTree {
   public:
-    LevelTree(const LevelTree *aParent, const Json::Value &aData,
+    LevelTree(LevelTree *aParent, const Json::Value &aData,
               const std::vector<Constraint> &aParentConstraints,
               std::list<Level> &aLevelList, uint32_t &aNodeId);
 
-    const Level &computeLevel(const std::vector<osm_input::Tag> &aTags,
-                              const Level &aDefault) const;
+    const Level *computeLevel(const std::vector<osm_input::Tag> &aTags,
+                              const Level *aDefault) const;
 
     std::string toString(std::size_t aDepth) const;
 
   private:
-    const LevelTree *mParent;
+    LevelTree *mParent;
     std::vector<LevelTree> mChildren;
     Level *mLevel;
 
