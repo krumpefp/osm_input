@@ -84,6 +84,7 @@ int main(int argc, char **argv) {
   statistics::PoiStatistics stats(pois);
 
   printf("%s\n", stats.mappingStatistics(input.getMappingHelper()).c_str());
+  printf("%s\n", stats.tagStatisticsSimple().c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
@@ -92,10 +93,6 @@ int main(int argc, char **argv) {
     //         (*it)->hasIcon()) {
     balls.push_back((*it)->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
     ++it;
-    //     } else {
-    //       it = pois.erase(it);
-    //       end = pois.end();
-    //     }
   }
 
   std::string outputname =
@@ -112,6 +109,4 @@ int main(int argc, char **argv) {
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
   outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS, ' ');
-
-  return 1;
 }

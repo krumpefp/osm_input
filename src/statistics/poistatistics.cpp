@@ -18,7 +18,8 @@
  *
  */
 
-#include <bitset>
+#include <assert.h>
+#include <unordered_map>
 
 #include "poistatistics.h"
 
@@ -27,29 +28,28 @@ statistics::PoiStatistics::PoiStatistics(
     : mPois(aPois) {}
 
 namespace {
-struct StatisticElement {
+struct ClassStatistics {
   const mapping_helper::MappingHelper::Level &mLevel;
 
   std::size_t mCount;
 
-  StatisticElement(const mapping_helper::MappingHelper::Level &aLevel);
+    ClassStatistics (const mapping_helper::MappingHelper::Level &aLevel);
 
   void addPoi(const osm_input::OsmPoi &aPoi);
 
   std::string toString() const;
 };
 
-StatisticElement::StatisticElement(
+ClassStatistics::ClassStatistics (
     const mapping_helper::MappingHelper::Level &aLevel)
     : mLevel(aLevel), mCount(0) {}
 
-void StatisticElement::addPoi(const osm_input::OsmPoi &aPoi) { ++mCount; }
+void ClassStatistics::addPoi(const osm_input::OsmPoi &aPoi) { ++mCount; }
 
-std::string StatisticElement::toString() const {
+std::string ClassStatistics::toString() const {
   std::string result = "";
 
   result += "Level " + mLevel.mName + " with id: " +
-            // std::bitset<64>(mLevel.mLevelId).to_string();
             std::to_string(mLevel.mLevelId);
   result += "\tcontains " + std::to_string(mCount) + " elements";
 
@@ -59,9 +59,9 @@ std::string StatisticElement::toString() const {
 
 std::string statistics::PoiStatistics::mappingStatistics(
     const mapping_helper::MappingHelper &aMapping) const {
-  std::map<uint64_t, StatisticElement> statsMap;
+  std::map<uint64_t, ClassStatistics> statsMap;
   for (const auto& lvl : aMapping.getLevelList()) {
-      statsMap.emplace(lvl.mLevelId, StatisticElement(lvl));
+      statsMap.emplace(lvl.mLevelId, ClassStatistics (lvl));
     }
   
   for (const auto& poi : mPois) {
@@ -81,4 +81,89 @@ std::string statistics::PoiStatistics::mappingStatistics(
   result += "\n\t\tTotal:\t" + std::to_string(total);
 
   return result;
+}
+
+namespace {
+    struct TagHash {
+        std::size_t operator()(const osm_input::Tag& aTag) const {
+            std::string concat = aTag.mKey + aTag.mValue;
+            
+            return std::hash<std::string>{}(concat);
+        }
+    };
+    
+    struct TagStatisticsDetails {
+        osm_input::Tag mTag;
+        std::size_t mCount;
+        
+        TagStatisticsDetails(const osm_input::Tag& aTag)
+        : mTag(aTag), mCount(0) {}
+        
+        void addTag(const osm_input::Tag& aTag) {
+            assert(aTag.mKey == mTag.mKey && aTag.mValue == mTag.mValue);
+            ++mCount;
+        }
+    };
+    
+    struct TagStatisticsSimple {
+        std::string mTagKey;
+        std::size_t mCount;
+        
+        TagStatisticsSimple(const osm_input::Tag& aTag)
+        : mTagKey(aTag.mKey), mCount(0) {}
+        
+        void addTag(const osm_input::Tag& aTag) {
+            assert(aTag.mKey == mTagKey);
+            ++mCount;
+        }
+    };
+}
+
+std::string statistics::PoiStatistics::tagStatisticsSimple() const
+{
+    std::unordered_map<std::string, TagStatisticsSimple> stats;
+    for (const auto& poi : mPois)  {
+        for (const auto& tag : poi->getTags()) {
+            auto s = stats.find(tag.mKey);
+            if (s == stats.end()) {
+                stats.emplace(tag.mKey, tag);
+                s = stats.find(tag.mKey);
+            }
+            assert(s != stats.end());
+            
+            s->second.addTag(tag);
+        }
+    }
+    
+    std::string result = "Tag Statistics:";
+    for (const auto& s : stats) {
+        result += "\n"+std::to_string(s.second.mCount)+"\t-\t"+s.second.mTagKey;
+    }
+    
+    return result;
+}
+
+
+std::string statistics::PoiStatistics::tagStatisticsDetailed() const
+{
+    std::unordered_map<osm_input::Tag, TagStatisticsDetails, TagHash> stats;
+    for (const auto& poi : mPois)  {
+        for (const auto& tag : poi->getTags()) {
+            auto s = stats.find(tag);
+            if (s == stats.end()) {
+                stats.emplace(tag, tag);
+                s = stats.find(tag);
+            }
+            assert(s != stats.end());
+            
+            s->second.addTag(tag);
+        }
+    }
+    
+    std::string result = "Tag Statistics:";
+    for (const auto& s : stats) {
+        result += "\n"+std::to_string(s.second.mCount)+"\t-\t("+s.second.mTag.mKey+", "+s.second.mTag.mValue+")";
+    }
+    
+    return result;
 }

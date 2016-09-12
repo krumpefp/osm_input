@@ -36,6 +36,9 @@ public:
 
   std::string
   mappingStatistics(const mapping_helper::MappingHelper &aMapping) const;
+  
+  std::string tagStatisticsSimple() const;
+  std::string tagStatisticsDetailed() const;
 private:
   std::vector<osm_input::OsmPoi *> &mPois;
 };

@@ -77,6 +77,8 @@ public:
                                  const std::unordered_set<char> &aDelims) const;
 
   const mapping_helper::MappingHelper::Level &getLevel() const;
+  
+  const std::vector<Tag>& getTags() const;
 
   std::string getTagValue(std::string aTagName) const;
 
