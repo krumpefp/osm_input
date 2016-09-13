@@ -18,53 +18,170 @@
  *
  */
 
-#include <bitset>
+#include <assert.h>
+#include <unordered_map>
 
 #include "poistatistics.h"
 
-statistics::PoiStatistics::StatisticElement::StatisticElement(
-    const mapping_helper::MappingHelper::Level &aLevel)
-    : mLevel(aLevel), mCount(0) {}
+statistics::PoiStatistics::PoiStatistics(std::vector<osm_input::OsmPoi> &aPois)
+    : mPois(aPois) {}
 
-void statistics::PoiStatistics::StatisticElement::addPoi(
-    const osm_input::OsmPoi &aPoi) {
-  ++mCount;
-}
+namespace {
+struct ClassStatistics {
+  const mapping_helper::MappingHelper::Level *mLevel;
 
-std::string statistics::PoiStatistics::StatisticElement::toString() const {
+  std::size_t mCount;
+
+  ClassStatistics(const mapping_helper::MappingHelper::Level *aLevel)
+      : mLevel(aLevel), mCount(0){};
+
+  void addPoi(const osm_input::OsmPoi &aPoi);
+
+  std::string toString() const;
+};
+
+void ClassStatistics::addPoi(const osm_input::OsmPoi &aPoi) { ++mCount; }
+
+std::string ClassStatistics::toString() const {
   std::string result = "";
 
-  result += "Level " + mLevel.mName + " with id: " +
-            // std::bitset<64>(mLevel.mLevelId).to_string();
-            std::to_string(mLevel.mLevelId);
+  result += "Level " + mLevel->mName + " with id: " +
+            std::to_string(mLevel->mLevelId);
   result += "\tcontains " + std::to_string(mCount) + " elements";
 
   return result;
 }
-
-statistics::PoiStatistics::PoiStatistics(
-    const mapping_helper::MappingHelper &aMapping,
-    std::vector<osm_input::OsmPoi *> &aPois) {
-  for (auto &lvl : aMapping.getLevelList()) {
-    mStatsMap.insert(std::make_pair(lvl.mLevelId, StatisticElement(lvl)));
-  }
-
-  for (auto &poi : aPois) {
-    mStatsMap.at(poi->getLevel().mLevelId).addPoi(*poi);
-  }
 }
 
-std::string statistics::PoiStatistics::toString() const {
+std::string statistics::PoiStatistics::mappingStatistics(
+    const mapping_helper::MappingHelper &aMapping) const {
+  std::map<uint64_t, ClassStatistics> statsMap;
+  for (const auto &lvl : aMapping.getLevels()) {
+    statsMap.emplace(lvl->mLevelId, ClassStatistics(lvl));
+  }
+
+  for (const auto &poi : mPois) {
+    statsMap.at(poi.getLevel()->mLevelId).addPoi(poi);
+  }
+
   std::string result = "Poi statistics contains:";
   std::size_t total = 0;
 
-  for (auto &lvl : mStatsMap) {
+  for (auto &lvl : statsMap) {
     if (lvl.second.mCount != 0) {
       result += "\n" + lvl.second.toString();
       total += lvl.second.mCount;
     }
   }
   result += "\n\t\tTotal:\t" + std::to_string(total);
+
+  return result;
+}
+
+namespace {
+struct TagStatistics {
+  std::string mTagKey;
+  std::size_t mCount;
+  std::unordered_map<std::string, std::size_t> mDetails;
+
+  TagStatistics(const osm_input::Tag &aTag) : mTagKey(aTag.mKey), mCount(1) {
+    mDetails.emplace(aTag.mValue, 1);
+  }
+
+  void addTag(const osm_input::Tag &aTag) {
+    assert(aTag.mKey == mTagKey);
+    ++mCount;
+
+    auto it = mDetails.find(aTag.mValue);
+    if (it == mDetails.end()) {
+      mDetails.emplace(aTag.mValue, 1);
+    } else {
+      ++it->second;
+    }
+  }
+
+  std::string toShortString() const {
+    return "Tag: '" + mTagKey + "': #" + std::to_string(mCount);
+  }
+
+  std::string toLongString() const {
+    std::string result = toShortString();
+
+    for (auto &s : mDetails) {
+      result += "\n\tValue: '" + s.first + "': #" + std::to_string(s.second);
+    }
+
+    return result;
+  }
+};
+
+std::unordered_map<std::string, TagStatistics>
+computeStatistics(std::vector<osm_input::OsmPoi> &aPois) {
+  std::unordered_map<std::string, TagStatistics> result;
+
+  for (const auto &poi : aPois) {
+    for (const auto &tag : poi.getTags()) {
+      auto s = result.find(tag.mKey);
+      if (s == result.end()) {
+        result.emplace(tag.mKey, tag);
+      } else {
+        s->second.addTag(tag);
+      }
+    }
+  }
+
+  return result;
+}
+}
+
+std::string statistics::PoiStatistics::tagStatisticsSimple() const {
+  std::unordered_map<std::string, TagStatistics> stats =
+      computeStatistics(mPois);
+
+  std::string result = "Simple tag statistics:";
+  for (const auto &s : stats) {
+    result += "\n" + s.second.toShortString();
+  }
+
+  return result;
+}
+
+std::string statistics::PoiStatistics::tagStatisticsDetailed(
+    std::size_t aMaxSubSize) const {
+  std::unordered_map<std::string, TagStatistics> stats =
+      computeStatistics(mPois);
+
+  std::string result = "Detailed tag statistics:";
+  for (const auto &s : stats) {
+    if (s.second.mDetails.size() > aMaxSubSize) {
+      result += "\n" + s.second.toShortString();
+      result +=
+          "\n\tskipped as >" + std::to_string(aMaxSubSize) + " sub elements";
+    } else {
+      result += "\n" + s.second.toLongString();
+    }
+  }
+
+  return result;
+}
+
+std::string
+statistics::PoiStatistics::tagStatisticsDetailed(double aMinAvgSubSize) const {
+  std::unordered_map<std::string, TagStatistics> stats =
+      computeStatistics(mPois);
+
+  std::string result = "Detailed tag statistics:";
+  for (const auto &s : stats) {
+    double avgSubSize =
+        (double)s.second.mCount / (double)s.second.mDetails.size();
+    if (avgSubSize < aMinAvgSubSize) {
+      result += "\n" + s.second.toShortString();
+      result += "\n\tskipped as average sub element count <" +
+                std::to_string(aMinAvgSubSize);
+    } else {
+      result += "\n" + s.second.toLongString();
+    }
+  }
 
   return result;
 }

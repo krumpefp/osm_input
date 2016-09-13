@@ -27,10 +27,8 @@
 osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
                           const std::vector<osm_input::Tag> aTags,
                           const mapping_helper::MappingHelper &aMh)
-    : mOsmId(aOsmId), mPos(aPos)
-      //   , mPoiType(aType)
-      ,
-      mPoiLevel(aMh.computeLevel(aTags)), mTags(aTags){};
+    : mOsmId(aOsmId), mPos(aPos), mPoiLevel(aMh.computeLevel(aTags)),
+      mTags(aTags){};
 
 bool osm_input::OsmPoi::operator==(const osm_input::OsmPoi &aOther) const {
   return aOther.mOsmId == mOsmId;
@@ -42,7 +40,7 @@ bool osm_input::OsmPoi::operator!=(const osm_input::OsmPoi &aOther) const {
 
 bool osm_input::OsmPoi::operator<(const osm_input::OsmPoi &aOther) const {
   if (this->mPoiLevel != aOther.mPoiLevel) {
-    return (this->mPoiLevel < aOther.mPoiLevel);
+    return (*this->mPoiLevel < *aOther.mPoiLevel);
   } else {
     std::string szPop = this->getTagValue("population");
     std::string szOtherPop = aOther.getTagValue("population");
@@ -57,7 +55,7 @@ bool osm_input::OsmPoi::operator<(const osm_input::OsmPoi &aOther) const {
 }
 
 bool osm_input::OsmPoi::operator>(const osm_input::OsmPoi &aOther) const {
-  return *this != aOther && !(*this < aOther);
+  return aOther < *this;
 }
 
 bool osm_input::OsmPoi::operator<=(const osm_input::OsmPoi &aOther) const {
@@ -115,20 +113,20 @@ double computeBallRadius(const std::string &aLabel) {
   if (delimPos == aLabel.npos)
     delimPos = aLabel.size();
 
-  double labelSize =
+  std::size_t labelSize =
       (delimPos > aLabel.size() / 2) ? delimPos : aLabel.size() - delimPos;
-  return labelSize / 2;
+  return (double)labelSize / 2;
 }
 }
 
-bool osm_input::OsmPoi::hasIcon() const { return mPoiLevel.mIconName != ""; }
+bool osm_input::OsmPoi::hasIcon() const { return mPoiLevel->mIconName != ""; }
 
 osm_input::OsmPoi::LabelBall osm_input::OsmPoi::getCorrespondingBall(
     std::size_t aSplitSize, const std::unordered_set<char> &aDelims) const {
   std::string label;
   double ballRadius = 4;
-  if (mPoiLevel.mIconName != "") {
-    label = "icon:" + mPoiLevel.mIconName;
+  if (mPoiLevel->mIconName != "") {
+    label = "icon:" + mPoiLevel->mIconName;
   } else {
     if (getName().size() > aSplitSize) {
       label = osmpoi::computeSplit(getName(), aDelims);
@@ -139,14 +137,18 @@ osm_input::OsmPoi::LabelBall osm_input::OsmPoi::getCorrespondingBall(
     ballRadius = osmpoi::computeBallRadius(label);
   }
 
-  ballRadius *= mPoiLevel.mLevelFactor;
+  ballRadius *= mPoiLevel->mLevelFactor;
 
-  return LabelBall(mPos, ballRadius, label, mPoiLevel.mLevelFactor);
+  return LabelBall(mPos, ballRadius, label, mPoiLevel->mLevelFactor);
 }
 
-const mapping_helper::MappingHelper::Level &
+const mapping_helper::MappingHelper::Level *
 osm_input::OsmPoi::getLevel() const {
   return mPoiLevel;
+}
+
+const std::vector<osm_input::Tag> &osm_input::OsmPoi::getTags() const {
+  return mTags;
 }
 
 std::string osm_input::OsmPoi::getTagValue(std::string aTagName) const {
