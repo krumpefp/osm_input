@@ -113,9 +113,9 @@ double computeBallRadius(const std::string &aLabel) {
   if (delimPos == aLabel.npos)
     delimPos = aLabel.size();
 
-  double labelSize =
+  std::size_t labelSize =
       (delimPos > aLabel.size() / 2) ? delimPos : aLabel.size() - delimPos;
-  return labelSize / 2;
+  return (double)labelSize / 2;
 }
 }
 
@@ -145,6 +145,10 @@ osm_input::OsmPoi::LabelBall osm_input::OsmPoi::getCorrespondingBall(
 const mapping_helper::MappingHelper::Level *
 osm_input::OsmPoi::getLevel() const {
   return mPoiLevel;
+}
+
+const std::vector<osm_input::Tag> &osm_input::OsmPoi::getTags() const {
+  return mTags;
 }
 
 std::string osm_input::OsmPoi::getTagValue(std::string aTagName) const {

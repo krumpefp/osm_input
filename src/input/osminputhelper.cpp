@@ -205,10 +205,10 @@ PoiSet osm_input::OsmInputHelper::importPoiData(
   }
 
   osm_parsing::SharedPOISet pois;
-  uint32_t threadCount = 4;   // use 4 threads, usually 4 are enough
-  uint32_t readBlobCount = 2; // parse 2 blocks at once
-  // uint32_t threadCount = 1;   // use 4 threads, usually 4 are enough
-  // uint32_t readBlobCount = 1; // parse 2 blocks at once
+  //   uint32_t threadCount = 4;   // use 4 threads, usually 4 are enough
+  //   uint32_t readBlobCount = 2; // parse 2 blocks at once
+  uint32_t threadCount = 1;           // use 4 threads, usually 4 are enough
+  uint32_t readBlobCount = 1;         // parse 2 blocks at once
   bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
 
   osmpbf::parseFileCPPThreads(

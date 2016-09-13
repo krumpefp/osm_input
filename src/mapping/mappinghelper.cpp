@@ -146,14 +146,13 @@ operator>=(const mapping_helper::MappingHelper::Level &aOther) const {
 
 // end Level
 
-
 // begin LevelTree
 
 mapping_helper::MappingHelper::LevelTree::LevelTree(
     mapping_helper::MappingHelper::LevelTree *aParent, const Json::Value &aData,
     const std::vector<mapping_helper::MappingHelper::Constraint>
         &aParentConstraints,
-    std::list<Level> &aLevelList, uint32_t &aNodeId)
+    uint32_t &aNodeId)
     : mParent(aParent) {
   mName = aData["level"].asString();
 
@@ -175,15 +174,37 @@ mapping_helper::MappingHelper::LevelTree::LevelTree(
 
     // determine the number of sublevels
     for (const auto &lvl : aData["sublevels"]) {
-      mChildren.emplace_back(this, lvl, localConstraints, aLevelList, aNodeId);
+      mChildren.emplace_back(this, lvl, localConstraints, aNodeId);
     }
   } else {
     // ... if no sublevels are available construct a leaf node
     mIsLeaf = true;
     mNodeId = aNodeId++;
-    aLevelList.emplace(aLevelList.end(), aParentConstraints, aData, mNodeId);
-    mLevel = &aLevelList.back();
+    mLevel = new Level(aParentConstraints, aData, mNodeId);
   }
+}
+
+void mapping_helper::MappingHelper::LevelTree::computeLevelList(
+    std::vector<const Level *> &aLevels) const {
+  if (mIsLeaf) {
+    aLevels.push_back(mLevel);
+  } else {
+    for (auto &child : mChildren) {
+      child.computeLevelList(aLevels);
+    }
+  }
+}
+
+std::size_t mapping_helper::MappingHelper::LevelTree::computeTreeSize() const {
+  std::size_t treeSize = 1;
+  if (!mIsLeaf) {
+    treeSize = 0;
+    for (auto &child : mChildren) {
+      treeSize += child.computeTreeSize();
+    }
+  }
+
+  return treeSize;
 }
 
 std::string
@@ -228,8 +249,13 @@ mapping_helper::MappingHelper::MappingHelper(std::string &aInputPath) {
   Json::Reader inputReader;
   inputReader.parse(inputFile, root);
   uint32_t id = 1;
-  mLevelTree =
-      new LevelTree(nullptr, root, std::vector<Constraint>(), mLevelList, id);
+  mLevelTree = new LevelTree(nullptr, root, std::vector<Constraint>(), id);
+
+  mCountLevels = mLevelTree->computeTreeSize();
+
+  std::vector<const Level *> lvls;
+  mLevelTree->computeLevelList(lvls);
+  mDefaultLevel = lvls.back();
 
   printf("%s\n", mLevelTree->toString(0).c_str());
 }
@@ -318,13 +344,18 @@ const Level *mapping_helper::MappingHelper::LevelTree::computeLevel(
 
 const Level *mapping_helper::MappingHelper::computeLevel(
     const std::vector<osm_input::Tag> &aTags) const {
-  auto *level = mLevelTree->computeLevel(aTags, &(mLevelList.back()));
+  auto *level = mLevelTree->computeLevel(aTags, mDefaultLevel);
 
   return level;
 }
 
-const std::list<Level> &mapping_helper::MappingHelper::getLevelList() const {
-  return mLevelList;
+std::vector<const Level *> mapping_helper::MappingHelper::getLevels() const {
+  std::vector<const Level *> result;
+  result.reserve(mCountLevels);
+
+  mLevelTree->computeLevelList(result);
+
+  return result;
 }
 
 void mapping_helper::MappingHelper::test() {

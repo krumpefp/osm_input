@@ -39,7 +39,7 @@ const std::unordered_set<char> DELIMITERS({' ', '-', '/'});
 
 bool osmPoiComparatorASC(const osm_input::OsmPoi &aLhs,
                          const osm_input::OsmPoi &aRhs) {
-  return aLhs < aRhs;
+  return aLhs > aRhs;
 }
 }
 
@@ -74,16 +74,17 @@ int main(int argc, char **argv) {
 
   t.createTimepoint();
 
-//   std::sort(pois.begin(), pois.end(), osmPoiComparatorASC);
-  std::sort(pois.begin(), pois.end());
+  std::sort(pois.begin(), pois.end(), osmPoiComparatorASC);
 
   t.stop();
 
-  std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n\tSorting objects took %4.2f seconds.\n",
+  std::printf("Dataset of size: %lu\t was imported within %4.2f "
+              "seconds.\n\tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
 
-  statistics::PoiStatistics stats(input.getMappingHelper(), pois);
-  printf("%s\n", stats.toString().c_str());
+  statistics::PoiStatistics stats(pois);
+  printf("%s\n", stats.mappingStatistics(input.getMappingHelper()).c_str());
+  printf("%s\n", stats.tagStatisticsSimple().c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
@@ -105,7 +106,5 @@ int main(int argc, char **argv) {
   outputpath = outputname + ".complete.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
-    outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS, ' ');
-
-  return 1;
+  outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS, ' ');
 }

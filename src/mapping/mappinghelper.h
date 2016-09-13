@@ -75,7 +75,7 @@ public:
 
   const Level *computeLevel(const std::vector<osm_input::Tag> &aTags) const;
 
-  const std::list<Level> &getLevelList() const;
+  std::vector<const Level *> getLevels() const;
 
   void test();
 
@@ -84,17 +84,20 @@ private:
   public:
     LevelTree(LevelTree *aParent, const Json::Value &aData,
               const std::vector<Constraint> &aParentConstraints,
-              std::list<Level> &aLevelList, uint32_t &aNodeId);
+              uint32_t &aNodeId);
 
     const Level *computeLevel(const std::vector<osm_input::Tag> &aTags,
                               const Level *aDefault) const;
+
+    void computeLevelList(std::vector<const Level *> &aLevels) const;
+    std::size_t computeTreeSize() const;
 
     std::string toString(std::size_t aDepth) const;
 
   private:
     LevelTree *mParent;
     std::vector<LevelTree> mChildren;
-    Level *mLevel;
+    const Level *mLevel;
 
     bool mIsLeaf;
     std::string mName;
@@ -102,8 +105,9 @@ private:
     std::vector<Constraint> mConstraints;
   };
 
+  std::size_t mCountLevels;
   LevelTree *mLevelTree;
-  std::list<Level> mLevelList;
+  const Level *mDefaultLevel;
 };
 }
 

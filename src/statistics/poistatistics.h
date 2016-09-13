@@ -31,27 +31,17 @@
 namespace statistics {
 
 class PoiStatistics {
-private:
-  struct StatisticElement {
-    const mapping_helper::MappingHelper::Level *mLevel;
-
-    std::size_t mCount;
-
-    StatisticElement(const mapping_helper::MappingHelper::Level *aLevel);
-
-    void addPoi(const osm_input::OsmPoi *aPoi);
-
-    std::string toString() const;
-  };
-
 public:
-  PoiStatistics(const mapping_helper::MappingHelper &aMapping,
-                std::vector<osm_input::OsmPoi> &aPois);
+  PoiStatistics(std::vector<osm_input::OsmPoi> &aPois);
 
-  std::string toString() const;
+  std::string
+  mappingStatistics(const mapping_helper::MappingHelper &aMapping) const;
+
+  std::string tagStatisticsSimple() const;
+  std::string tagStatisticsDetailed() const;
 
 private:
-  std::map<uint64_t, StatisticElement> mStatsMap;
+  std::vector<osm_input::OsmPoi> &mPois;
 };
 }
 

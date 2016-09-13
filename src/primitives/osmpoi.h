@@ -79,6 +79,8 @@ public:
 
   const mapping_helper::MappingHelper::Level *getLevel() const;
 
+  const std::vector<Tag> &getTags() const;
+
   std::string getTagValue(std::string aTagName) const;
 
   std::string getName() const;
