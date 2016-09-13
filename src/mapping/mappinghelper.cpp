@@ -130,13 +130,13 @@ operator<(const mapping_helper::MappingHelper::Level &aOther) const {
 }
 
 bool Level::
-operator<=(const mapping_helper::MappingHelper::Level &aOther) const {
-  return (*this < aOther || *this == aOther);
+operator>(const mapping_helper::MappingHelper::Level &aOther) const {
+  return aOther < *this;
 }
 
 bool Level::
-operator>(const mapping_helper::MappingHelper::Level &aOther) const {
-  return !(*this <= aOther);
+operator<=(const mapping_helper::MappingHelper::Level &aOther) const {
+  return !(*this > aOther);
 }
 
 bool Level::

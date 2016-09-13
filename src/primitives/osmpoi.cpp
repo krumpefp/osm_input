@@ -40,7 +40,7 @@ bool osm_input::OsmPoi::operator!=(const osm_input::OsmPoi &aOther) const {
 
 bool osm_input::OsmPoi::operator<(const osm_input::OsmPoi &aOther) const {
   if (this->mPoiLevel != aOther.mPoiLevel) {
-    return (this->mPoiLevel < aOther.mPoiLevel);
+    return (*this->mPoiLevel < *aOther.mPoiLevel);
   } else {
     std::string szPop = this->getTagValue("population");
     std::string szOtherPop = aOther.getTagValue("population");
@@ -55,7 +55,7 @@ bool osm_input::OsmPoi::operator<(const osm_input::OsmPoi &aOther) const {
 }
 
 bool osm_input::OsmPoi::operator>(const osm_input::OsmPoi &aOther) const {
-  return *this != aOther && !(*this < aOther);
+  return aOther < *this;
 }
 
 bool osm_input::OsmPoi::operator<=(const osm_input::OsmPoi &aOther) const {

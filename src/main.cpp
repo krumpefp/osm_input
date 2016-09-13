@@ -36,11 +36,6 @@
 namespace {
 const std::size_t SPLIT_SIZE = 15;
 const std::unordered_set<char> DELIMITERS({' ', '-', '/'});
-
-bool osmPoiComparatorASC(const osm_input::OsmPoi &aLhs,
-                         const osm_input::OsmPoi &aRhs) {
-  return aLhs > aRhs;
-}
 }
 
 int main(int argc, char **argv) {
@@ -74,7 +69,8 @@ int main(int argc, char **argv) {
 
   t.createTimepoint();
 
-  std::sort(pois.begin(), pois.end(), osmPoiComparatorASC);
+  //   std::sort(pois.begin(), pois.end(), osmPoiComparatorASC);
+  std::sort(pois.begin(), pois.end());
 
   t.stop();
 
