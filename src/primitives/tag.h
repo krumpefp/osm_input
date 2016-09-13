@@ -30,8 +30,10 @@ struct Tag {
   std::string mValue;
 
   Tag(std::string aKey, std::string aValue) : mKey(aKey), mValue(aValue){};
-  
-  bool operator== (const Tag& aOther) const { return aOther.mKey == this->mKey && aOther.mValue == this->mValue; };
+
+  bool operator==(const Tag &aOther) const {
+    return aOther.mKey == this->mKey && aOther.mValue == this->mValue;
+  };
 };
 }
 

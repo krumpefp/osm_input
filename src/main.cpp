@@ -37,8 +37,9 @@ namespace {
 const std::size_t SPLIT_SIZE = 15;
 const std::unordered_set<char> DELIMITERS({' ', '-', '/'});
 
-bool osmPoiComparatorASC(osm_input::OsmPoi *aLhs, osm_input::OsmPoi *aRhs) {
-  return *aLhs < *aRhs;
+bool osmPoiComparatorASC(const osm_input::OsmPoi &aLhs,
+                         const osm_input::OsmPoi &aRhs) {
+  return aLhs > aRhs;
 }
 }
 
@@ -55,21 +56,21 @@ int main(int argc, char **argv) {
 
   debug_timer::Timer t;
 
-  std::map<std::string, int32_t> populations;
-  if (argc > 3) {
-    popPath = std::string(argv[2]);
-    pop_input::PopulationInput popInput(popPath);
-    populations = popInput.getPopulationsMap();
-  }
-
   pbfPath = std::string(argv[1]);
   jsonPath = std::string(argv[2]);
 
   t.start();
   osm_input::OsmInputHelper input(pbfPath, jsonPath);
-
-  std::vector<osm_input::OsmPoi *> pois =
-      input.importPoiData(true, true, populations);
+  std::vector<osm_input::OsmPoi> pois;
+  if (argc > 3) {
+    std::map<std::string, int32_t> populations;
+    popPath = std::string(argv[2]);
+    pop_input::PopulationInput popInput(popPath);
+    populations = popInput.getPopulationsMap();
+    pois = input.importPoiData(true, true, populations);
+  } else {
+    pois = input.importPoiData(true, true);
+  }
 
   t.createTimepoint();
 
@@ -77,21 +78,19 @@ int main(int argc, char **argv) {
 
   t.stop();
 
-  std::printf("Dataset of size: %lu\t was imported within %4.2f seconds.\n \
-              \tSorting objects took %4.2f seconds.\n",
+  std::printf("Dataset of size: %lu\t was imported within %4.2f "
+              "seconds.\n\tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
 
   statistics::PoiStatistics stats(pois);
-
+  printf("%s\n", stats.mappingStatistics(input.getMappingHelper()).c_str());
   printf("%s\n", stats.mappingStatistics(input.getMappingHelper()).c_str());
   printf("%s\n", stats.tagStatisticsSimple().c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
   for (auto it = pois.begin(), end = pois.end(); it != end;) {
-    //     if ((*it)->getType() == osm_input::OsmPoi::Poi_Types::SETTLEMENT ||
-    //         (*it)->hasIcon()) {
-    balls.push_back((*it)->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
+    balls.push_back(it->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
     ++it;
   }
 

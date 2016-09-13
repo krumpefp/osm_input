@@ -32,15 +32,16 @@ namespace statistics {
 
 class PoiStatistics {
 public:
-  PoiStatistics(std::vector<osm_input::OsmPoi *> &aPois);
+  PoiStatistics(std::vector<osm_input::OsmPoi> &aPois);
 
   std::string
   mappingStatistics(const mapping_helper::MappingHelper &aMapping) const;
-  
+
   std::string tagStatisticsSimple() const;
   std::string tagStatisticsDetailed() const;
+
 private:
-  std::vector<osm_input::OsmPoi *> &mPois;
+  std::vector<osm_input::OsmPoi> &mPois;
 };
 }
 
