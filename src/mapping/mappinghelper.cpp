@@ -257,7 +257,7 @@ mapping_helper::MappingHelper::MappingHelper(std::string &aInputPath) {
   mLevelTree->computeLevelList(lvls);
   mDefaultLevel = lvls.back();
 
-  printf("%s\n", mLevelTree->toString(0).c_str());
+  //   printf("%s\n", mLevelTree->toString(0).c_str());
 }
 
 namespace {

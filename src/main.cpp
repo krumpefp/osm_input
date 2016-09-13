@@ -84,8 +84,8 @@ int main(int argc, char **argv) {
 
   statistics::PoiStatistics stats(pois);
   printf("%s\n", stats.mappingStatistics(input.getMappingHelper()).c_str());
-  printf("%s\n", stats.mappingStatistics(input.getMappingHelper()).c_str());
   printf("%s\n", stats.tagStatisticsSimple().c_str());
+  printf("%s\n", stats.tagStatisticsDetailed(5.).c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());

@@ -38,7 +38,8 @@ public:
   mappingStatistics(const mapping_helper::MappingHelper &aMapping) const;
 
   std::string tagStatisticsSimple() const;
-  std::string tagStatisticsDetailed() const;
+  std::string tagStatisticsDetailed(std::size_t aMaxSubSize) const;
+  std::string tagStatisticsDetailed(double aMinAvgSubSize) const;
 
 private:
   std::vector<osm_input::OsmPoi> &mPois;

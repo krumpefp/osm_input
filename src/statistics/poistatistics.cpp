@@ -79,83 +79,108 @@ std::string statistics::PoiStatistics::mappingStatistics(
 }
 
 namespace {
-struct TagHash {
-  std::size_t operator()(const osm_input::Tag &aTag) const {
-    std::string concat = aTag.mKey + aTag.mValue;
-
-    return std::hash<std::string>{}(concat);
-  }
-};
-
-struct TagStatisticsDetails {
-  osm_input::Tag mTag;
-  std::size_t mCount;
-
-  TagStatisticsDetails(const osm_input::Tag &aTag) : mTag(aTag), mCount(0) {}
-
-  void addTag(const osm_input::Tag &aTag) {
-    assert(aTag.mKey == mTag.mKey && aTag.mValue == mTag.mValue);
-    ++mCount;
-  }
-};
-
-struct TagStatisticsSimple {
+struct TagStatistics {
   std::string mTagKey;
   std::size_t mCount;
+  std::unordered_map<std::string, std::size_t> mDetails;
 
-  TagStatisticsSimple(const osm_input::Tag &aTag)
-      : mTagKey(aTag.mKey), mCount(0) {}
+  TagStatistics(const osm_input::Tag &aTag) : mTagKey(aTag.mKey), mCount(1) {
+    mDetails.emplace(aTag.mValue, 1);
+  }
 
   void addTag(const osm_input::Tag &aTag) {
     assert(aTag.mKey == mTagKey);
     ++mCount;
-  }
-};
-}
 
-std::string statistics::PoiStatistics::tagStatisticsSimple() const {
-  std::unordered_map<std::string, TagStatisticsSimple> stats;
-  for (const auto &poi : mPois) {
-    for (const auto &tag : poi.getTags()) {
-      auto s = stats.find(tag.mKey);
-      if (s == stats.end()) {
-        stats.emplace(tag.mKey, tag);
-        s = stats.find(tag.mKey);
-      }
-      assert(s != stats.end());
-
-      s->second.addTag(tag);
+    auto it = mDetails.find(aTag.mValue);
+    if (it == mDetails.end()) {
+      mDetails.emplace(aTag.mValue, 1);
+    } else {
+      ++it->second;
     }
   }
 
-  std::string result = "Tag Statistics:";
+  std::string toShortString() const {
+    return "Tag: '" + mTagKey + "': #" + std::to_string(mCount);
+  }
+
+  std::string toLongString() const {
+    std::string result = toShortString();
+
+    for (auto &s : mDetails) {
+      result += "\n\tValue: '" + s.first + "': #" + std::to_string(s.second);
+    }
+
+    return result;
+  }
+};
+
+std::unordered_map<std::string, TagStatistics>
+computeStatistics(std::vector<osm_input::OsmPoi> &aPois) {
+  std::unordered_map<std::string, TagStatistics> result;
+
+  for (const auto &poi : aPois) {
+    for (const auto &tag : poi.getTags()) {
+      auto s = result.find(tag.mKey);
+      if (s == result.end()) {
+        result.emplace(tag.mKey, tag);
+      } else {
+        s->second.addTag(tag);
+      }
+    }
+  }
+
+  return result;
+}
+}
+
+std::string statistics::PoiStatistics::tagStatisticsSimple() const {
+  std::unordered_map<std::string, TagStatistics> stats =
+      computeStatistics(mPois);
+
+  std::string result = "Simple tag statistics:";
   for (const auto &s : stats) {
-    result +=
-        "\n" + std::to_string(s.second.mCount) + "\t-\t" + s.second.mTagKey;
+    result += "\n" + s.second.toShortString();
   }
 
   return result;
 }
 
-std::string statistics::PoiStatistics::tagStatisticsDetailed() const {
-  std::unordered_map<osm_input::Tag, TagStatisticsDetails, TagHash> stats;
-  for (const auto &poi : mPois) {
-    for (const auto &tag : poi.getTags()) {
-      auto s = stats.find(tag);
-      if (s == stats.end()) {
-        stats.emplace(tag, tag);
-        s = stats.find(tag);
-      }
-      assert(s != stats.end());
+std::string statistics::PoiStatistics::tagStatisticsDetailed(
+    std::size_t aMaxSubSize) const {
+  std::unordered_map<std::string, TagStatistics> stats =
+      computeStatistics(mPois);
 
-      s->second.addTag(tag);
+  std::string result = "Detailed tag statistics:";
+  for (const auto &s : stats) {
+    if (s.second.mDetails.size() > aMaxSubSize) {
+      result += "\n" + s.second.toShortString();
+      result +=
+          "\n\tskipped as >" + std::to_string(aMaxSubSize) + " sub elements";
+    } else {
+      result += "\n" + s.second.toLongString();
     }
   }
 
-  std::string result = "Tag Statistics:";
+  return result;
+}
+
+std::string
+statistics::PoiStatistics::tagStatisticsDetailed(double aMinAvgSubSize) const {
+  std::unordered_map<std::string, TagStatistics> stats =
+      computeStatistics(mPois);
+
+  std::string result = "Detailed tag statistics:";
   for (const auto &s : stats) {
-    result += "\n" + std::to_string(s.second.mCount) + "\t-\t(" +
-              s.second.mTag.mKey + ", " + s.second.mTag.mValue + ")";
+    double avgSubSize =
+        (double)s.second.mCount / (double)s.second.mDetails.size();
+    if (avgSubSize < aMinAvgSubSize) {
+      result += "\n" + s.second.toShortString();
+      result += "\n\tskipped as average sub element count <" +
+                std::to_string(aMinAvgSubSize);
+    } else {
+      result += "\n" + s.second.toLongString();
+    }
   }
 
   return result;
