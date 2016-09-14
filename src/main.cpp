@@ -19,7 +19,7 @@
  */
 
 #include <algorithm>
-#include <boost/iterator/iterator_concepts.hpp>
+// #include <boost/iterator/iterator_concepts.hpp>
 #include <iostream>
 #include <string>
 #include <unordered_set>
@@ -66,10 +66,10 @@ int main(int argc, char **argv) {
   } else {
     pois = input.importPoiData(true, true);
   }
+  auto &mh = input.getMappingHelper();
 
   t.createTimepoint();
 
-  //   std::sort(pois.begin(), pois.end(), osmPoiComparatorASC);
   std::sort(pois.begin(), pois.end());
 
   t.stop();
@@ -78,10 +78,24 @@ int main(int argc, char **argv) {
               "seconds.\n\tSorting objects took %4.2f seconds.\n",
               pois.size(), t.getTimes()[0], t.getTimes()[1]);
 
+  {
+    std::vector<osm_input::OsmPoi> undefs;
+    auto *defaultLvl = mh.getLevelDefault();
+    for (const auto &p : pois) {
+      if (*p.getLevel() == *defaultLvl) {
+        undefs.push_back(p);
+      }
+    }
+    std::printf("Computing statistics for %lu pois with undefined level only",
+                undefs.size());
+    statistics::PoiStatistics statsUndefs(undefs);
+    printf("%s\n", statsUndefs.tagStatisticsDetailed(0.).c_str());
+  }
+
   statistics::PoiStatistics stats(pois);
-  printf("%s\n", stats.mappingStatistics(input.getMappingHelper()).c_str());
+  printf("%s\n", stats.mappingStatistics(mh).c_str());
   printf("%s\n", stats.tagStatisticsSimple().c_str());
-  printf("%s\n", stats.tagStatisticsDetailed(5.).c_str());
+  //   printf("%s\n", stats.tagStatisticsDetailed(5.).c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
