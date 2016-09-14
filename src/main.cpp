@@ -35,7 +35,7 @@
 
 namespace {
 const std::size_t SPLIT_SIZE = 15;
-const std::unordered_set<char> DELIMITERS({' ', '-', '/'});
+const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
 }
 
 int main(int argc, char **argv) {

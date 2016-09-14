@@ -73,8 +73,9 @@ public:
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 
-  LabelBall getCorrespondingBall(std::size_t aSplitSize,
-                                 const std::unordered_set<char> &aDelims) const;
+  LabelBall
+  getCorrespondingBall(std::size_t aSplitSize,
+                       const std::unordered_set<char32_t> &aDelims) const;
 
   const mapping_helper::MappingHelper::Level *getLevel() const;
 

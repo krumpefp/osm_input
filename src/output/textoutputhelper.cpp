@@ -50,7 +50,7 @@ bool text_output::TextOutputHelper::writeBallsFile(
 
 bool text_output::TextOutputHelper::writeCompleteFile(
     const std::vector<osm_input::OsmPoi> &aPois, std::size_t aSplitSize,
-    const std::unordered_set<char> &aDelimiters, char aSep) {
+    const std::unordered_set<char32_t> &aDelimiters, char aSep) {
   std::ofstream file(mOutputPath.c_str());
 
   if (!file.is_open()) {

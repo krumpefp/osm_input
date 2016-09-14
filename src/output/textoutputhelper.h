@@ -40,7 +40,7 @@ public:
 
   bool writeCompleteFile(const std::vector<osm_input::OsmPoi> &aPois,
                          std::size_t aSplitSize,
-                         const std::unordered_set<char> &aDelimiters,
+                         const std::unordered_set<char32_t> &aDelimiters,
                          char aSep);
 
 private:
