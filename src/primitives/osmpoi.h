@@ -59,7 +59,7 @@ public:
 
 public:
   OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
-         const std::vector<osm_input::Tag> aTags,
+         const std::vector<osm_input::Tag> &aTags,
          const mapping_helper::MappingHelper &aMh);
 
   // comparison operators

@@ -136,23 +136,26 @@ struct BlockParser {
           for (std::size_t i = 0, s = node.tagsSize(); i < s; ++i) {
             std::string key = node.key(i);
             std::string value = node.value(i);
-            if (key == "amenity" || key == "place" || key == "population" ||
-                key == "name" || key == "name:de" || key == "name:en" ||
-                key == "capital") {
-              if (key == "place" && (value == "city" || value == "town")) {
-                city = true;
-              }
-              if (key == "population") {
-                population = true;
-              }
-              if (key == "name") {
-                name = value;
-              }
-              tags.emplace_back(key, value);
+            if (key != "amenity" && key != "place" && key != "population" &&
+                key != "name" && key != "name:de" && key != "name:en" &&
+                key != "capital") {
+              continue;
             }
+
+            if (key == "place" && (value != "locality")) {
+              city = true;
+            }
+            if (key == "population") {
+              population = true;
+            }
+            if (key == "name") {
+              name = value;
+            }
+            tags.emplace_back(key, value);
           }
 
-          if (city && !population) { // && mPopData != nullptr) {
+          if (city && !population) {
+            // try to find population data using the population map
             auto elem = mPopData.find(name);
             if (elem != mPopData.end()) {
               std::printf("Searching for population of city %s ...\n",
