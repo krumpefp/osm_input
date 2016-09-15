@@ -59,7 +59,7 @@ public:
 
 public:
   OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
-         const std::vector<osm_input::Tag> aTags,
+         const std::vector<osm_input::Tag> &aTags,
          const mapping_helper::MappingHelper &aMh);
 
   // comparison operators
@@ -73,8 +73,9 @@ public:
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 
-  LabelBall getCorrespondingBall(std::size_t aSplitSize,
-                                 const std::unordered_set<char> &aDelims) const;
+  LabelBall
+  getCorrespondingBall(std::size_t aSplitSize,
+                       const std::unordered_set<char32_t> &aDelims) const;
 
   const mapping_helper::MappingHelper::Level *getLevel() const;
 

@@ -21,11 +21,13 @@
 #include "osmpoi.h"
 
 #include <assert.h>
+#include <codecvt>
+#include <locale>
 #include <math.h>
 #include <unordered_map>
 
 osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
-                          const std::vector<osm_input::Tag> aTags,
+                          const std::vector<osm_input::Tag> &aTags,
                           const mapping_helper::MappingHelper &aMh)
     : mOsmId(aOsmId), mPos(aPos), mPoiLevel(aMh.computeLevel(aTags)),
       mTags(aTags){};
@@ -67,46 +69,84 @@ bool osm_input::OsmPoi::operator>=(const osm_input::OsmPoi &aOther) const {
 }
 
 namespace osmpoi {
-std::string computeSplit(const std::string &aLabel,
-                         const std::unordered_set<char> &aDelims) {
-  std::string tmpLabel = aLabel;
-  std::string labelSplit = aLabel;
-  // if the label already contains newline information use this
-  if (tmpLabel.find("\r\n") != tmpLabel.npos) {
-    labelSplit = tmpLabel.replace(tmpLabel.find("\r\n"), 2, "%");
-  } else if (tmpLabel.find("\n") != tmpLabel.npos) {
-    labelSplit = tmpLabel.replace(tmpLabel.find("\n"), 2, "%");
-  } else if (tmpLabel.find("\r") != tmpLabel.npos) {
-    labelSplit = tmpLabel.replace(tmpLabel.find("\r"), 2, "%");
-  } else if (tmpLabel.find("^M") != tmpLabel.npos) {
-    labelSplit = tmpLabel.replace(tmpLabel.find("^M"), 2, "%");
-  } else {
-    // otherwise split at one of the delimiters
+std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> CONVERT;
 
-    std::size_t centerPos = tmpLabel.size() / 2;
+std::size_t computeLengthUTF8(const std::string &aStr) {
+  std::u32string ws = CONVERT.from_bytes(aStr);
+
+  return ws.size();
+};
+
+// compare https://en.wikipedia.org/wiki/Newline#Unicode
+std::u32string NEWLINE[] = {
+    U"\u000D\u000A", // Carriage Return & Line Feed
+    U"\u000A",       // Line Feed
+    U"\u000B",       // Vertical Tab
+    U"\u000C",       // Form Feed
+    U"\u000D",       // Carriage Return
+    U"\u0085",       // Next Line
+    U"\u2028",       // Line Separator
+    U"\u2029",       // Paragraph Separator
+    U"^M" // sometimes indicating that mixed newline symbols were used
+};
+
+std::string computeSplit(const std::string &aLabel,
+                         const std::unordered_set<char32_t> &aDelims) {
+
+  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
+  std::u32string tmpLabel = convert.from_bytes(aLabel);
+  std::u32string result = tmpLabel;
+
+  bool newlineInfoPresent = false;
+  for (std::u32string newline : NEWLINE) {
+    while (tmpLabel.find(newline) != tmpLabel.npos) {
+      newlineInfoPresent = true;
+      tmpLabel = tmpLabel.replace(tmpLabel.find(newline), newline.size(), U"%");
+    }
+  }
+
+  if (newlineInfoPresent) {
+    std::unordered_set<char32_t> delim;
+    delim.insert(U'%');
+    return computeSplit(convert.to_bytes(tmpLabel), delim);
+  } else {
+    std::size_t centerPos = (tmpLabel.size() + 1) / 2; // ceil division value
     std::size_t pos = 0;
-    while (pos < centerPos / 2) {
-      char c = tmpLabel[centerPos + pos];
+
+    while (pos < centerPos) {
+      char32_t c = tmpLabel[centerPos + pos];
       if (aDelims.count(c) > 0) {
-        labelSplit = tmpLabel.substr(0, centerPos + pos + 1) + "%" +
-                     tmpLabel.substr(centerPos + pos + 1, tmpLabel.size());
+        std::size_t occ = tmpLabel.find(U"%");
+        while (occ != tmpLabel.npos) {
+          tmpLabel = tmpLabel[occ] = U' ';
+          occ = tmpLabel.find(U"%");
+        }
+        result = tmpLabel.substr(0, centerPos + pos + 1) + U"%" +
+                 tmpLabel.substr(centerPos + pos + 1, tmpLabel.size());
         break;
       }
       c = tmpLabel[centerPos - pos];
       if (aDelims.count(c) > 0) {
-        labelSplit = tmpLabel.substr(0, centerPos - pos + 1) + "%" +
-                     tmpLabel.substr(centerPos - pos + 1, tmpLabel.size());
+        std::size_t occ = tmpLabel.find(U"%");
+        while (occ != tmpLabel.npos) {
+          tmpLabel = tmpLabel[occ] = U' ';
+          occ = tmpLabel.find(U"%");
+        }
+        result = tmpLabel.substr(0, centerPos - pos + 1) + U"%" +
+                 tmpLabel.substr(centerPos - pos + 1, tmpLabel.size());
         break;
       }
 
       ++pos;
     }
   }
-  if (labelSplit.find(" %") != labelSplit.npos)
-    labelSplit.replace(labelSplit.find(" %"), 2, "%");
+  if (result.find(U" %") != result.npos)
+    result = result.replace(result.find(U" %"), 2, U"%");
+  if (result.find(U"% ") != result.npos)
+    result = result.replace(result.find(U"% "), 2, U"%");
 
-  return labelSplit;
-}
+  return convert.to_bytes(result);
+};
 
 double computeBallRadius(const std::string &aLabel) {
   std::size_t delimPos = aLabel.find("%");
@@ -122,13 +162,13 @@ double computeBallRadius(const std::string &aLabel) {
 bool osm_input::OsmPoi::hasIcon() const { return mPoiLevel->mIconName != ""; }
 
 osm_input::OsmPoi::LabelBall osm_input::OsmPoi::getCorrespondingBall(
-    std::size_t aSplitSize, const std::unordered_set<char> &aDelims) const {
+    std::size_t aSplitSize, const std::unordered_set<char32_t> &aDelims) const {
   std::string label;
   double ballRadius = 4;
   if (mPoiLevel->mIconName != "") {
     label = "icon:" + mPoiLevel->mIconName;
   } else {
-    if (getName().size() > aSplitSize) {
+    if (osmpoi::computeLengthUTF8(getName()) > aSplitSize) {
       label = osmpoi::computeSplit(getName(), aDelims);
     } else {
       label = getName();

@@ -76,6 +76,7 @@ public:
   const Level *computeLevel(const std::vector<osm_input::Tag> &aTags) const;
 
   std::vector<const Level *> getLevels() const;
+  const Level *getLevelDefault() const;
 
   void test();
 

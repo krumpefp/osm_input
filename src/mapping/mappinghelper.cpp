@@ -358,6 +358,11 @@ std::vector<const Level *> mapping_helper::MappingHelper::getLevels() const {
   return result;
 }
 
+const mapping_helper::MappingHelper::Level *
+mapping_helper::MappingHelper::getLevelDefault() const {
+  return mDefaultLevel;
+}
+
 void mapping_helper::MappingHelper::test() {
   std::printf("Mapping Helper Test function\n");
 
