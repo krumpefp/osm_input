@@ -95,7 +95,7 @@ std::string computeSplit(const std::string &aLabel,
 
   std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
   std::u32string tmpLabel = convert.from_bytes(aLabel);
-  std::u32string result = U"";
+  std::u32string result = tmpLabel;
 
   bool newlineInfoPresent = false;
   for (std::u32string newline : NEWLINE) {
