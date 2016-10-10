@@ -49,7 +49,8 @@ public:
   };
 
 public:
-  OsmInputHelper(std::string aPbfPath, std::string aClassDescriptionPath);
+  OsmInputHelper(std::string aPbfPath, std::string aClassDescriptionPath,
+                 int32_t aThreadCount, int32_t aBlobCount);
   OsmInputHelper(const OsmInputHelper &other) = delete;
   OsmInputHelper &operator=(const OsmInputHelper &other) = delete;
   bool operator==(const OsmInputHelper &other) const = delete;
@@ -66,6 +67,8 @@ public:
 private:
   std::string mPbfPath;
   std::string mClassDescriptionPath;
+  int32_t mThreadCount;
+  int32_t mBlobCount;
 
   BoundingBox mDataBox;
 

@@ -32,6 +32,11 @@ osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
     : mOsmId(aOsmId), mPos(aPos), mPoiLevel(aMh.computeLevel(aTags)),
       mTags(aTags){};
 
+osm_input::OsmPoi::OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
+                          const std::vector<osm_input::Tag> &aTags,
+                          const mapping_helper::MappingHelper::Level *aLvl)
+    : mOsmId(aOsmId), mPos(aPos), mPoiLevel(aLvl), mTags(aTags){};
+
 bool osm_input::OsmPoi::operator==(const osm_input::OsmPoi &aOther) const {
   return aOther.mOsmId == mOsmId;
 }
