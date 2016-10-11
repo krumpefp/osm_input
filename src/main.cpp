@@ -19,7 +19,6 @@
  */
 
 #include <algorithm>
-// #include <boost/iterator/iterator_concepts.hpp>
 #include <iostream>
 #include <string>
 #include <unordered_set>
@@ -36,6 +35,9 @@
 namespace {
 const std::size_t SPLIT_SIZE = 15;
 const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
+
+const int32_t IMPORT_THREAD_COUNT = 1;
+const int32_t IMPORT_BLOB_COUNT = 1;
 }
 
 int main(int argc, char **argv) {
@@ -55,7 +57,8 @@ int main(int argc, char **argv) {
   jsonPath = std::string(argv[2]);
 
   t.start();
-  osm_input::OsmInputHelper input(pbfPath, jsonPath);
+  osm_input::OsmInputHelper input(pbfPath, jsonPath, IMPORT_THREAD_COUNT,
+                                  IMPORT_BLOB_COUNT);
   std::vector<osm_input::OsmPoi> pois;
   if (argc > 3) {
     std::map<std::string, int32_t> populations;
@@ -95,7 +98,6 @@ int main(int argc, char **argv) {
   statistics::PoiStatistics stats(pois);
   printf("%s\n", stats.mappingStatistics(mh).c_str());
   printf("%s\n", stats.tagStatisticsSimple().c_str());
-  //   printf("%s\n", stats.tagStatisticsDetailed(5.).c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
