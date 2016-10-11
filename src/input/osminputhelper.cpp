@@ -144,28 +144,28 @@ std::list<std::vector<NodeId>> assemblePolygon(
     else
       assert(false);
     NodeId currentNode = segment.back();
-	adjacent.at(currentNode).remove(currentSegment);
+    adjacent.at(currentNode).remove(currentSegment);
 
-	while (currentNode != startNode) {
-	  assert(adjacent.at(currentNode).size() > 0);
-	  currentSegment = adjacent.at(currentNode).front();
-	  adjacent.at(currentNode).pop_front();
-	  assert(aSegments.count(currentSegment) > 0);
-	  auto &seg = aSegments.at(currentSegment);
-	  if (seg.front() == currentNode) {
-		segment.insert(segment.end(), ++seg.begin(), seg.end());
-	  } else if (seg.back() == currentNode) {
-		segment.insert(segment.end(), ++seg.rbegin(), seg.rend());
-	  } else {
-		assert(false);
-	  }
-	  currentNode = segment.back();
-	  
-	  std::size_t s = adjacent.at(currentNode).size();
-	  adjacent.at(currentNode).remove(currentSegment);
-	  // assert that exactly one element was removed from the adjacent's list
-	  assert(adjacent.at(currentNode).size() == s - 1);
-	}
+    while (currentNode != startNode) {
+      assert(adjacent.at(currentNode).size() > 0);
+      currentSegment = adjacent.at(currentNode).front();
+      adjacent.at(currentNode).pop_front();
+      assert(aSegments.count(currentSegment) > 0);
+      auto &seg = aSegments.at(currentSegment);
+      if (seg.front() == currentNode) {
+        segment.insert(segment.end(), ++seg.begin(), seg.end());
+      } else if (seg.back() == currentNode) {
+        segment.insert(segment.end(), ++seg.rbegin(), seg.rend());
+      } else {
+        assert(false);
+      }
+      currentNode = segment.back();
+
+      std::size_t s = adjacent.at(currentNode).size();
+      adjacent.at(currentNode).remove(currentSegment);
+      // assert that exactly one element was removed from the adjacent's list
+      assert(adjacent.at(currentNode).size() == s - 1);
+    }
 
     result.push_back(segment);
   }
