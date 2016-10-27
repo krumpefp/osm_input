@@ -21,8 +21,11 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <sysexits.h>
 #include <unordered_set>
 #include <vector>
+
+#include "argumentparser.h"
 
 #include "mappinghelper.h"
 #include "osminputhelper.h"
@@ -41,26 +44,41 @@ const int32_t IMPORT_BLOB_COUNT = 1;
 }
 
 int main(int argc, char **argv) {
-  if (argc < 3) {
-    std::printf("To few arguments given.\nPlease use: osm_input <osm.pbf> "
-                "<mapping> <population (optional)>\n");
-    return 0;
+  argumentparser::ArgumentParser args("Osm_Input",
+                                      "Program to import poi data from osm.pbf "
+                                      "source files. Poi candidates are named "
+                                      "human settlements as well as amenities");
+
+  bool optional = true;
+  bool binary = true;
+  args.addArgument("i", "input", "path to the input .pbf file", !optional,
+                   !binary);
+  args.addArgument("m", "mapping",
+                   "path to the json file defining the tag to class mapping.",
+                   !optional, !binary);
+  args.addArgument("p", "population", "file containing extra population "
+                                      "information for some human settlement "
+                                      "pois",
+                   optional, !binary);
+
+  if (!args.parseArguments(argc, argv) || args.isSet("h")) {
+    std::printf("%s", args.programHelp().c_str());
+    return EX_USAGE;
   }
 
-  std::string pbfPath;
-  std::string jsonPath;
-  std::string popPath;
+  std::string pbfPath = args.getValue<std::string>("i");
+  std::string jsonPath = args.getValue<std::string>("m");
+  std::string popPath = args.getValue<std::string>("p");
 
   debug_timer::Timer t;
-
-  pbfPath = std::string(argv[1]);
-  jsonPath = std::string(argv[2]);
 
   t.start();
   osm_input::OsmInputHelper input(pbfPath, jsonPath, IMPORT_THREAD_COUNT,
                                   IMPORT_BLOB_COUNT);
   std::vector<osm_input::OsmPoi> pois;
-  if (argc > 3) {
+  if (args.isSet("p")) {
+    printf("Additionally importing population data from file %s\n",
+           popPath.c_str());
     std::map<std::string, int32_t> populations;
     popPath = std::string(argv[2]);
     pop_input::PopulationInput popInput(popPath);
@@ -92,12 +110,12 @@ int main(int argc, char **argv) {
     std::printf("Computing statistics for %lu pois with undefined level only",
                 undefs.size());
     statistics::PoiStatistics statsUndefs(undefs);
-    printf("%s\n", statsUndefs.tagStatisticsDetailed(0.).c_str());
+    printf("%s\n", statsUndefs.tagStatisticsDetailed(2.).c_str());
   }
 
-  statistics::PoiStatistics stats(pois);
-  printf("%s\n", stats.mappingStatistics(mh).c_str());
-  printf("%s\n", stats.tagStatisticsSimple().c_str());
+  //   statistics::PoiStatistics stats(pois);
+  //   printf("%s\n", stats.mappingStatistics(mh).c_str());
+  //   printf("%s\n", stats.tagStatisticsSimple().c_str());
 
   std::vector<osm_input::OsmPoi::LabelBall> balls;
   balls.reserve(pois.size());
@@ -120,4 +138,6 @@ int main(int argc, char **argv) {
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
   outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS, ' ');
+
+  return EX_OK;
 }

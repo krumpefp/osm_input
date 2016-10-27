@@ -4,3 +4,6 @@
 [submodule "vendor/jsoncpp"]
 	path = vendor/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "vendor/argument_parser"]
+	path = vendor/argument_parser
+	url = git@bitbucket.org:krumpefp/argument_parser.git

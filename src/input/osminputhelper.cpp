@@ -701,6 +701,9 @@ PoiSet osm_input::OsmInputHelper::importPoiData(
   result.insert(result.end(), areaResult.begin(), areaResult.end());
   result.insert(result.end(), nodeResult.begin(), nodeResult.end());
 
+  std::printf("Imported %lu area pois and %lu pois from the data set.\n",
+              areaResult.size(), nodeResult.size());
+
   return result;
 }
 
