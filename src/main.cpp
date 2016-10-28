@@ -21,7 +21,6 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include <sysexits.h>
 #include <unordered_set>
 #include <vector>
 
@@ -64,7 +63,7 @@ int main(int argc, char **argv) {
 
   if (!args.parseArguments(argc, argv) || args.isSet("h")) {
     std::printf("%s", args.programHelp().c_str());
-    return EX_USAGE;
+    return EXIT_FAILURE;
   }
 
   std::string pbfPath = args.getValue<std::string>("i");
@@ -140,5 +139,5 @@ int main(int argc, char **argv) {
   text_output::TextOutputHelper outComplete(outputpath);
   outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS, ' ');
 
-  return EX_OK;
+  return EXIT_SUCCESS;
 }
