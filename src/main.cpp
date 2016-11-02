@@ -39,8 +39,9 @@ namespace {
 const std::size_t SPLIT_SIZE = 15;
 const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
 
-const int32_t IMPORT_THREAD_COUNT = 1;
-const int32_t IMPORT_BLOB_COUNT = 1;
+const bool IMPORT_SETTLEMENTS = true;
+const bool IMPORT_GENERAL_POIS = false;
+
 }
 
 int main(int argc, char **argv) {
@@ -83,8 +84,8 @@ int main(int argc, char **argv) {
     popPath = std::string(argv[2]);
     pop_input::PopulationInput popInput(popPath);
     populations = popInput.getPopulationsMap();
-    pois = input.importPoiData(true, true, populations);
-  } else {
+    pois = input.importPoiData(IMPORT_SETTLEMENTS, IMPORT_GENERAL_POIS, populations);
+    pois = input.importPoiData(IMPORT_SETTLEMENTS, IMPORT_GENERAL_POIS);
     pois = input.importPoiData(true, true);
   }
   auto &mh = input.getMappingHelper();
