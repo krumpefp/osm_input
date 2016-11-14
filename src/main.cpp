@@ -38,9 +38,7 @@ namespace {
 const std::size_t SPLIT_SIZE = 15;
 const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
 
-const bool IMPORT_SETTLEMENTS = true;
-const bool IMPORT_GENERAL_POIS = false;
-
+typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
 }
 
 int main(int argc, char **argv) {
@@ -49,32 +47,62 @@ int main(int argc, char **argv) {
                                       "source files. Poi candidates are named "
                                       "human settlements as well as amenities");
 
-  bool optional = true;
-  bool binary = true;
-  args.addArgument("i", "input", "path to the input .pbf file", !optional,
-                   !binary);
-  args.addArgument("m", "mapping",
-                   "path to the json file defining the tag to class mapping.",
-                   !optional, !binary);
-  args.addArgument("p", "population", "file containing extra population "
-                                      "information for some human settlement "
-                                      "pois",
-                   optional, !binary);
+  args.addArgumentRequired("-i", "--input", "path to the input .pbf file",
+                           ARG_TYPES::STRING);
+  args.addArgumentRequired(
+      "-m", "--mapping",
+      "path to the json file defining the tag to class mapping.",
+      ARG_TYPES::STRING);
+  args.addArgument("-p", "--population", "file containing extra population "
+                                         "information for some human "
+                                         "settlement pois",
+                   ARG_TYPES::STRING);
 
-  if (!args.parseArguments(argc, argv) || args.isSet("h")) {
-    std::printf("%s", args.programHelp().c_str());
-    return EXIT_FAILURE;
+  args.addArgument("-c", "--cities",
+                   "if set, city (human settlement) labels are imported",
+                   ARG_TYPES::BINARY);
+  args.addArgument("-g", "--general", "if set, general poi labels are imported",
+                   ARG_TYPES::BINARY);
+
+  args.addArgument(
+      "-tc", "--threadcount",
+      "define the number of threads used during the pbf import. Default 4",
+      ARG_TYPES::INT);
+  args.addArgument("-bc", "--blobcount", "define the number of blobs used per "
+                                         "thread during the pbf import. "
+                                         "Default 2",
+                   ARG_TYPES::INT);
+
+  try {
+    if (!args.parseArguments(std::size_t(argc), argv) && !args.isSet("-h")) {
+      std::cerr << "Some required arguments were not given. Terminating!"
+                << std::endl;
+      return 1;
+    }
+  } catch (const std::exception &e) {
+    std::cerr << "Parsing command line parameter failed with explanation:\n"
+              << e.what() << std::endl;
+    std::cerr << "Terminating ..." << std::endl;
+
+    return 1;
   }
 
-  std::string pbfPath = args.getValue<std::string>("i");
-  std::string jsonPath = args.getValue<std::string>("m");
-  std::string popPath = args.getValue<std::string>("p");
+  if (args.getValue<bool>("-h")) {
+    std::cout << args.programHelp() << std::endl;
+    return 0;
+  }
+
+  std::string pbfPath = args.getValue<std::string>("-i");
+  std::string jsonPath = args.getValue<std::string>("-m");
+  std::string popPath = args.getValue<std::string>("-p");
 
   debug_timer::Timer t;
 
+  int threadCount = (args.isSet("-tc")) ? args.getValue<int>("-tc") : 4;
+  int blobCount = (args.isSet("-bc")) ? args.getValue<int>("-bc") : 2;
+
   t.start();
-  osm_input::OsmInputHelper input(pbfPath, jsonPath, IMPORT_THREAD_COUNT,
-                                  IMPORT_BLOB_COUNT);
+  osm_input::OsmInputHelper input(pbfPath, jsonPath, threadCount, blobCount);
   std::vector<osm_input::OsmPoi> pois;
   if (args.isSet("p")) {
     printf("Additionally importing population data from file %s\n",
@@ -83,10 +111,13 @@ int main(int argc, char **argv) {
     popPath = std::string(argv[2]);
     pop_input::PopulationInput popInput(popPath);
     populations = popInput.getPopulationsMap();
-    pois = input.importPoiData(IMPORT_SETTLEMENTS, IMPORT_GENERAL_POIS, populations);
-    pois = input.importPoiData(IMPORT_SETTLEMENTS, IMPORT_GENERAL_POIS);
-    pois = input.importPoiData(true, true);
+    pois = input.importPoiData(args.getValue<bool>("-c"),
+                               args.getValue<bool>("-g"), populations);
+  } else {
+    pois = input.importPoiData(args.getValue<bool>("-c"),
+                               args.getValue<bool>("-g"));
   }
+
   auto &mh = input.getMappingHelper();
 
   t.createTimepoint();

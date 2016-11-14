@@ -555,7 +555,16 @@ struct BlockParserPoi {
             }
           }
 
-          localPois.push_back(osm_input::OsmPoi(id, pos, tags, mMappingHelper));
+          if (city && mIncludeSettlements) {
+            localPois.push_back(
+                osm_input::OsmPoi(id, pos, tags, mMappingHelper));
+          } else if (mIncludeGeneralPois) {
+            localPois.push_back(
+                osm_input::OsmPoi(id, pos, tags, mMappingHelper));
+          } else {
+            // ignore
+            continue;
+          }
         }
       }
     }
@@ -693,16 +702,21 @@ PoiSet osm_input::OsmInputHelper::importPoiData(
   PoiSet nodeResult = osm_parsing::importNodePois(
       osmFile, aIncludeSettlements, aIncludeGeneral, aPopData, mMappingHelper,
       mThreadCount, mBlobCount);
-
-  PoiSet areaResult = osm_parsing::importAreaPois(osmFile, mMappingHelper,
-                                                  mThreadCount, mBlobCount);
-
-  result.reserve(areaResult.size() + nodeResult.size());
-  result.insert(result.end(), areaResult.begin(), areaResult.end());
+  result.reserve(nodeResult.size());
   result.insert(result.end(), nodeResult.begin(), nodeResult.end());
 
-  std::printf("Imported %lu area pois and %lu pois from the data set.\n",
-              areaResult.size(), nodeResult.size());
+  std::printf("Imported %lu pois from the data set.\n", nodeResult.size());
+
+  if (aIncludeGeneral) {
+    PoiSet areaResult = osm_parsing::importAreaPois(osmFile, mMappingHelper,
+                                                    mThreadCount, mBlobCount);
+
+    result.reserve(areaResult.size() + nodeResult.size());
+    result.insert(result.end(), areaResult.begin(), areaResult.end());
+
+    std::printf("Imported %lu area pois from the data set.\n",
+                areaResult.size());
+  }
 
   return result;
 }
