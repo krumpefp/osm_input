@@ -26,6 +26,7 @@
 #include <stdexcept>
 
 #include "json.h"
+#include "utf8helper.h"
 
 namespace font {
 Json::Value importFont(std::string aConfigPath) {
@@ -39,21 +40,87 @@ Json::Value importFont(std::string aConfigPath) {
 }
 }
 
-label::Font::Font(std::string configPath) {
+// public class functions
+
+fonts::Font::Font(const std::string& configPath) {
   Json::Value fontConfig = font::importFont(configPath);
 
-  Json::Value info = fontConfig.get("font", "undefined");
+  Json::Value info = fontConfig["font"];
+  Json::Value alphabet = fontConfig["alphabet"];
+  
+  Json::Value atlas = fontConfig["atlas"];
+  Json::Value advances = fontConfig["advance"];
+  Json::Value glyph = fontConfig["glyph"];
+  Json::Value kerning = fontConfig["kerning"];
 
+  
   std::cout << "Started font config import: "
-            << info.get("name", "undefined").asString() << " - "
-            << info.get("style", "undefined").asString() << std::endl;
+            << info["name"].asString() << " - "
+            << info["style"].asString() << std::endl;
 
-  // insert the alphabet
-  std::string alphabet = fontConfig.get("alphabet", "").asString();
-  if (alphabet == "") {
-    throw std::invalid_argument(
-        "Given font alphabet does not contain any letters!");
+  // get some general font informations
+  mName = info["name"].asString();
+  mStyle = info["style"].asString();
+  mDefault = utf8_helper::UTF8Helper::toUTF8String(info["default"].asString())[0];
+
+  // get the glyph information
+  mGlyph_Asc = glyph["ascender"].asInt();
+  mGlyph_Desc = glyph["descender"].asInt();
+  mGlyph_Height = glyph["height"].asInt();
+  mGlyph_Width = glyph["width"].asInt();
+  
+  // define the alphabet glyphs
+  std::cout << "Alphabet: '" << alphabet.asString() << "'." << std::endl;
+  std::size_t index = 0;
+  std::u32string alphabetString = utf8_helper::UTF8Helper::toUTF8String(alphabet.asString());
+  for (char32_t c : alphabetString) {
+    mAlphabet.emplace(c, Glyph(c, index, advances[(int) index].asInt(), mGlyph_Width));
+    
+    std::vector<Kerning> k;
+    std::size_t index_pred = 0;
+    for (char32_t c_pred : alphabetString) {
+      k.emplace_back(c_pred, c, kerning[(int)index][(int)index_pred].asInt(), mGlyph_Width);
+      ++index_pred;
+    }
+    mKerning.push_back(k);
+    ++index;
   }
+  
+  std::cout << "Finished the font import with the import of " << alphabetString.size() << " glyphs" << std::endl;
+}
 
-  std::cout << "Alphabet: '" << alphabet << "'." << std::endl;
+int32_t fonts::Font::computeTextLength(const std::u32string& aStr) const
+{
+  if (aStr.size() == 0) {
+    return 0;
+  }
+  
+  auto glyph = getLetter(aStr[0]);
+  int32_t length = glyph->second.mAdvance;
+  
+  for (int32_t idx = 1, size = (int32_t) aStr.size(); idx < size; ++idx) {
+    std::size_t idx_pred = glyph->second.mIndex;
+    glyph = getLetter(aStr[idx]);
+    
+    length += glyph->second.mAdvance + mKerning[glyph->second.mIndex][idx_pred].mKerning;
+  }
+  
+  return length;
+}
+
+// private functions
+std::map<char32_t, fonts::Font::Glyph>::const_iterator fonts::Font::getLetter(const char32_t aChar) const
+{
+   return (mAlphabet.find(aChar) != mAlphabet.end()) ? mAlphabet.find(aChar) : mAlphabet.find(mDefault);
+}
+
+std::u32string fonts::Font::toFont(const std::u32string& aString) const
+{
+  std::u32string result;
+  
+  for (auto c : aString) {
+    result += getLetter(c)->second.mLetter;
+  }
+  
+  return result;
 }

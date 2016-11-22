@@ -20,6 +20,24 @@
 #ifndef LABELHELPER_H
 #define LABELHELPER_H
 
-class LabelHelper {};
+#include <string>
+
+#include "font.h"
+
+namespace label_helper {
+
+class LabelHelper {
+private:
+  fonts::Font mFont;
+  
+public:
+  LabelHelper(const std::string& aFontConfigPath);
+  
+  int32_t computeLabelSize(const std::string& aLabel) const;
+  
+  std::string labelify(const std::string& aLabel) const;
+};
+
+}
 
 #endif // LABELHELPER_H

@@ -106,3 +106,11 @@ std::u32string utf8_helper::UTF8Helper::toUTF8String(const std::string& aStr)
   
   return convert.from_bytes(aStr);
 }
+
+
+std::string utf8_helper::UTF8Helper::toByteString(const std::u32string& aStr)
+{
+  std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> convert;
+  
+  return convert.to_bytes(aStr);
+}

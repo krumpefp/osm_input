@@ -22,14 +22,11 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include <codecvt>
-#include <locale>
-
 #include <map>
 #include <string>
 #include <vector>
 
-namespace label {
+namespace fonts {
 
 class Font {
 private:
@@ -60,6 +57,7 @@ private:
   // general font information
   std::string mName;
   std::string mStyle;
+  char32_t mDefault;
 
   int32_t mGlyph_Asc;
   int32_t mGlyph_Desc;
@@ -72,7 +70,14 @@ private:
   std::vector<std::vector<Kerning>> mKerning;
 
 public:
-  Font(std::string configPath);
+  Font(const std::string& configPath);
+  
+  int32_t computeTextLength(const std::u32string& aStr) const;
+  
+  std::u32string toFont(const std::u32string& aString) const;
+  
+private:
+  std::map<char32_t, Glyph>::const_iterator getLetter(const char32_t aChar) const;
 };
 }
 

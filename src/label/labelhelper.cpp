@@ -18,3 +18,25 @@
  */
 
 #include "label/labelhelper.h"
+
+#include "utf8helper.h"
+
+label_helper::LabelHelper::LabelHelper(const std::string& aFontConfigPath)
+: mFont(aFontConfigPath) {}
+
+
+
+int32_t label_helper::LabelHelper::computeLabelSize(const std::string& aLabel) const
+{
+  std::u32string label_u32 = utf8_helper::UTF8Helper::toUTF8String(aLabel);
+  
+  return mFont.computeTextLength(label_u32);
+}
+
+
+std::string label_helper::LabelHelper::labelify(const std::string& aLabel) const
+{
+  std::u32string label = mFont.toFont(utf8_helper::UTF8Helper::toUTF8String(aLabel));
+  
+  return utf8_helper::UTF8Helper::toByteString(label);
+}

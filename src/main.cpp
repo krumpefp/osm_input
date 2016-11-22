@@ -26,7 +26,7 @@
 
 #include "argumentparser.h"
 
-#include "font.h"
+#include "labelhelper.h"
 #include "mappinghelper.h"
 #include "osminputhelper.h"
 #include "osmpoi.h"
@@ -42,14 +42,18 @@ const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
 typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
 }
 
-#define DEBUG
-
 int main(int argc, char **argv) {
-
-  label::Font f("font.info");
-
+  
+  label_helper::LabelHelper labelHelper("font.info");
+  std::string label = argv[1];
+  int32_t size = labelHelper.computeLabelSize(label);
+  
+  std::cout << "Label " << label << " has size " << size << std::endl
+            << "Label will be converted to: '" << labelHelper.labelify(label)
+            << "'" << std::endl;
+  
   return 0;
-
+  
   argumentparser::ArgumentParser args("Osm_Input",
                                       "Program to import poi data from osm.pbf "
                                       "source files. Poi candidates are named "

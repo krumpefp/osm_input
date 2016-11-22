@@ -40,6 +40,8 @@ public:
                            const std::unordered_set<char32_t> &aDelims);
   
   static std::u32string toUTF8String(const std::string &aStr);
+  
+  static std::string toByteString(const std::u32string &aStr);
 };
 
 }
