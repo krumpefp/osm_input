@@ -10,7 +10,7 @@ set(BIN_NAME "osm_input")
 include_directories(src
                     src/debughelpers
                     src/input
-                    src/labelhelpers
+                    src/label
                     src/mapping
                     src/output
                     src/primitives
@@ -24,7 +24,7 @@ include_directories(src
 FILE(GLOB SOURCES_CPP src/*.cpp
                       src/debughelpers/*.cpp
                       src/input/*.cpp
-                      src/labelhelpers/*.cpp
+                      src/label/*.cpp
                       src/mapping/*.cpp
                       src/output/*.cpp
                       src/primitives/*.cpp

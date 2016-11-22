@@ -26,6 +26,7 @@
 
 #include "argumentparser.h"
 
+#include "font.h"
 #include "mappinghelper.h"
 #include "osminputhelper.h"
 #include "osmpoi.h"
@@ -41,7 +42,14 @@ const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
 typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
 }
 
+#define DEBUG
+
 int main(int argc, char **argv) {
+
+  label::Font f("font.info");
+
+  return 0;
+
   argumentparser::ArgumentParser args("Osm_Input",
                                       "Program to import poi data from osm.pbf "
                                       "source files. Poi candidates are named "
