@@ -21,6 +21,7 @@
 #define LABELHELPER_H
 
 #include <string>
+#include <unordered_set>
 
 #include "font.h"
 
@@ -29,15 +30,25 @@ namespace label_helper {
 class LabelHelper {
 private:
   fonts::Font mFont;
-  
-public:
-  LabelHelper(const std::string& aFontConfigPath);
-  
-  int32_t computeLabelSize(const std::string& aLabel) const;
-  
-  std::string labelify(const std::string& aLabel) const;
-};
 
+  std::unordered_set<std::u32string> mSpaces;
+  std::unordered_set<std::u32string> mNewLines;
+
+public:
+  LabelHelper(const std::string &aFontConfigPath);
+
+  int32_t computeLabelSize(const std::string &aLabel) const;
+
+  std::string
+  computeLabelSplit(const std::string &aLabel,
+                    const std::unordered_set<char32_t> &aDelims) const;
+
+  const std::unordered_set<char32_t> &getUnsupportedCharacters() const;
+
+  std::string labelify(const std::string &aLabel) const;
+
+  std::string labelify(const std::u32string &aLabel) const;
+};
 }
 
 #endif // LABELHELPER_H

@@ -24,6 +24,7 @@
 
 #include <map>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace fonts {
@@ -70,14 +71,26 @@ private:
   std::vector<std::vector<Kerning>> mKerning;
 
 public:
-  Font(const std::string& configPath);
-  
-  int32_t computeTextLength(const std::u32string& aStr) const;
-  
-  std::u32string toFont(const std::u32string& aString) const;
-  
+  Font(const std::string &configPath);
+
+  int32_t computeTextLength(const std::u32string &aStr) const;
+
+  const std::unordered_set<char32_t> &getUnsupportedCharacters() const;
+
+  std::u32string createFontString(const std::u32string &aString) const;
+
+  std::u32string createFontString(const std::u32string &aString,
+                                  const char32_t aSkip) const;
+
+  std::u32string
+  createFontString(const std::u32string &aString,
+                   const std::unordered_set<char32_t> &aSkip) const;
+
 private:
-  std::map<char32_t, Glyph>::const_iterator getLetter(const char32_t aChar) const;
+  std::map<char32_t, Glyph>::const_iterator
+  getLetter(const char32_t aChar) const;
+
+  mutable std::unordered_set<char32_t> mUnsupported;
 };
 }
 

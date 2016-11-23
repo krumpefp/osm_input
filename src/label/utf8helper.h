@@ -28,22 +28,28 @@
 
 namespace utf8_helper {
 
-class UTF8Helper
-{
+class UTF8Helper {
+public:
   // compare https://en.wikipedia.org/wiki/Newline#Unicode
+  static const std::size_t NEWLINE_COUNT = 9;
   static const std::u32string NEWLINE[];
-  
+  // compare https://en.wikipedia.org/wiki/Whitespace_character#Unicode
+  static const std::size_t BLANK_COUNT = 18;
+  static const std::u32string BLANK[];
+
 public:
   static std::size_t computeLengthUTF8(const std::string &aStr);
-  
-  static std::string computeSplit(const std::string &aStr,
-                           const std::unordered_set<char32_t> &aDelims);
-  
+
+  static bool isBlank(char32_t c);
+  static bool isBlank(const std::u32string &aStr);
+
+  static bool isNewLine(char32_t c);
+  static bool isNewLine(const std::u32string &aStr);
+
   static std::u32string toUTF8String(const std::string &aStr);
-  
+
   static std::string toByteString(const std::u32string &aStr);
 };
-
 }
 
 #endif // UTF8HELPER_H

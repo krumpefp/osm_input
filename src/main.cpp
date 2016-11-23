@@ -34,6 +34,7 @@
 #include "populationinput.h"
 #include "textoutputhelper.h"
 #include "timer.h"
+#include "utf8helper.h"
 
 namespace {
 const std::size_t SPLIT_SIZE = 15;
@@ -43,17 +44,37 @@ typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
 }
 
 int main(int argc, char **argv) {
-  
+
   label_helper::LabelHelper labelHelper("font.info");
-  std::string label = argv[1];
+
+  //   std::string label = argv[1];
+  std::string label = "Hallo du Deppenkind\n";
+
   int32_t size = labelHelper.computeLabelSize(label);
-  
+
   std::cout << "Label " << label << " has size " << size << std::endl
             << "Label will be converted to: '" << labelHelper.labelify(label)
             << "'" << std::endl;
-  
+
+  std::string labelSplit = labelHelper.computeLabelSplit(label, DELIMITERS);
+  std::cout << "Split of " << label << " was computed to be " << labelSplit
+            << " => " << labelHelper.labelify(labelSplit) << std::endl;
+
+  auto unsupported = labelHelper.getUnsupportedCharacters();
+
+  if (unsupported.size() > 0) {
+    std::cout << "Found some unsupported characters: ";
+    for (auto c : unsupported) {
+      std::string sz =
+          utf8_helper::UTF8Helper::toByteString(std::u32string() + c);
+      std::cout << sz << ", ";
+    }
+
+    std::cout << std::endl;
+  }
+
   return 0;
-  
+
   argumentparser::ArgumentParser args("Osm_Input",
                                       "Program to import poi data from osm.pbf "
                                       "source files. Poi candidates are named "
