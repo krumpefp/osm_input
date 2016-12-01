@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-#include "osmpoi.h"
+#include "labelhelper.h"
 
 namespace text_output {
 
@@ -35,13 +35,13 @@ public:
   TextOutputHelper &operator=(const TextOutputHelper &other) = delete;
   bool operator==(const TextOutputHelper &other) const = delete;
 
-  bool writeBallsFile(std::vector<osm_input::OsmPoi::LabelBall> &aBalls,
-                      char aSep);
+  bool writeBallsFile(
+      const std::vector<label_helper::LabelHelper::LabelBall> &aBalls,
+      char aSep);
 
-  bool writeCompleteFile(const std::vector<osm_input::OsmPoi> &aPois,
-                         std::size_t aSplitSize,
-                         const std::unordered_set<char32_t> &aDelimiters,
-                         char aSep);
+  bool writeCompleteFile(
+      const std::vector<label_helper::LabelHelper::LabelBall> &aPois,
+      char aSep);
 
 private:
   std::string mOutputPath;

@@ -37,7 +37,7 @@
 #include "utf8helper.h"
 
 namespace {
-const std::size_t SPLIT_SIZE = 15;
+const double SPLIT_SIZE = 15;
 const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
 
 typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
@@ -45,52 +45,59 @@ typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
 
 int main(int argc, char **argv) {
 
-  label_helper::LabelHelper labelHelper("font.info");
-
-  //   std::string label = argv[1];
-  std::string label = "Hallo du Deppenkind\n";
-
-  int32_t size = labelHelper.computeLabelSize(label);
-
-  std::cout << "Label " << label << " has size " << size << std::endl
-            << "Label will be converted to: '" << labelHelper.labelify(label)
-            << "'" << std::endl;
-
-  std::string labelSplit = labelHelper.computeLabelSplit(label, DELIMITERS);
-  std::cout << "Split of " << label << " was computed to be " << labelSplit
-            << " => " << labelHelper.labelify(labelSplit) << std::endl;
-
-  auto unsupported = labelHelper.getUnsupportedCharacters();
-
-  if (unsupported.size() > 0) {
-    std::cout << "Found some unsupported characters: ";
-    for (auto c : unsupported) {
-      std::string sz =
-          utf8_helper::UTF8Helper::toByteString(std::u32string() + c);
-      std::cout << sz << ", ";
-    }
-
-    std::cout << std::endl;
-  }
-
-  return 0;
+  //   label_helper::LabelHelper lh("font.info", 15., DELIMITERS);
+  //
+  //   //   std::string label = argv[1];
+  //   std::string label = "Hallo du Deppenkind\n";
+  //
+  //   int32_t size = labelHelper.computeLabelSize(label);
+  //
+  //   std::cout << "Label " << label << " has size " << size << std::endl
+  //             << "Label will be converted to: '" <<
+  //             labelHelper.labelify(label)
+  //             << "'" << std::endl;
+  //
+  //   std::string labelSplit = labelHelper.computeLabelSplit(label,
+  //   DELIMITERS);
+  //   std::cout << "Split of " << label << " was computed to be " << labelSplit
+  //             << " => " << labelHelper.labelify(labelSplit) << std::endl;
+  //
+  //   auto unsupported = labelHelper.getUnsupportedCharacters();
+  //
+  //   if (unsupported.size() > 0) {
+  //     std::cout << "Found some unsupported characters: ";
+  //     for (auto c : unsupported) {
+  //       std::string sz =
+  //           utf8_helper::UTF8Helper::toByteString(std::u32string() + c);
+  //       std::cout << sz << ", ";
+  //     }
+  //
+  //     std::cout << std::endl;
+  //   }
+  //
+  //   return 0;
 
   argumentparser::ArgumentParser args("Osm_Input",
                                       "Program to import poi data from osm.pbf "
                                       "source files. Poi candidates are named "
                                       "human settlements as well as amenities");
 
+  // required arguments
   args.addArgumentRequired("-i", "--input", "path to the input .pbf file",
                            ARG_TYPES::STRING);
   args.addArgumentRequired(
       "-m", "--mapping",
       "path to the json file defining the tag to class mapping.",
       ARG_TYPES::STRING);
+
+  // optional arguments
   args.addArgument("-p", "--population", "file containing extra population "
                                          "information for some human "
                                          "settlement pois",
                    ARG_TYPES::STRING);
-
+  args.addArgument("-f", "--font",
+                   "font information, csv file. Default 'font.info'",
+                   ARG_TYPES::STRING);
   args.addArgument("-c", "--cities",
                    "if set, city (human settlement) labels are imported",
                    ARG_TYPES::BINARY);
@@ -108,8 +115,8 @@ int main(int argc, char **argv) {
 
   try {
     if (!args.parseArguments(std::size_t(argc), argv) && !args.isSet("-h")) {
-      std::cerr << "Some required arguments were not given. Terminating!"
-                << std::endl;
+      std::cerr << "Some required arguments were not given." << std::endl
+                << args.programHelp() << std::endl;
       return 1;
     }
   } catch (const std::exception &e) {
@@ -125,15 +132,21 @@ int main(int argc, char **argv) {
     return 0;
   }
 
+  // required arguments
   std::string pbfPath = args.getValue<std::string>("-i");
   std::string jsonPath = args.getValue<std::string>("-m");
-  std::string popPath = args.getValue<std::string>("-p");
 
-  debug_timer::Timer t;
-
+  // optional arguments
+  std::string popPath =
+      (args.isSet("-p")) ? args.getValue<std::string>("-p") : "";
+  std::string fontPath =
+      (args.isSet("-f")) ? args.getValue<std::string>("-f") : "font.info";
   int threadCount = (args.isSet("-tc")) ? args.getValue<int>("-tc") : 4;
   int blobCount = (args.isSet("-bc")) ? args.getValue<int>("-bc") : 2;
 
+  label_helper::LabelHelper labelHelper(fontPath, SPLIT_SIZE, DELIMITERS);
+
+  debug_timer::Timer t;
   t.start();
   osm_input::OsmInputHelper input(pbfPath, jsonPath, threadCount, blobCount);
   std::vector<osm_input::OsmPoi> pois;
@@ -171,7 +184,7 @@ int main(int argc, char **argv) {
         undefs.push_back(p);
       }
     }
-    std::printf("Computing statistics for %lu pois with undefined level only",
+    std::printf("Computing statistics for %lu pois with undefined level only\n",
                 undefs.size());
     statistics::PoiStatistics statsUndefs(undefs);
     printf("%s\n", statsUndefs.tagStatisticsDetailed(2.).c_str());
@@ -181,10 +194,11 @@ int main(int argc, char **argv) {
   //   printf("%s\n", stats.mappingStatistics(mh).c_str());
   //   printf("%s\n", stats.tagStatisticsSimple().c_str());
 
-  std::vector<osm_input::OsmPoi::LabelBall> balls;
+  std::vector<label_helper::LabelHelper::LabelBall> balls;
   balls.reserve(pois.size());
   for (auto it = pois.begin(), end = pois.end(); it != end;) {
-    balls.push_back(it->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
+    balls.push_back(labelHelper.computeLabelBall(*it));
+    //     balls.push_back(it->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
     ++it;
   }
 
@@ -201,7 +215,7 @@ int main(int argc, char **argv) {
   outputpath = outputname + ".complete.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
-  outComplete.writeCompleteFile(pois, SPLIT_SIZE, DELIMITERS, ' ');
+  outComplete.writeCompleteFile(balls, ' ');
 
   return EXIT_SUCCESS;
 }

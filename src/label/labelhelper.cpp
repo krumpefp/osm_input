@@ -75,8 +75,12 @@ toLabelSplit(const std::u32string &aLabel, std::size_t aSplitPos,
 }
 }
 
-label_helper::LabelHelper::LabelHelper(const std::string &aFontConfigPath)
-    : mFont(aFontConfigPath) {
+label_helper::LabelHelper::LabelHelper(
+    const std::string &aFontConfigPath, double aSplitSize,
+    const std::unordered_set<char32_t> &aSplitPoints)
+    : mFont(aFontConfigPath), mSplitSize(aSplitSize),
+      mSplitSizePx((int32_t)(aSplitSize * mFont.getGlyphWidth())),
+      mSplitPoints(aSplitPoints) {
   for (std::size_t i = 0; i < utf8_helper::UTF8Helper::BLANK_COUNT; ++i) {
     mSpaces.insert(utf8_helper::UTF8Helper::BLANK[i]);
   }
@@ -86,11 +90,57 @@ label_helper::LabelHelper::LabelHelper(const std::string &aFontConfigPath)
   }
 }
 
+label_helper::LabelHelper::LabelBall
+label_helper::LabelHelper::computeLabelBall(
+    const osm_input::OsmPoi &aOsmPoi) const {
+  std::string label;
+  double ballRadius = 4;
+
+  if (aOsmPoi.getLevel()->mIconName != "") {
+    label = "icon:" + aOsmPoi.getLevel()->mIconName;
+  } else {
+    int32_t l = computeLabelSize(aOsmPoi.getName());
+    if (computeLabelSize(aOsmPoi.getName()) > mSplitSizePx) {
+      label = computeLabelSplit(aOsmPoi.getName());
+    } else {
+      label = aOsmPoi.getName();
+    }
+
+    std::pair<int32_t, int32_t> size = computeLabelSplitSize(label);
+    ballRadius = (double)std::max(size.first, size.second) /
+                 (double)mFont.getGlyphWidth();
+  }
+
+  ballRadius *= aOsmPoi.getLevel()->mLevelFactor;
+
+  return LabelBall(aOsmPoi.getPosition(), aOsmPoi.getOsmId(), ballRadius, label,
+                   aOsmPoi.getLevel()->mLevelFactor);
+}
+
 int32_t
 label_helper::LabelHelper::computeLabelSize(const std::string &aLabel) const {
   std::u32string label_u32 = utf8_helper::UTF8Helper::toUTF8String(aLabel);
 
   return mFont.computeTextLength(label_u32);
+}
+
+std::pair<int32_t, int32_t> label_helper::LabelHelper::computeLabelSplitSize(
+    const std::string &aLabel) const {
+  std::pair<int32_t, int32_t> result;
+  std::size_t splitPos = aLabel.find("\n");
+  if (splitPos == aLabel.npos) {
+    result = std::make_pair(computeLabelSize(aLabel), -1);
+  } else {
+    result = std::make_pair(computeLabelSize(aLabel.substr(0, splitPos)),
+                            computeLabelSize(aLabel.substr(splitPos + 1)));
+  }
+
+  return result;
+}
+
+std::string
+label_helper::LabelHelper::computeLabelSplit(const std::string &aLabel) const {
+  return computeLabelSplit(aLabel, mSplitPoints);
 }
 
 std::string label_helper::LabelHelper::computeLabelSplit(

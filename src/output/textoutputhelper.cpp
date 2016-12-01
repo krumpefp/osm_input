@@ -24,7 +24,8 @@
 #include "osmpoi.h"
 
 bool text_output::TextOutputHelper::writeBallsFile(
-    std::vector<osm_input::OsmPoi::LabelBall> &aBalls, char aSep) {
+    const std::vector<label_helper::LabelHelper::LabelBall> &aBalls,
+    char aSep) {
   std::ofstream file(mOutputPath.c_str());
 
   if (!file.is_open()) {
@@ -33,7 +34,6 @@ bool text_output::TextOutputHelper::writeBallsFile(
   file.clear();
 
   std::size_t importance = 0;
-  //   file << "Longitude [-180, 180] Latitude [-90, 90] Importance Radius";
   file << aBalls.size();
 
   for (auto &ball : aBalls) {
@@ -49,8 +49,8 @@ bool text_output::TextOutputHelper::writeBallsFile(
 }
 
 bool text_output::TextOutputHelper::writeCompleteFile(
-    const std::vector<osm_input::OsmPoi> &aPois, std::size_t aSplitSize,
-    const std::unordered_set<char32_t> &aDelimiters, char aSep) {
+    const std::vector<label_helper::LabelHelper::LabelBall> &aBalls,
+    char aSep) {
   std::ofstream file(mOutputPath.c_str());
 
   if (!file.is_open()) {
@@ -59,25 +59,20 @@ bool text_output::TextOutputHelper::writeCompleteFile(
   file.clear();
 
   std::size_t importance = 0;
-  //   file
-  //     << "Longitude [-180, 180] Latitude [-90, 90] Importance Radius OsmID
-  //     name";
-  file << aPois.size();
+  file << aBalls.size();
 
-  for (auto poi : aPois) {
-    osm_input::OsmPoi::LabelBall ball =
-        poi.getCorrespondingBall(aSplitSize, aDelimiters);
+  for (auto ball : aBalls) {
 
     std::string label = ball.mLabel;
     while (label.find("\n") != label.npos) {
-      label.replace(label.find('\n'), 1, " ");
+      label.replace(label.find('\n'), 1, "\\n");
     }
 
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
-         << std::fixed << std::setprecision(4) << ball.mBallRadius << aSep
-         << poi.getOsmId() << aSep << "'" << label << "'" << aSep
+         << std::fixed << std::setprecision(2) << ball.mBallRadius << aSep
+         << ball.mOsmId << aSep << "'" << label << "'" << aSep
          << ball.mLabelFactor;
   }
 

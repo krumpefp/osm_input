@@ -86,6 +86,8 @@ public:
   createFontString(const std::u32string &aString,
                    const std::unordered_set<char32_t> &aSkip) const;
 
+  int32_t getGlyphWidth() const { return mGlyph_Width; };
+
 private:
   std::map<char32_t, Glyph>::const_iterator
   getLetter(const char32_t aChar) const;

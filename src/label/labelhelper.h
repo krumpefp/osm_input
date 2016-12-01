@@ -24,20 +24,47 @@
 #include <unordered_set>
 
 #include "font.h"
+#include "osmpoi.h"
 
 namespace label_helper {
 
 class LabelHelper {
+public:
+  struct LabelBall {
+    osm_input::OsmPoi::Position mPos;
+    int64_t mOsmId;
+
+    double mBallRadius;
+
+    std::string mLabel;
+    double mLabelFactor;
+
+    LabelBall(const osm_input::OsmPoi::Position &aCenter, int64_t aOsmId,
+              double aRadius, std::string aLabel, double aFactor)
+        : mPos(aCenter), mOsmId(aOsmId), mBallRadius(aRadius), mLabel(aLabel),
+          mLabelFactor(aFactor){};
+  };
+
 private:
   fonts::Font mFont;
+  double mSplitSize;
+  int32_t mSplitSizePx;
+
+  const std::unordered_set<char32_t> mSplitPoints;
 
   std::unordered_set<std::u32string> mSpaces;
   std::unordered_set<std::u32string> mNewLines;
 
 public:
-  LabelHelper(const std::string &aFontConfigPath);
+  LabelHelper(const std::string &aFontConfigPath, double aSplitSize,
+              const std::unordered_set<char32_t> &aSplitPoints);
 
+  LabelBall computeLabelBall(const osm_input::OsmPoi &aOsmPoi) const;
   int32_t computeLabelSize(const std::string &aLabel) const;
+  std::pair<int32_t, int32_t>
+  computeLabelSplitSize(const std::string &aLabel) const;
+
+  std::string computeLabelSplit(const std::string &aLabel) const;
 
   std::string
   computeLabelSplit(const std::string &aLabel,

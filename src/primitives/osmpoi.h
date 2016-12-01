@@ -40,21 +40,8 @@ public:
 
     Position(double aLat, double aLon) : mLat(aLat), mLon(aLon){};
 
-    double getLatDegree() { return mLat; };
-    double getLonDegree() { return mLon; };
-  };
-
-  struct LabelBall {
-    Position mPos;
-    double mBallRadius;
-
-    std::string mLabel;
-    double mLabelFactor;
-
-    LabelBall(const Position &aCenter, double aRadius, std::string aLabel,
-              double aFactor)
-        : mPos(aCenter), mBallRadius(aRadius), mLabel(aLabel),
-          mLabelFactor(aFactor){};
+    double getLatDegree() const { return mLat; };
+    double getLonDegree() const { return mLon; };
   };
 
 public:
@@ -76,10 +63,6 @@ public:
 
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
-
-  LabelBall
-  getCorrespondingBall(std::size_t aSplitSize,
-                       const std::unordered_set<char32_t> &aDelims) const;
 
   const mapping_helper::MappingHelper::Level *getLevel() const;
 
