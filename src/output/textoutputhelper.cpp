@@ -20,8 +20,18 @@
 #include "textoutputhelper.h"
 
 #include <iomanip>
+#include <math.h>
 
 #include "osmpoi.h"
+
+namespace text_output {
+const int32_t RADIUS_PRECISION = 3;
+
+double ceil(double aValue, int32_t aPrecision) {
+  return std::ceil(aValue * std::pow(10, aPrecision)) /
+         std::pow(10, aPrecision);
+}
+}
 
 bool text_output::TextOutputHelper::writeBallsFile(
     const std::vector<label_helper::LabelHelper::LabelBall> &aBalls,
@@ -37,10 +47,12 @@ bool text_output::TextOutputHelper::writeBallsFile(
   file << aBalls.size();
 
   for (auto &ball : aBalls) {
+    double radius_ceiled =
+        text_output::ceil(ball.mBallRadius, RADIUS_PRECISION);
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
-         << (int32_t)(ball.mBallRadius);
+         << std::setprecision(RADIUS_PRECISION) << radius_ceiled;
   }
 
   file.close();
@@ -67,12 +79,14 @@ bool text_output::TextOutputHelper::writeCompleteFile(
     while (label.find("\n") != label.npos) {
       label.replace(label.find('\n'), 1, "\\n");
     }
+    double radius_ceiled =
+        text_output::ceil(ball.mBallRadius, RADIUS_PRECISION);
 
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
-         << std::fixed << std::setprecision(2) << ball.mBallRadius << aSep
-         << ball.mOsmId << aSep << "'" << label << "'" << aSep
+         << std::fixed << std::setprecision(RADIUS_PRECISION) << radius_ceiled
+         << aSep << ball.mOsmId << aSep << "'" << label << "'" << aSep
          << ball.mLabelFactor;
   }
 
