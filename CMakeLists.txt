@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 3.0)
 
 project(osm_input)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+
+find_package(Cairo REQUIRED)
+find_package(Freetype REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(Freetype REQUIRED)
 
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
@@ -39,9 +42,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects 
 
 set(MY_LINK_LIBS
     osmpbf
+    ${CAIRO_LIBRARIES}
+    ${FREETYPE_LIBRARIES}
     ${PROTOBUF_LIBRARIES}
     ${ZLIB_LIBRARIES}
-    ${FREETYPE_LIBRARIES}
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES_CPP})
