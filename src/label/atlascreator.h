@@ -20,10 +20,11 @@
 #ifndef ATLASCREATOR_H
 #define ATLASCREATOR_H
 
-#include <unordered_set>
 #include <string.h>
+#include <unordered_set>
 
-// for the use of the freetype library compare https://www.freetype.org/freetype2/docs/tutorial/index.html
+// for the use of the freetype library compare
+// https://www.freetype.org/freetype2/docs/tutorial/index.html
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
@@ -32,21 +33,20 @@
 
 namespace atlas_creator {
 
-class AtlasCreator
-{
+class AtlasCreator {
 public:
-  AtlasCreator(const std::string& aFont);
-  
+  AtlasCreator(const std::string &aFont);
+
   bool addLetter(char32_t aLetter);
-  
-  void createFontAtlas(const std::string& aName) const;
+
+  void createFontAtlas(const std::string &aName) const;
+
 private:
   std::unordered_set<char32_t> mAlphabet;
-  
-  FT_Library  mFTLib;
+
+  FT_Library mFTLib;
   mutable FT_Face mFont;
 };
-
 }
 
 #endif // ATLASCREATOR_H
