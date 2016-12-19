@@ -24,75 +24,64 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+// for the use of the freetype library compare
+// https://www.freetype.org/freetype2/docs/tutorial/index.html
+#include <ft2build.h>
+#include FT_FREETYPE_H
+#include FT_GLYPH_H
 
 namespace fonts {
 
 class Font {
 private:
-  struct Glyph {
-    char32_t mLetter;
-    std::size_t mIndex;
-
-    int32_t mAdvance;
-    double mAdvanceRatio;
-
-    Glyph(char32_t aLetter, std::size_t aIdx, int32_t aAdv, int32_t aGlyphWidth)
-        : mLetter(aLetter), mIndex(aIdx), mAdvance(aAdv),
-          mAdvanceRatio((double)aAdv / (double)aGlyphWidth){};
-  };
-
   struct Kerning {
     char32_t mPredecessor;
     char32_t mSuccessor;
 
     int32_t mKerning;
-    double mKerningRatio;
 
-    Kerning(char32_t aPred, char32_t aSucc, int32_t aKern, int32_t aGlyphWidth)
-        : mPredecessor(aPred), mSuccessor(aSucc), mKerning(aKern),
-          mKerningRatio((double)aKern / (double)aGlyphWidth){};
+    Kerning(char32_t aPred, char32_t aSucc, int32_t aKern)
+        : mPredecessor(aPred), mSuccessor(aSucc), mKerning(aKern){};
+  };
+
+  struct Glyph {
+    char32_t mLetter;
+    int32_t mAdvance;
+    std::unordered_map<char32_t, Kerning> mKerning;
+
+    Glyph(char32_t aLetter, int32_t aAdv) : mLetter(aLetter), mAdvance(aAdv){};
+
+    void updateKerning(std::u32string aAlphabet, Font *aFontFace);
+
+    int32_t getKerning(char32_t c);
   };
 
   // general font information
   std::string mName;
   std::string mStyle;
-  char32_t mDefault;
 
-  int32_t mGlyph_Asc;
-  int32_t mGlyph_Desc;
-  int32_t mGlyph_Width;
-  int32_t mGlyph_Height;
+  FT_Library mFTLib;
+  mutable FT_Face mFace;
+
+  std::u32string mCurrentAlphabet;
 
   // Glyph specific information
   std::map<char32_t, Glyph> mAlphabet;
-
   std::vector<std::vector<Kerning>> mKerning;
 
 public:
   Font(const std::string &configPath);
 
-  int32_t computeTextLength(const std::u32string &aStr) const;
+  int32_t computeTextLength(const std::u32string &aStr);
 
-  const std::unordered_set<char32_t> &getUnsupportedCharacters() const;
+  void createFontAtlas(const std::string &aName) const;
 
-  std::u32string createFontString(const std::u32string &aString) const;
-
-  std::u32string createFontString(const std::u32string &aString,
-                                  const char32_t aSkip) const;
-
-  std::u32string
-  createFontString(const std::u32string &aString,
-                   const std::unordered_set<char32_t> &aSkip) const;
-
-  int32_t getGlyphWidth() const { return mGlyph_Width; };
-
-private:
-  std::map<char32_t, Glyph>::const_iterator
-  getLetter(const char32_t aChar) const;
-
-  mutable std::unordered_set<char32_t> mUnsupported;
+  FT_Face *getFontFace() { return &mFace; };
+  int32_t getMeanLetterWidth() const;
 };
 }
 

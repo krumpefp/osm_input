@@ -37,14 +37,13 @@
 #include "utf8helper.h"
 
 namespace {
-const double SPLIT_SIZE = 15;
+const std::size_t LABEL_SPLIT_SIZE = 15;
 const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
 
 typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
 }
 
 int main(int argc, char **argv) {
-
   //   label_helper::LabelHelper lh("font.info", 15., DELIMITERS);
   //
   //   //   std::string label = argv[1];
@@ -89,14 +88,13 @@ int main(int argc, char **argv) {
       "-m", "--mapping",
       "path to the json file defining the tag to class mapping.",
       ARG_TYPES::STRING);
+  args.addArgumentRequired("-f", "--font", "font information, ttf file path.",
+                           ARG_TYPES::STRING);
 
   // optional arguments
   args.addArgument("-p", "--population", "file containing extra population "
                                          "information for some human "
                                          "settlement pois",
-                   ARG_TYPES::STRING);
-  args.addArgument("-f", "--font",
-                   "font information, csv file. Default 'font.info'",
                    ARG_TYPES::STRING);
   args.addArgument("-c", "--cities",
                    "if set, city (human settlement) labels are imported",
@@ -135,16 +133,15 @@ int main(int argc, char **argv) {
   // required arguments
   std::string pbfPath = args.getValue<std::string>("-i");
   std::string jsonPath = args.getValue<std::string>("-m");
+  std::string fontPath = args.getValue<std::string>("-f");
 
   // optional arguments
   std::string popPath =
       (args.isSet("-p")) ? args.getValue<std::string>("-p") : "";
-  std::string fontPath =
-      (args.isSet("-f")) ? args.getValue<std::string>("-f") : "font.info";
   int threadCount = (args.isSet("-tc")) ? args.getValue<int>("-tc") : 4;
   int blobCount = (args.isSet("-bc")) ? args.getValue<int>("-bc") : 2;
 
-  label_helper::LabelHelper labelHelper(fontPath, SPLIT_SIZE, DELIMITERS);
+  label_helper::LabelHelper labelHelper(fontPath, LABEL_SPLIT_SIZE, DELIMITERS);
 
   debug_timer::Timer t;
   t.start();
@@ -196,11 +193,19 @@ int main(int argc, char **argv) {
 
   std::vector<label_helper::LabelHelper::LabelBall> balls;
   balls.reserve(pois.size());
-  for (auto it = pois.begin(), end = pois.end(); it != end;) {
-    balls.push_back(labelHelper.computeLabelBall(*it));
-    //     balls.push_back(it->getCorrespondingBall(SPLIT_SIZE, DELIMITERS));
-    ++it;
+  std::size_t count = 0;
+  for (const auto &poi : pois) {
+    std::cout << "Computing label ball for label " << count << ": "
+              << poi.getName() << std::endl;
+    balls.push_back(labelHelper.computeLabelBall(poi));
+    ++count;
   }
+
+  std::cout << "Writing font atlas to files ... " << std::endl;
+
+  labelHelper.outputFontAtlas("TestFont");
+
+  std::cout << "... successfull!" << std::endl;
 
   std::string outputname =
       (pbfPath.find("/") == pbfPath.npos)

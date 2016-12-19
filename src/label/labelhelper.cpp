@@ -17,7 +17,7 @@
  *
  */
 
-#include "label/labelhelper.h"
+#include "labelhelper.h"
 
 #include "utf8helper.h"
 
@@ -76,10 +76,10 @@ toLabelSplit(const std::u32string &aLabel, std::size_t aSplitPos,
 }
 
 label_helper::LabelHelper::LabelHelper(
-    const std::string &aFontConfigPath, double aSplitSize,
+    const std::string &aFontTTFPath, int32_t aSplitSize,
     const std::unordered_set<char32_t> &aSplitPoints)
-    : mFont(aFontConfigPath), mSplitSize(aSplitSize),
-      mSplitSizePx((int32_t)(aSplitSize * mFont.getGlyphWidth())),
+    : mFont(aFontTTFPath),
+      mSplitSizePx(aSplitSize * mFont.getMeanLetterWidth()),
       mSplitPoints(aSplitPoints) {
   for (std::size_t i = 0; i < utf8_helper::UTF8Helper::BLANK_COUNT; ++i) {
     mSpaces.insert(utf8_helper::UTF8Helper::BLANK[i]);
@@ -100,15 +100,14 @@ label_helper::LabelHelper::computeLabelBall(
     label = "icon:" + aOsmPoi.getLevel()->mIconName;
   } else {
     int32_t l = computeLabelSize(aOsmPoi.getName());
-    if (computeLabelSize(aOsmPoi.getName()) > mSplitSizePx) {
+    if (l > mSplitSizePx) {
       label = computeLabelSplit(aOsmPoi.getName());
     } else {
       label = aOsmPoi.getName();
     }
 
     std::pair<int32_t, int32_t> size = computeLabelSplitSize(label);
-    ballRadius = (double)std::max(size.first, size.second) /
-                 (double)mFont.getGlyphWidth();
+    ballRadius = std::max(size.first, size.second) / 2;
   }
 
   ballRadius *= aOsmPoi.getLevel()->mLevelFactor;
@@ -156,6 +155,10 @@ std::string label_helper::LabelHelper::computeLabelSplit(
   s = label_u32.substr(label_u32.size() - 1);
   if (mNewLines.count(label_u32.substr(label_u32.size() - 1)) > 0) {
     label_u32 = label_u32.substr(0, label_u32.size() - 1);
+  }
+
+  if (label_u32.size() <= 1) {
+    return utf8_helper::UTF8Helper::toByteString(label_u32);
   }
 
   std::u32string result = std::u32string();
@@ -239,22 +242,9 @@ std::string label_helper::LabelHelper::computeLabelSplit(
     }
   }
 
-  return labelify(result);
+  return utf8_helper::UTF8Helper::toByteString(result);
 }
 
-const std::unordered_set<char32_t> &
-label_helper::LabelHelper::getUnsupportedCharacters() const {
-  return mFont.getUnsupportedCharacters();
-}
-
-std::string
-label_helper::LabelHelper::labelify(const std::string &aLabel) const {
-  return labelify(utf8_helper::UTF8Helper::toUTF8String(aLabel));
-}
-
-std::string
-label_helper::LabelHelper::labelify(const std::u32string &aLabel) const {
-  std::u32string label = mFont.createFontString(aLabel, label_helper::NEWLINE);
-
-  return utf8_helper::UTF8Helper::toByteString(label);
+void label_helper::LabelHelper::outputFontAtlas(std::string aAtlasName) {
+  mFont.createFontAtlas(aAtlasName);
 }

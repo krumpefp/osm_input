@@ -46,8 +46,7 @@ public:
   };
 
 private:
-  fonts::Font mFont;
-  double mSplitSize;
+  mutable fonts::Font mFont;
   int32_t mSplitSizePx;
 
   const std::unordered_set<char32_t> mSplitPoints;
@@ -56,7 +55,7 @@ private:
   std::unordered_set<std::u32string> mNewLines;
 
 public:
-  LabelHelper(const std::string &aFontConfigPath, double aSplitSize,
+  LabelHelper(const std::string &aFontTTFPath, int32_t aSplitSize,
               const std::unordered_set<char32_t> &aSplitPoints);
 
   LabelBall computeLabelBall(const osm_input::OsmPoi &aOsmPoi) const;
@@ -72,9 +71,7 @@ public:
 
   const std::unordered_set<char32_t> &getUnsupportedCharacters() const;
 
-  std::string labelify(const std::string &aLabel) const;
-
-  std::string labelify(const std::u32string &aLabel) const;
+  void outputFontAtlas(std::string aAtlasName);
 };
 }
 
