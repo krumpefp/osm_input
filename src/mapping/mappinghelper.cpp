@@ -28,8 +28,8 @@
 typedef mapping_helper::MappingHelper::Constraint Constraint;
 typedef mapping_helper::MappingHelper::Level Level;
 
-mapping_helper::MappingHelper::Constraint::Constraint(
-    const Json::Value &aJson) {
+mapping_helper::MappingHelper::Constraint::Constraint(const Json::Value& aJson)
+{
   if (aJson.isMember("equals")) {
     mType = Constraint::ConstraintType::EQUALS;
     mStringComp = aJson["equals"].asString();
@@ -46,27 +46,29 @@ mapping_helper::MappingHelper::Constraint::Constraint(
   mTag = aJson["tag"].asString();
 }
 
-std::string mapping_helper::MappingHelper::Constraint::toString() const {
+std::string
+mapping_helper::MappingHelper::Constraint::toString() const
+{
   std::string result = "";
   switch (mType) {
-  case Constraint::ConstraintType::EQUALS: {
-    result = "(tag " + mTag + " == " + mStringComp + ")";
-    break;
-  }
-  case Constraint::ConstraintType::GREATER: {
-    result = "(tag " + mTag + " >= " + std::to_string(mNumericComp) + ")";
-    break;
-  }
-  case Constraint::ConstraintType::LESS: {
-    result = "(tag " + mTag + " < " + std::to_string(mNumericComp) + ")";
-    break;
-  }
-  case Constraint::ConstraintType::TAG: {
-    result = "(tag " + mTag + " exists)";
-    break;
-  }
-  default:
-    break;
+    case Constraint::ConstraintType::EQUALS: {
+      result = "(tag " + mTag + " == " + mStringComp + ")";
+      break;
+    }
+    case Constraint::ConstraintType::GREATER: {
+      result = "(tag " + mTag + " >= " + std::to_string(mNumericComp) + ")";
+      break;
+    }
+    case Constraint::ConstraintType::LESS: {
+      result = "(tag " + mTag + " < " + std::to_string(mNumericComp) + ")";
+      break;
+    }
+    case Constraint::ConstraintType::TAG: {
+      result = "(tag " + mTag + " exists)";
+      break;
+    }
+    default:
+      break;
   }
 
   return result;
@@ -75,9 +77,11 @@ std::string mapping_helper::MappingHelper::Constraint::toString() const {
 // Level
 
 mapping_helper::MappingHelper::Level::Level(
-    const std::vector<Constraint> &aConstraints, const Json::Value &aJson,
-    uint64_t aId)
-    : mIconName("") {
+  const std::vector<Constraint>& aConstraints,
+  const Json::Value& aJson,
+  uint64_t aId)
+  : mIconName("")
+{
   mName = aJson["level"].asString();
   mLevelId = aId;
   mConstraints = aConstraints;
@@ -88,7 +92,8 @@ mapping_helper::MappingHelper::Level::Level(
   } else {
     std::printf("Level description does not contain any factor information:\n\t\
 	  Level name %s and id %lu\n",
-                mName.c_str(), mLevelId);
+                mName.c_str(),
+                mLevelId);
   }
 
   // check for icon
@@ -98,15 +103,17 @@ mapping_helper::MappingHelper::Level::Level(
 
   // check for constraints
   if (aJson.isMember("constraints")) {
-    for (const auto &c : aJson["constraints"]) {
+    for (const auto& c : aJson["constraints"]) {
       mConstraints.emplace_back(c);
     }
   }
 }
 
-std::string mapping_helper::MappingHelper::Level::toString() const {
+std::string
+mapping_helper::MappingHelper::Level::toString() const
+{
   std::string constraints = "";
-  for (const auto &c : mConstraints) {
+  for (const auto& c : mConstraints) {
     if (constraints != "")
       constraints += ", ";
     constraints += c.toString();
@@ -114,33 +121,39 @@ std::string mapping_helper::MappingHelper::Level::toString() const {
   return "(Level name " + mName + ", constraints: [" + constraints + "])";
 }
 
-bool Level::
-operator==(const mapping_helper::MappingHelper::Level &aOther) const {
+bool
+Level::operator==(const mapping_helper::MappingHelper::Level& aOther) const
+{
   return this->mLevelId == aOther.mLevelId;
 }
 
-bool Level::
-operator!=(const mapping_helper::MappingHelper::Level &aOther) const {
+bool
+Level::operator!=(const mapping_helper::MappingHelper::Level& aOther) const
+{
   return !(*this == aOther);
 }
 
-bool Level::
-operator<(const mapping_helper::MappingHelper::Level &aOther) const {
+bool
+Level::operator<(const mapping_helper::MappingHelper::Level& aOther) const
+{
   return this->mLevelId > aOther.mLevelId;
 }
 
-bool Level::
-operator>(const mapping_helper::MappingHelper::Level &aOther) const {
+bool
+Level::operator>(const mapping_helper::MappingHelper::Level& aOther) const
+{
   return aOther < *this;
 }
 
-bool Level::
-operator<=(const mapping_helper::MappingHelper::Level &aOther) const {
+bool
+Level::operator<=(const mapping_helper::MappingHelper::Level& aOther) const
+{
   return !(*this > aOther);
 }
 
-bool Level::
-operator>=(const mapping_helper::MappingHelper::Level &aOther) const {
+bool
+Level::operator>=(const mapping_helper::MappingHelper::Level& aOther) const
+{
   return !(*this < aOther);
 }
 
@@ -149,16 +162,18 @@ operator>=(const mapping_helper::MappingHelper::Level &aOther) const {
 // begin LevelTree
 
 mapping_helper::MappingHelper::LevelTree::LevelTree(
-    mapping_helper::MappingHelper::LevelTree *aParent, const Json::Value &aData,
-    const std::vector<mapping_helper::MappingHelper::Constraint>
-        &aParentConstraints,
-    uint32_t &aNodeId)
-    : mParent(aParent) {
+  mapping_helper::MappingHelper::LevelTree* aParent,
+  const Json::Value& aData,
+  const std::vector<mapping_helper::MappingHelper::Constraint>&
+    aParentConstraints,
+  uint32_t& aNodeId)
+  : mParent(aParent)
+{
   mName = aData["level"].asString();
 
   // handle the level constraints
   if (aData.isMember("constraints")) {
-    for (const auto &c : aData["constraints"]) {
+    for (const auto& c : aData["constraints"]) {
       mConstraints.emplace_back(c);
     }
   }
@@ -169,11 +184,11 @@ mapping_helper::MappingHelper::LevelTree::LevelTree(
     mNodeId = 0;
 
     std::vector<Constraint> localConstraints = aParentConstraints;
-    localConstraints.insert(localConstraints.begin(), mConstraints.begin(),
-                            mConstraints.end());
+    localConstraints.insert(
+      localConstraints.begin(), mConstraints.begin(), mConstraints.end());
 
     // determine the number of sublevels
-    for (const auto &lvl : aData["sublevels"]) {
+    for (const auto& lvl : aData["sublevels"]) {
       mChildren.emplace_back(this, lvl, localConstraints, aNodeId);
     }
   } else {
@@ -184,22 +199,26 @@ mapping_helper::MappingHelper::LevelTree::LevelTree(
   }
 }
 
-void mapping_helper::MappingHelper::LevelTree::computeLevelList(
-    std::vector<const Level *> &aLevels) const {
+void
+mapping_helper::MappingHelper::LevelTree::computeLevelList(
+  std::vector<const Level*>& aLevels) const
+{
   if (mIsLeaf) {
     aLevels.push_back(mLevel);
   } else {
-    for (auto &child : mChildren) {
+    for (auto& child : mChildren) {
       child.computeLevelList(aLevels);
     }
   }
 }
 
-std::size_t mapping_helper::MappingHelper::LevelTree::computeTreeSize() const {
+std::size_t
+mapping_helper::MappingHelper::LevelTree::computeTreeSize() const
+{
   std::size_t treeSize = 1;
   if (!mIsLeaf) {
     treeSize = 0;
-    for (auto &child : mChildren) {
+    for (auto& child : mChildren) {
       treeSize += child.computeTreeSize();
     }
   }
@@ -208,9 +227,10 @@ std::size_t mapping_helper::MappingHelper::LevelTree::computeTreeSize() const {
 }
 
 std::string
-mapping_helper::MappingHelper::LevelTree::toString(std::size_t aDepth) const {
+mapping_helper::MappingHelper::LevelTree::toString(std::size_t aDepth) const
+{
   std::string constraints = "";
-  for (const auto &c : mConstraints) {
+  for (const auto& c : mConstraints) {
     if (constraints != "")
       constraints += ", ";
     constraints += c.toString();
@@ -223,7 +243,7 @@ mapping_helper::MappingHelper::LevelTree::toString(std::size_t aDepth) const {
              "', constraints: [" + constraints + "]";
   } else {
     std::string subtree = "";
-    for (const auto &child : mChildren) {
+    for (const auto& child : mChildren) {
       subtree += child.toString(aDepth + 1);
     }
     result = "\n" + prefix + "SUBTREE " + std::to_string(mNodeId) + " '" +
@@ -237,7 +257,8 @@ mapping_helper::MappingHelper::LevelTree::toString(std::size_t aDepth) const {
 
 // begin MappingHelper
 
-mapping_helper::MappingHelper::MappingHelper(std::string &aInputPath) {
+mapping_helper::MappingHelper::MappingHelper(std::string& aInputPath)
+{
   std::ifstream inputFile(aInputPath);
   if (!inputFile.is_open()) {
     std::printf("[ERROR] Input file %s could not be opened!\n",
@@ -253,7 +274,7 @@ mapping_helper::MappingHelper::MappingHelper(std::string &aInputPath) {
 
   mCountLevels = mLevelTree->computeTreeSize();
 
-  std::vector<const Level *> lvls;
+  std::vector<const Level*> lvls;
   mLevelTree->computeLevelList(lvls);
   mDefaultLevel = lvls.back();
 
@@ -264,12 +285,14 @@ namespace {
 
 typedef mapping_helper::MappingHelper::Constraint Constraint;
 typedef mapping_helper::MappingHelper::Constraint::ConstraintType
-    ConstraintType;
+  ConstraintType;
 typedef mapping_helper::MappingHelper::Level Level;
 
-std::string getTagValue(const std::vector<osm_input::Tag> &aTags,
-                        const std::string &aTagName) {
-  for (auto &tag : aTags) {
+std::string
+getTagValue(const std::vector<osm_input::Tag>& aTags,
+            const std::string& aTagName)
+{
+  for (auto& tag : aTags) {
     if (tag.mKey == aTagName) {
       return tag.mValue;
     }
@@ -278,8 +301,10 @@ std::string getTagValue(const std::vector<osm_input::Tag> &aTags,
   return "<undefined>";
 }
 
-bool checkConstraint(const Constraint &aConstraint,
-                     const std::vector<osm_input::Tag> &aTags) {
+bool
+checkConstraint(const Constraint& aConstraint,
+                const std::vector<osm_input::Tag>& aTags)
+{
   std::string tagValue = getTagValue(aTags, aConstraint.mTag);
   if (tagValue == "<undefined>") {
     return false;
@@ -288,29 +313,30 @@ bool checkConstraint(const Constraint &aConstraint,
   bool result = false;
 
   switch (aConstraint.mType) {
-  case ConstraintType::EQUALS:
-    result = (aConstraint.mStringComp == tagValue);
-    break;
-  case ConstraintType::GREATER:
-    result = (aConstraint.mNumericComp <= std::atoi(tagValue.c_str()));
-    break;
-  case ConstraintType::LESS:
-    result = (aConstraint.mNumericComp > std::atoi(tagValue.c_str()));
-    break;
-  case ConstraintType::TAG:
-    result = (tagValue != "<undefined>");
-    break;
-  case ConstraintType::DEFAULT:
-    result = true;
-    break;
+    case ConstraintType::EQUALS:
+      result = (aConstraint.mStringComp == tagValue);
+      break;
+    case ConstraintType::GREATER:
+      result = (aConstraint.mNumericComp <= std::atoi(tagValue.c_str()));
+      break;
+    case ConstraintType::LESS:
+      result = (aConstraint.mNumericComp > std::atoi(tagValue.c_str()));
+      break;
+    case ConstraintType::TAG:
+      result = (tagValue != "<undefined>");
+      break;
+    case ConstraintType::DEFAULT:
+      result = true;
+      break;
   }
 
   return result;
 }
 
-bool checkConstraints(const Level &aLevel,
-                      const std::vector<osm_input::Tag> &aTags) {
-  for (const auto &c : aLevel.mConstraints) {
+bool
+checkConstraints(const Level& aLevel, const std::vector<osm_input::Tag>& aTags)
+{
+  for (const auto& c : aLevel.mConstraints) {
     if (!checkConstraint(c, aTags))
       return false;
   }
@@ -319,10 +345,13 @@ bool checkConstraints(const Level &aLevel,
 }
 }
 
-const Level *mapping_helper::MappingHelper::LevelTree::computeLevel(
-    const std::vector<osm_input::Tag> &aTags, const Level *aDefault) const {
+const Level*
+mapping_helper::MappingHelper::LevelTree::computeLevel(
+  const std::vector<osm_input::Tag>& aTags,
+  const Level* aDefault) const
+{
   bool matches = (mConstraints.size() == 0);
-  for (const auto &c : mConstraints) {
+  for (const auto& c : mConstraints) {
     matches = matches || checkConstraint(c, aTags);
   }
   if (!matches)
@@ -331,7 +360,7 @@ const Level *mapping_helper::MappingHelper::LevelTree::computeLevel(
   if (mIsLeaf) {
     return mLevel;
   } else {
-    for (const auto &subtree : mChildren) {
+    for (const auto& subtree : mChildren) {
       auto level = subtree.computeLevel(aTags, aDefault);
       if (level->mLevelId != aDefault->mLevelId) {
         return level;
@@ -342,15 +371,19 @@ const Level *mapping_helper::MappingHelper::LevelTree::computeLevel(
   }
 }
 
-const Level *mapping_helper::MappingHelper::computeLevel(
-    const std::vector<osm_input::Tag> &aTags) const {
-  auto *level = mLevelTree->computeLevel(aTags, mDefaultLevel);
+const Level*
+mapping_helper::MappingHelper::computeLevel(
+  const std::vector<osm_input::Tag>& aTags) const
+{
+  auto* level = mLevelTree->computeLevel(aTags, mDefaultLevel);
 
   return level;
 }
 
-std::vector<const Level *> mapping_helper::MappingHelper::getLevels() const {
-  std::vector<const Level *> result;
+std::vector<const Level*>
+mapping_helper::MappingHelper::getLevels() const
+{
+  std::vector<const Level*> result;
   result.reserve(mCountLevels);
 
   mLevelTree->computeLevelList(result);
@@ -358,12 +391,15 @@ std::vector<const Level *> mapping_helper::MappingHelper::getLevels() const {
   return result;
 }
 
-const mapping_helper::MappingHelper::Level *
-mapping_helper::MappingHelper::getLevelDefault() const {
+const mapping_helper::MappingHelper::Level*
+mapping_helper::MappingHelper::getLevelDefault() const
+{
   return mDefaultLevel;
 }
 
-void mapping_helper::MappingHelper::test() {
+void
+mapping_helper::MappingHelper::test()
+{
   std::printf("Mapping Helper Test function\n");
 
   std::vector<osm_input::Tag> tags;
@@ -381,11 +417,11 @@ void mapping_helper::MappingHelper::test() {
 
   auto lvl2 = this->computeLevel(tags);
 
-  std::printf("Poi %s mapped to level %s\n", "Point 1",
-              lvl1->toString().c_str());
+  std::printf(
+    "Poi %s mapped to level %s\n", "Point 1", lvl1->toString().c_str());
 
-  std::printf("Poi %s mapped to level %s\n", "Point 2",
-              lvl2->toString().c_str());
+  std::printf(
+    "Poi %s mapped to level %s\n", "Point 2", lvl2->toString().c_str());
 }
 
 // end MappingHelper

@@ -38,77 +38,56 @@
 
 namespace {
 const std::size_t LABEL_SPLIT_SIZE = 15;
-const std::unordered_set<char32_t> DELIMITERS({' ', '-', '/'});
+const std::unordered_set<char32_t> DELIMITERS({ ' ', '-', '/' });
 
 typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
 }
 
-int main(int argc, char **argv) {
-  //   label_helper::LabelHelper lh("font.info", 15., DELIMITERS);
-  //
-  //   //   std::string label = argv[1];
-  //   std::string label = "Hallo du Deppenkind\n";
-  //
-  //   int32_t size = labelHelper.computeLabelSize(label);
-  //
-  //   std::cout << "Label " << label << " has size " << size << std::endl
-  //             << "Label will be converted to: '" <<
-  //             labelHelper.labelify(label)
-  //             << "'" << std::endl;
-  //
-  //   std::string labelSplit = labelHelper.computeLabelSplit(label,
-  //   DELIMITERS);
-  //   std::cout << "Split of " << label << " was computed to be " << labelSplit
-  //             << " => " << labelHelper.labelify(labelSplit) << std::endl;
-  //
-  //   auto unsupported = labelHelper.getUnsupportedCharacters();
-  //
-  //   if (unsupported.size() > 0) {
-  //     std::cout << "Found some unsupported characters: ";
-  //     for (auto c : unsupported) {
-  //       std::string sz =
-  //           utf8_helper::UTF8Helper::toByteString(std::u32string() + c);
-  //       std::cout << sz << ", ";
-  //     }
-  //
-  //     std::cout << std::endl;
-  //   }
-  //
-  //   return 0;
-
+int
+main(int argc, char** argv)
+{
   argumentparser::ArgumentParser args("Osm_Input",
                                       "Program to import poi data from osm.pbf "
                                       "source files. Poi candidates are named "
                                       "human settlements as well as amenities");
 
   // required arguments
-  args.addArgumentRequired("-i", "--input", "path to the input .pbf file",
-                           ARG_TYPES::STRING);
   args.addArgumentRequired(
-      "-m", "--mapping",
-      "path to the json file defining the tag to class mapping.",
-      ARG_TYPES::STRING);
-  args.addArgumentRequired("-f", "--font", "font information, ttf file path.",
-                           ARG_TYPES::STRING);
+    "-i", "--input", "path to the input .pbf file", ARG_TYPES::STRING);
+  args.addArgumentRequired(
+    "-m",
+    "--mapping",
+    "path to the json file defining the tag to class mapping.",
+    ARG_TYPES::STRING);
+  args.addArgumentRequired(
+    "-f", "--font", "font information, ttf file path.", ARG_TYPES::STRING);
 
   // optional arguments
-  args.addArgument("-p", "--population", "file containing extra population "
-                                         "information for some human "
-                                         "settlement pois",
+  args.addArgument("-p",
+                   "--population",
+                   "file containing extra population "
+                   "information for some human "
+                   "settlement pois",
                    ARG_TYPES::STRING);
-  args.addArgument("-c", "--cities",
+  args.addArgument("-c",
+                   "--cities",
                    "if set, city (human settlement) labels are imported",
                    ARG_TYPES::BINARY);
-  args.addArgument("-g", "--general", "if set, general poi labels are imported",
+  args.addArgument("-g",
+                   "--general",
+                   "if set, general poi labels are imported",
                    ARG_TYPES::BINARY);
 
   args.addArgument(
-      "-tc", "--threadcount",
-      "define the number of threads used during the pbf import. Default 4",
-      ARG_TYPES::INT);
-  args.addArgument("-bc", "--blobcount", "define the number of blobs used per "
-                                         "thread during the pbf import. "
-                                         "Default 2",
+    "-tc",
+    "--threadcount",
+    "define the number of threads used during the pbf import. Default 4",
+    ARG_TYPES::INT);
+  args.addArgument("-bc",
+                   "--blobcount",
+                   "define the number of blobs used per "
+                   "thread during the pbf import. "
+                   "Default 2",
                    ARG_TYPES::INT);
 
   try {
@@ -117,7 +96,7 @@ int main(int argc, char **argv) {
                 << args.programHelp() << std::endl;
       return 1;
     }
-  } catch (const std::exception &e) {
+  } catch (const std::exception& e) {
     std::cerr << "Parsing command line parameter failed with explanation:\n"
               << e.what() << std::endl;
     std::cerr << "Terminating ..." << std::endl;
@@ -137,7 +116,7 @@ int main(int argc, char **argv) {
 
   // optional arguments
   std::string popPath =
-      (args.isSet("-p")) ? args.getValue<std::string>("-p") : "";
+    (args.isSet("-p")) ? args.getValue<std::string>("-p") : "";
   int threadCount = (args.isSet("-tc")) ? args.getValue<int>("-tc") : 4;
   int blobCount = (args.isSet("-bc")) ? args.getValue<int>("-bc") : 2;
 
@@ -154,14 +133,14 @@ int main(int argc, char **argv) {
     popPath = std::string(argv[2]);
     pop_input::PopulationInput popInput(popPath);
     populations = popInput.getPopulationsMap();
-    pois = input.importPoiData(args.getValue<bool>("-c"),
-                               args.getValue<bool>("-g"), populations);
+    pois = input.importPoiData(
+      args.getValue<bool>("-c"), args.getValue<bool>("-g"), populations);
   } else {
-    pois = input.importPoiData(args.getValue<bool>("-c"),
-                               args.getValue<bool>("-g"));
+    pois =
+      input.importPoiData(args.getValue<bool>("-c"), args.getValue<bool>("-g"));
   }
 
-  auto &mh = input.getMappingHelper();
+  auto& mh = input.getMappingHelper();
 
   t.createTimepoint();
 
@@ -171,12 +150,14 @@ int main(int argc, char **argv) {
 
   std::printf("Dataset of size: %lu\t was imported within %4.2f "
               "seconds.\n\tSorting objects took %4.2f seconds.\n",
-              pois.size(), t.getTimes()[0], t.getTimes()[1]);
+              pois.size(),
+              t.getTimes()[0],
+              t.getTimes()[1]);
 
   {
     std::vector<osm_input::OsmPoi> undefs;
-    auto *defaultLvl = mh.getLevelDefault();
-    for (const auto &p : pois) {
+    auto* defaultLvl = mh.getLevelDefault();
+    for (const auto& p : pois) {
       if (*p.getLevel() == *defaultLvl) {
         undefs.push_back(p);
       }
@@ -194,9 +175,9 @@ int main(int argc, char **argv) {
   std::vector<label_helper::LabelHelper::LabelBall> balls;
   balls.reserve(pois.size());
   std::size_t count = 0;
-  for (const auto &poi : pois) {
-    std::cout << "Computing label ball for label " << count << ": "
-              << poi.getName() << std::endl;
+  for (const auto& poi : pois) {
+    //     std::cout << "Computing label ball for label " << count << ": "
+    //               << poi.getName() << std::endl;
     balls.push_back(labelHelper.computeLabelBall(poi));
     ++count;
   }
@@ -208,9 +189,9 @@ int main(int argc, char **argv) {
   std::cout << "... successfull!" << std::endl;
 
   std::string outputname =
-      (pbfPath.find("/") == pbfPath.npos)
-          ? pbfPath.substr(0, pbfPath.size())
-          : pbfPath.substr(pbfPath.rfind('/') + 1, pbfPath.size());
+    (pbfPath.find("/") == pbfPath.npos)
+      ? pbfPath.substr(0, pbfPath.size())
+      : pbfPath.substr(pbfPath.rfind('/') + 1, pbfPath.size());
 
   std::string outputpath = outputname + ".balls.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());

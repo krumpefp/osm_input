@@ -30,43 +30,51 @@
 
 namespace osm_input {
 
-class OsmPoi {
+class OsmPoi
+{
 public:
-  struct Position {
+  struct Position
+  {
     double mLat;
     double mLon;
 
-    Position() : mLat(0), mLon(0){};
+    Position()
+      : mLat(0)
+      , mLon(0){};
 
-    Position(double aLat, double aLon) : mLat(aLat), mLon(aLon){};
+    Position(double aLat, double aLon)
+      : mLat(aLat)
+      , mLon(aLon){};
 
     double getLatDegree() const { return mLat; };
     double getLonDegree() const { return mLon; };
   };
 
 public:
-  OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
-         const std::vector<osm_input::Tag> &aTags,
-         const mapping_helper::MappingHelper &aMh);
+  OsmPoi(int64_t aOsmId,
+         osm_input::OsmPoi::Position aPos,
+         const std::vector<osm_input::Tag>& aTags,
+         const mapping_helper::MappingHelper& aMh);
 
-  OsmPoi(int64_t aOsmId, osm_input::OsmPoi::Position aPos,
-         const std::vector<osm_input::Tag> &aTags,
-         const mapping_helper::MappingHelper::Level *aLvl);
+  OsmPoi(int64_t aOsmId,
+         osm_input::OsmPoi::Position aPos,
+         const std::vector<osm_input::Tag>& aTags,
+         const mapping_helper::MappingHelper::Level* aLvl);
 
   // comparison operators
-  bool operator==(const OsmPoi &aOther) const;
-  bool operator!=(const OsmPoi &aOther) const;
-  bool operator<(const OsmPoi &aOther) const;
-  bool operator>(const OsmPoi &aOther) const;
-  bool operator<=(const OsmPoi &aOther) const;
-  bool operator>=(const OsmPoi &aOther) const;
+  bool operator==(const OsmPoi& aOther) const;
+  bool operator!=(const OsmPoi& aOther) const;
+  bool operator<(const OsmPoi& aOther) const;
+  bool operator>(const OsmPoi& aOther) const;
+  bool operator<=(const OsmPoi& aOther) const;
+  bool operator>=(const OsmPoi& aOther) const;
 
   int64_t getOsmId() const { return mOsmId; };
   Position getPosition() const { return mPos; };
 
-  const mapping_helper::MappingHelper::Level *getLevel() const;
+  const mapping_helper::MappingHelper::Level* getLevel() const;
 
-  const std::vector<osm_input::Tag> &getTags() const;
+  const std::vector<osm_input::Tag>& getTags() const;
   std::string getTagValue(std::string aTagName) const;
 
   std::string getName() const;
@@ -76,7 +84,7 @@ public:
 private:
   int64_t mOsmId;
   Position mPos;
-  const mapping_helper::MappingHelper::Level *mPoiLevel;
+  const mapping_helper::MappingHelper::Level* mPoiLevel;
 
   std::vector<Tag> mTags;
 };

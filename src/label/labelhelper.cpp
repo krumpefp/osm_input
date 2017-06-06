@@ -30,16 +30,21 @@ const char32_t SPACE = U'\u0020';
 const std::u32string SZ_NEWLINE = std::u32string() + label_helper::NEWLINE;
 const std::u32string SZ_SPACE = std::u32string() + label_helper::SPACE;
 
-void replaceAllOf(const std::unordered_set<std::u32string> &aReplace,
-                  const std::u32string &aReplaceBy, std::u32string &aLabel) {
-  for (auto &r : aReplace) {
+void
+replaceAllOf(const std::unordered_set<std::u32string>& aReplace,
+             const std::u32string& aReplaceBy,
+             std::u32string& aLabel)
+{
+  for (auto& r : aReplace) {
     if (aLabel.find(r) != aLabel.npos) {
       aLabel.replace(aLabel.find(r), r.size(), aReplaceBy);
     }
   }
 }
 
-void trim(const char32_t &aChar, std::u32string &aLabel) {
+void
+trim(const char32_t& aChar, std::u32string& aLabel)
+{
   // trim front
   std::size_t idx = 0;
   while (aLabel[idx] == aChar) {
@@ -55,9 +60,11 @@ void trim(const char32_t &aChar, std::u32string &aLabel) {
 }
 
 std::pair<std::u32string, std::u32string>
-toLabelSplit(const std::u32string &aLabel, std::size_t aSplitPos,
-             const std::unordered_set<std::u32string> &aSpaces,
-             const std::unordered_set<std::u32string> &aNewLines) {
+toLabelSplit(const std::u32string& aLabel,
+             std::size_t aSplitPos,
+             const std::unordered_set<std::u32string>& aSpaces,
+             const std::unordered_set<std::u32string>& aNewLines)
+{
   std::u32string label1 = aLabel.substr(0, aSplitPos + 1);
   std::u32string label2 = aLabel.substr(aSplitPos + 1);
 
@@ -76,11 +83,13 @@ toLabelSplit(const std::u32string &aLabel, std::size_t aSplitPos,
 }
 
 label_helper::LabelHelper::LabelHelper(
-    const std::string &aFontTTFPath, int32_t aSplitSize,
-    const std::unordered_set<char32_t> &aSplitPoints)
-    : mFont(aFontTTFPath),
-      mSplitSizePx(aSplitSize * mFont.getMeanLetterWidth()),
-      mSplitPoints(aSplitPoints) {
+  const std::string& aFontTTFPath,
+  int32_t aSplitSize,
+  const std::unordered_set<char32_t>& aSplitPoints)
+  : mFont(aFontTTFPath)
+  , mSplitSizePx(aSplitSize * mFont.getMeanLetterWidth())
+  , mSplitPoints(aSplitPoints)
+{
   for (std::size_t i = 0; i < utf8_helper::UTF8Helper::BLANK_COUNT; ++i) {
     mSpaces.insert(utf8_helper::UTF8Helper::BLANK[i]);
   }
@@ -92,7 +101,8 @@ label_helper::LabelHelper::LabelHelper(
 
 label_helper::LabelHelper::LabelBall
 label_helper::LabelHelper::computeLabelBall(
-    const osm_input::OsmPoi &aOsmPoi) const {
+  const osm_input::OsmPoi& aOsmPoi) const
+{
   std::string label;
   double ballRadius = 4;
 
@@ -112,19 +122,25 @@ label_helper::LabelHelper::computeLabelBall(
 
   ballRadius *= aOsmPoi.getLevel()->mLevelFactor;
 
-  return LabelBall(aOsmPoi.getPosition(), aOsmPoi.getOsmId(), ballRadius, label,
+  return LabelBall(aOsmPoi.getPosition(),
+                   aOsmPoi.getOsmId(),
+                   ballRadius,
+                   label,
                    aOsmPoi.getLevel()->mLevelFactor);
 }
 
 int32_t
-label_helper::LabelHelper::computeLabelSize(const std::string &aLabel) const {
+label_helper::LabelHelper::computeLabelSize(const std::string& aLabel) const
+{
   std::u32string label_u32 = utf8_helper::UTF8Helper::toUTF8String(aLabel);
 
   return mFont.computeTextLength(label_u32);
 }
 
-std::pair<int32_t, int32_t> label_helper::LabelHelper::computeLabelSplitSize(
-    const std::string &aLabel) const {
+std::pair<int32_t, int32_t>
+label_helper::LabelHelper::computeLabelSplitSize(
+  const std::string& aLabel) const
+{
   std::pair<int32_t, int32_t> result;
   std::size_t splitPos = aLabel.find("\n");
   if (splitPos == aLabel.npos) {
@@ -138,13 +154,16 @@ std::pair<int32_t, int32_t> label_helper::LabelHelper::computeLabelSplitSize(
 }
 
 std::string
-label_helper::LabelHelper::computeLabelSplit(const std::string &aLabel) const {
+label_helper::LabelHelper::computeLabelSplit(const std::string& aLabel) const
+{
   return computeLabelSplit(aLabel, mSplitPoints);
 }
 
-std::string label_helper::LabelHelper::computeLabelSplit(
-    const std::string &aLabel,
-    const std::unordered_set<char32_t> &aDelims) const {
+std::string
+label_helper::LabelHelper::computeLabelSplit(
+  const std::string& aLabel,
+  const std::unordered_set<char32_t>& aDelims) const
+{
   std::u32string label_u32 = utf8_helper::UTF8Helper::toUTF8String(aLabel);
 
   // remove trailing newline information
@@ -181,8 +200,8 @@ std::string label_helper::LabelHelper::computeLabelSplit(
 
     while (label_u32.find(newline) != label_u32.npos) {
       newlineInfoPresent = true;
-      label_u32 = label_u32.replace(label_u32.find(newline), newline.size(),
-                                    label_helper::SZ_NEWLINE);
+      label_u32 = label_u32.replace(
+        label_u32.find(newline), newline.size(), label_helper::SZ_NEWLINE);
     }
   }
 
@@ -245,6 +264,8 @@ std::string label_helper::LabelHelper::computeLabelSplit(
   return utf8_helper::UTF8Helper::toByteString(result);
 }
 
-void label_helper::LabelHelper::outputFontAtlas(std::string aAtlasName) {
+void
+label_helper::LabelHelper::outputFontAtlas(std::string aAtlasName)
+{
   mFont.createFontAtlas(aAtlasName);
 }

@@ -12,41 +12,43 @@ find_package(ZLIB REQUIRED)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 include_directories(src
-                    src/debughelpers
-                    src/input
-                    src/label
-                    src/mapping
-                    src/output
-                    src/primitives
-                    src/statistics
-                    vendor/argument_parser/src/headers
-                    vendor/jsoncpp/dist/json
-                    vendor/osmpbf
-                    vendor/osmpbf/osmpbf/include)
+	src/config
+	src/debughelpers
+	src/input
+	src/label
+	src/mapping
+	src/output
+	src/primitives
+	src/statistics
+	vendor/argument_parser/src/headers
+	vendor/jsoncpp/dist/json
+	vendor/osmpbf
+	vendor/osmpbf/osmpbf/include)
 
 
 FILE(GLOB SOURCES_CPP src/*.cpp
-                      src/debughelpers/*.cpp
-                      src/input/*.cpp
-                      src/label/*.cpp
-                      src/mapping/*.cpp
-                      src/output/*.cpp
-                      src/primitives/*.cpp
-                      src/statistics/*.cpp
-                      vendor/argument_parser/src/*.cpp
-                      vendor/jsoncpp/dist/*.cpp)
+	src/*.cpp
+	src/debughelpers/*.cpp
+	src/input/*.cpp
+	src/label/*.cpp
+	src/mapping/*.cpp
+	src/output/*.cpp
+	src/primitives/*.cpp
+	src/statistics/*.cpp
+	vendor/argument_parser/src/*.cpp
+	vendor/jsoncpp/dist/*.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-variable -Wconversion -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -O3 -march=native")
 
 set(MY_LINK_LIBS
-    osmpbf
-    ${CAIRO_LIBRARIES}
-    ${FREETYPE_LIBRARIES}
-    ${PROTOBUF_LIBRARIES}
-    ${ZLIB_LIBRARIES}
-)
+	osmpbf
+	${CAIRO_LIBRARIES}
+	${FREETYPE_LIBRARIES}
+	${PROTOBUF_LIBRARIES}
+	${ZLIB_LIBRARIES}
+	)
 
 add_executable(${PROJECT_NAME} ${SOURCES_CPP})
 

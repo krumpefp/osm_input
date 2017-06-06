@@ -41,11 +41,21 @@ int32_t MEAN_LETTER_WITH = FONT_SIZE * 2 / 3;
 const double pow6 = 64;     // 2^6
 const double pow16 = 65536; // 2^16
 
-double fromFP26_6(int32_t aFixPoint) { return (double)aFixPoint / pow6; }
+double
+fromFP26_6(int32_t aFixPoint)
+{
+  return (double)aFixPoint / pow6;
+}
 
-double fromFP16_16(int32_t aFixPoint) { return (double)aFixPoint / pow16; }
+double
+fromFP16_16(int32_t aFixPoint)
+{
+  return (double)aFixPoint / pow16;
+}
 
-void initFontFace(FT_Library &aLib, FT_Face &aFace, std::string aFontName) {
+void
+initFontFace(FT_Library& aLib, FT_Face& aFace, std::string aFontName)
+{
   auto error = FT_Init_FreeType(&aLib);
   if (error) {
     throw std::runtime_error("Unable to load the freetype library!");
@@ -55,8 +65,8 @@ void initFontFace(FT_Library &aLib, FT_Face &aFace, std::string aFontName) {
   if (error == FT_Err_Unknown_File_Format) {
     throw std::runtime_error("Font file format is not supported!");
   } else if (error) {
-    throw std::runtime_error("Unable to open or read the font file: " +
-                             aFontName + "!");
+    throw std::runtime_error(
+      "Unable to open or read the font file: " + aFontName + "!");
   }
 
   error = FT_Set_Pixel_Sizes(aFace, FONT_SIZE, FONT_SIZE);
@@ -65,12 +75,14 @@ void initFontFace(FT_Library &aLib, FT_Face &aFace, std::string aFontName) {
   }
 }
 
-struct AlignedBMP_A8 {
+struct AlignedBMP_A8
+{
   std::vector<unsigned char> mData;
   int32_t mWidth;
   int32_t mHeight;
 
-  AlignedBMP_A8(const unsigned char *aData, int32_t aWidth, int32_t aHeight) {
+  AlignedBMP_A8(const unsigned char* aData, int32_t aWidth, int32_t aHeight)
+  {
     mWidth = cairo_format_stride_for_width(CAIRO_FORMAT_A8, aWidth);
     mHeight = aHeight;
     mData.reserve(mWidth * mHeight);
@@ -81,11 +93,13 @@ struct AlignedBMP_A8 {
     }
   }
 
-  unsigned char *getBytes() { return mData.data(); }
+  unsigned char* getBytes() { return mData.data(); }
 };
 
 // glyph struct
-void Font::Glyph::updateKerning(std::u32string aAlphabet, fonts::Font *aFont) {
+void
+Font::Glyph::updateKerning(std::u32string aAlphabet, fonts::Font* aFont)
+{
   FT_Face face = *aFont->getFontFace();
   int32_t idx = FT_Get_Char_Index(face, mLetter);
 
@@ -100,15 +114,17 @@ void Font::Glyph::updateKerning(std::u32string aAlphabet, fonts::Font *aFont) {
     auto error = FT_Get_Kerning(face, c_idx, idx, FT_KERNING_DEFAULT, &kerning);
     if (error) {
       throw std::runtime_error(
-          "Unable to get glyph kerning: " + std::to_string(c) + " - " +
-          std::to_string(mLetter) + "! Error was: " + std::to_string(error));
+        "Unable to get glyph kerning: " + std::to_string(c) + " - " +
+        std::to_string(mLetter) + "! Error was: " + std::to_string(error));
     }
     mKerning.emplace(
-        c, Kerning(c, mLetter, (int32_t)std::ceil(fromFP26_6(kerning.x))));
+      c, Kerning(c, mLetter, (int32_t)std::ceil(fromFP26_6(kerning.x))));
   }
 }
 
-int32_t Font::Glyph::getKerning(char32_t c) {
+int32_t
+Font::Glyph::getKerning(char32_t c)
+{
   auto it = mKerning.find(c);
   assert(it != mKerning.end());
 
@@ -117,7 +133,8 @@ int32_t Font::Glyph::getKerning(char32_t c) {
 }
 
 // public class functions
-fonts::Font::Font(const std::string &fontPath) {
+fonts::Font::Font(const std::string& fontPath)
+{
   initFontFace(mFTLib, mFace, fontPath);
   mName = mFace->family_name;
   mStyle = mFace->style_name;
@@ -126,7 +143,9 @@ fonts::Font::Font(const std::string &fontPath) {
             << std::endl;
 }
 
-int32_t fonts::Font::computeTextLength(const std::u32string &aStr) {
+int32_t
+fonts::Font::computeTextLength(const std::u32string& aStr)
+{
   if (aStr.size() == 0) {
     return 0;
   }
@@ -153,12 +172,12 @@ int32_t fonts::Font::computeTextLength(const std::u32string &aStr) {
                                  "! Error was: " + std::to_string(error));
       }
       int32_t adv =
-          (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance));
+        (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance));
 
       mAlphabet.emplace(c, Glyph(c, adv));
     }
 
-    for (auto &c : mAlphabet) {
+    for (auto& c : mAlphabet) {
       c.second.updateKerning(mCurrentAlphabet, this);
     }
   }
@@ -174,7 +193,9 @@ int32_t fonts::Font::computeTextLength(const std::u32string &aStr) {
   return length;
 }
 
-void fonts::Font::createFontAtlas(const std::string &aName) const {
+void
+fonts::Font::createFontAtlas(const std::string& aName) const
+{
   std::u32string alphabet = mCurrentAlphabet;
   std::sort(alphabet.begin(), alphabet.end());
   // get overall glyph information
@@ -183,19 +204,23 @@ void fonts::Font::createFontAtlas(const std::string &aName) const {
   double meanAdv = 0;
   int32_t maxBearingY = 0;
   int32_t maxNegBearingY = 0;
-  for (auto &c : alphabet) {
+  for (auto& c : alphabet) {
     auto error = FT_Load_Char(mFace, c, FT_LOAD_RENDER);
     if (error) {
       throw std::runtime_error("Unable to load glyph: " + std::to_string(c) +
                                "! Error was: " + std::to_string(error));
     }
-    maxAdv = std::max(maxAdv, (int32_t)std::ceil(fromFP26_6(
-                                  mFace->glyph->metrics.horiAdvance)));
+    maxAdv = std::max(
+      maxAdv,
+      (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance)));
     meanAdv += (double)fromFP26_6(mFace->glyph->metrics.horiAdvance);
-    maxBearingY = std::max(maxBearingY, (int32_t)std::ceil(fromFP26_6(
-      mFace->glyph->metrics.horiBearingY)));
-    maxNegBearingY = std::max(maxNegBearingY, (int32_t)std::ceil(fromFP26_6(
-      mFace->glyph->metrics.height - mFace->glyph->metrics.horiBearingY)));
+    maxBearingY = std::max(
+      maxBearingY,
+      (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiBearingY)));
+    maxNegBearingY = std::max(
+      maxNegBearingY,
+      (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.height -
+                                    mFace->glyph->metrics.horiBearingY)));
   }
   meanAdv /= alphabet.size();
   maxHeight = maxBearingY + maxNegBearingY;
@@ -207,8 +232,8 @@ void fonts::Font::createFontAtlas(const std::string &aName) const {
 
   // create the atlas
   {
-    cairo_surface_t *surface;
-    cairo_t *ctx;
+    cairo_surface_t* surface;
+    cairo_t* ctx;
 
     surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
     ctx = cairo_create(surface);
@@ -219,7 +244,7 @@ void fonts::Font::createFontAtlas(const std::string &aName) const {
     int32_t posX = 0;
     int32_t posY = 0;
     FT_Glyph glyph;
-    for (auto &c : alphabet) {
+    for (auto& c : alphabet) {
       auto error = FT_Load_Char(mFace, c, FT_LOAD_RENDER);
       if (error) {
         throw std::runtime_error("Unable to load glyph: " + std::to_string(c) +
@@ -239,10 +264,15 @@ void fonts::Font::createFontAtlas(const std::string &aName) const {
 
       FT_BitmapGlyph g = (FT_BitmapGlyph)glyph;
       AlignedBMP_A8 glyphBmp(g->bitmap.buffer, g->bitmap.width, g->bitmap.rows);
-      cairo_surface_t *bmp = cairo_image_surface_create_for_data(
-          glyphBmp.getBytes(), CAIRO_FORMAT_A8, glyphBmp.mWidth,
-          glyphBmp.mHeight, glyphBmp.mWidth);
-      int32_t basePointY = posY + maxBearingY - (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiBearingY));
+      cairo_surface_t* bmp =
+        cairo_image_surface_create_for_data(glyphBmp.getBytes(),
+                                            CAIRO_FORMAT_A8,
+                                            glyphBmp.mWidth,
+                                            glyphBmp.mHeight,
+                                            glyphBmp.mWidth);
+      int32_t basePointY =
+        posY + maxBearingY -
+        (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiBearingY));
       cairo_set_source_surface(ctx, bmp, posX, basePointY);
       cairo_paint(ctx);
 
@@ -300,7 +330,7 @@ void fonts::Font::createFontAtlas(const std::string &aName) const {
     }
 
     int32_t adv =
-        (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance));
+      (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance));
     advances.append(adv);
 
     Json::Value kerning_c = Json::arrayValue;
@@ -308,8 +338,8 @@ void fonts::Font::createFontAtlas(const std::string &aName) const {
     FT_Vector kerning_c2c;
     for (char32_t c2 : alphabet) {
       int32_t c2_idx = FT_Get_Char_Index(mFace, c2);
-      error = FT_Get_Kerning(mFace, c2_idx, c_idx, FT_KERNING_DEFAULT,
-                             &kerning_c2c);
+      error =
+        FT_Get_Kerning(mFace, c2_idx, c_idx, FT_KERNING_DEFAULT, &kerning_c2c);
       int32_t kerning = (int32_t)std::ceil(fromFP26_6(kerning_c2c.x));
       kerning_c.append(kerning);
     }
@@ -331,4 +361,8 @@ void fonts::Font::createFontAtlas(const std::string &aName) const {
   output.close();
 }
 
-int32_t fonts::Font::getMeanLetterWidth() const { return MEAN_LETTER_WITH; }
+int32_t
+fonts::Font::getMeanLetterWidth() const
+{
+  return MEAN_LETTER_WITH;
+}

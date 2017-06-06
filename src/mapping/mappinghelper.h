@@ -30,22 +30,32 @@
 #include "tag.h"
 
 namespace mapping_helper {
-class MappingHelper {
+class MappingHelper
+{
 public:
-  struct Constraint {
-    enum ConstraintType { DEFAULT, EQUALS, GREATER, LESS, TAG };
+  struct Constraint
+  {
+    enum ConstraintType
+    {
+      DEFAULT,
+      EQUALS,
+      GREATER,
+      LESS,
+      TAG
+    };
 
     ConstraintType mType;
     std::string mTag;
     int32_t mNumericComp = 0;
     std::string mStringComp = "";
 
-    Constraint(const Json::Value &aJson);
+    Constraint(const Json::Value& aJson);
 
     std::string toString() const;
   };
 
-  struct Level {
+  struct Level
+  {
 
     std::string mName;
     uint64_t mLevelId;
@@ -54,51 +64,54 @@ public:
     std::string mIconName;
 
     std::vector<Constraint> mConstraints;
-    Level(const std::vector<Constraint> &aConstraints, const Json::Value &aJson,
+    Level(const std::vector<Constraint>& aConstraints,
+          const Json::Value& aJson,
           uint64_t aId);
 
     std::string toString() const;
 
     // comparison operators
-    bool operator==(const Level &aOther) const;
-    bool operator!=(const Level &aOther) const;
-    bool operator<(const Level &aOther) const;
-    bool operator>(const Level &aOther) const;
-    bool operator<=(const Level &aOther) const;
-    bool operator>=(const Level &aOther) const;
+    bool operator==(const Level& aOther) const;
+    bool operator!=(const Level& aOther) const;
+    bool operator<(const Level& aOther) const;
+    bool operator>(const Level& aOther) const;
+    bool operator<=(const Level& aOther) const;
+    bool operator>=(const Level& aOther) const;
   };
 
 public:
-  MappingHelper(std::string &aInputPath);
-  MappingHelper(const MappingHelper &) = delete;
-  MappingHelper(MappingHelper &&) = delete;
+  MappingHelper(std::string& aInputPath);
+  MappingHelper(const MappingHelper&) = delete;
+  MappingHelper(MappingHelper&&) = delete;
 
-  const Level *computeLevel(const std::vector<osm_input::Tag> &aTags) const;
+  const Level* computeLevel(const std::vector<osm_input::Tag>& aTags) const;
 
-  std::vector<const Level *> getLevels() const;
-  const Level *getLevelDefault() const;
+  std::vector<const Level*> getLevels() const;
+  const Level* getLevelDefault() const;
 
   void test();
 
 private:
-  struct LevelTree {
+  struct LevelTree
+  {
   public:
-    LevelTree(LevelTree *aParent, const Json::Value &aData,
-              const std::vector<Constraint> &aParentConstraints,
-              uint32_t &aNodeId);
+    LevelTree(LevelTree* aParent,
+              const Json::Value& aData,
+              const std::vector<Constraint>& aParentConstraints,
+              uint32_t& aNodeId);
 
-    const Level *computeLevel(const std::vector<osm_input::Tag> &aTags,
-                              const Level *aDefault) const;
+    const Level* computeLevel(const std::vector<osm_input::Tag>& aTags,
+                              const Level* aDefault) const;
 
-    void computeLevelList(std::vector<const Level *> &aLevels) const;
+    void computeLevelList(std::vector<const Level*>& aLevels) const;
     std::size_t computeTreeSize() const;
 
     std::string toString(std::size_t aDepth) const;
 
   private:
-    LevelTree *mParent;
+    LevelTree* mParent;
     std::vector<LevelTree> mChildren;
-    const Level *mLevel;
+    const Level* mLevel;
 
     bool mIsLeaf;
     std::string mName;
@@ -107,8 +120,8 @@ private:
   };
 
   std::size_t mCountLevels;
-  LevelTree *mLevelTree;
-  const Level *mDefaultLevel;
+  LevelTree* mLevelTree;
+  const Level* mDefaultLevel;
 };
 }
 

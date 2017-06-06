@@ -28,9 +28,11 @@
 
 namespace label_helper {
 
-class LabelHelper {
+class LabelHelper
+{
 public:
-  struct LabelBall {
+  struct LabelBall
+  {
     osm_input::OsmPoi::Position mPos;
     int64_t mOsmId;
 
@@ -39,10 +41,16 @@ public:
     std::string mLabel;
     double mLabelFactor;
 
-    LabelBall(const osm_input::OsmPoi::Position &aCenter, int64_t aOsmId,
-              double aRadius, std::string aLabel, double aFactor)
-        : mPos(aCenter), mOsmId(aOsmId), mBallRadius(aRadius), mLabel(aLabel),
-          mLabelFactor(aFactor){};
+    LabelBall(const osm_input::OsmPoi::Position& aCenter,
+              int64_t aOsmId,
+              double aRadius,
+              std::string aLabel,
+              double aFactor)
+      : mPos(aCenter)
+      , mOsmId(aOsmId)
+      , mBallRadius(aRadius)
+      , mLabel(aLabel)
+      , mLabelFactor(aFactor){};
   };
 
 private:
@@ -55,21 +63,22 @@ private:
   std::unordered_set<std::u32string> mNewLines;
 
 public:
-  LabelHelper(const std::string &aFontTTFPath, int32_t aSplitSize,
-              const std::unordered_set<char32_t> &aSplitPoints);
+  LabelHelper(const std::string& aFontTTFPath,
+              int32_t aSplitSize,
+              const std::unordered_set<char32_t>& aSplitPoints);
 
-  LabelBall computeLabelBall(const osm_input::OsmPoi &aOsmPoi) const;
-  int32_t computeLabelSize(const std::string &aLabel) const;
-  std::pair<int32_t, int32_t>
-  computeLabelSplitSize(const std::string &aLabel) const;
+  LabelBall computeLabelBall(const osm_input::OsmPoi& aOsmPoi) const;
+  int32_t computeLabelSize(const std::string& aLabel) const;
+  std::pair<int32_t, int32_t> computeLabelSplitSize(
+    const std::string& aLabel) const;
 
-  std::string computeLabelSplit(const std::string &aLabel) const;
+  std::string computeLabelSplit(const std::string& aLabel) const;
 
-  std::string
-  computeLabelSplit(const std::string &aLabel,
-                    const std::unordered_set<char32_t> &aDelims) const;
+  std::string computeLabelSplit(
+    const std::string& aLabel,
+    const std::unordered_set<char32_t>& aDelims) const;
 
-  const std::unordered_set<char32_t> &getUnsupportedCharacters() const;
+  const std::unordered_set<char32_t>& getUnsupportedCharacters() const;
 
   void outputFontAtlas(std::string aAtlasName);
 };

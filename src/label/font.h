@@ -36,26 +36,33 @@
 
 namespace fonts {
 
-class Font {
+class Font
+{
 private:
-  struct Kerning {
+  struct Kerning
+  {
     char32_t mPredecessor;
     char32_t mSuccessor;
 
     int32_t mKerning;
 
     Kerning(char32_t aPred, char32_t aSucc, int32_t aKern)
-        : mPredecessor(aPred), mSuccessor(aSucc), mKerning(aKern){};
+      : mPredecessor(aPred)
+      , mSuccessor(aSucc)
+      , mKerning(aKern){};
   };
 
-  struct Glyph {
+  struct Glyph
+  {
     char32_t mLetter;
     int32_t mAdvance;
     std::unordered_map<char32_t, Kerning> mKerning;
 
-    Glyph(char32_t aLetter, int32_t aAdv) : mLetter(aLetter), mAdvance(aAdv){};
+    Glyph(char32_t aLetter, int32_t aAdv)
+      : mLetter(aLetter)
+      , mAdvance(aAdv){};
 
-    void updateKerning(std::u32string aAlphabet, Font *aFontFace);
+    void updateKerning(std::u32string aAlphabet, Font* aFontFace);
 
     int32_t getKerning(char32_t c);
   };
@@ -74,13 +81,13 @@ private:
   std::vector<std::vector<Kerning>> mKerning;
 
 public:
-  Font(const std::string &configPath);
+  Font(const std::string& configPath);
 
-  int32_t computeTextLength(const std::u32string &aStr);
+  int32_t computeTextLength(const std::u32string& aStr);
 
-  void createFontAtlas(const std::string &aName) const;
+  void createFontAtlas(const std::string& aName) const;
 
-  FT_Face *getFontFace() { return &mFace; };
+  FT_Face* getFontFace() { return &mFace; };
   int32_t getMeanLetterWidth() const;
 };
 }

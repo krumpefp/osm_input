@@ -30,8 +30,10 @@
 #include "osmpbf/parsehelpers.h"
 
 // ---- BoundingBox
-void osm_input::OsmInputHelper::BoundingBox::adapt(
-    const osm_input::OsmPoi::Position &aPos) {
+void
+osm_input::OsmInputHelper::BoundingBox::adapt(
+  const osm_input::OsmPoi::Position& aPos)
+{
   mMinLat = std::min(mMinLat, aPos.mLat);
   mMaxLat = std::max(mMinLat, aPos.mLat);
 
@@ -39,7 +41,9 @@ void osm_input::OsmInputHelper::BoundingBox::adapt(
   mMaxLon = std::max(mMinLon, aPos.mLon);
 }
 
-void osm_input::OsmInputHelper::BoundingBox::adapt(double aLat, double aLon) {
+void
+osm_input::OsmInputHelper::BoundingBox::adapt(double aLat, double aLon)
+{
   mMinLat = std::min(mMinLat, aLat);
   mMaxLat = std::max(mMinLat, aLat);
 
@@ -56,9 +60,11 @@ typedef int64_t SegmentId;
 typedef int64_t NodeId;
 typedef osm_input::OsmPoi::Position Position;
 
-std::vector<NodeId> concatenateSegments(NodeId aConcatNode,
-                                        std::vector<NodeId> &aSeg1,
-                                        std::vector<NodeId> &aSeg2) {
+std::vector<NodeId>
+concatenateSegments(NodeId aConcatNode,
+                    std::vector<NodeId>& aSeg1,
+                    std::vector<NodeId>& aSeg2)
+{
   std::vector<NodeId> result;
   result.reserve(aSeg1.size() + aSeg2.size());
 
@@ -82,16 +88,19 @@ std::vector<NodeId> concatenateSegments(NodeId aConcatNode,
   return result;
 }
 
-std::list<std::vector<NodeId>> assemblePolygon(
-    const std::vector<SegmentId> &aSegIds,
-    const std::unordered_map<SegmentId, std::vector<NodeId>> &aSegments) {
+std::list<std::vector<NodeId>>
+assemblePolygon(
+  const std::vector<SegmentId>& aSegIds,
+  const std::unordered_map<SegmentId, std::vector<NodeId>>& aSegments)
+{
   std::list<std::vector<NodeId>> result;
 
   std::unordered_map<NodeId, std::list<SegmentId>> adjacent;
 
   if (aSegIds.size() == 1) {
     std::vector<NodeId> tmp;
-    tmp.insert(tmp.begin(), aSegments.at(aSegIds.front()).begin(),
+    tmp.insert(tmp.begin(),
+               aSegments.at(aSegIds.front()).begin(),
                aSegments.at(aSegIds.front()).end());
 
     // hack to overcome data problems if polygons are not closed ...
@@ -103,7 +112,7 @@ std::list<std::vector<NodeId>> assemblePolygon(
     return result;
   }
 
-  for (const SegmentId &segId : aSegIds) {
+  for (const SegmentId& segId : aSegIds) {
     assert(aSegments.count(segId) > 0);
     auto nodes = aSegments.at(segId);
 
@@ -136,7 +145,7 @@ std::list<std::vector<NodeId>> assemblePolygon(
     adjacent.at(startNode).pop_front();
 
     std::vector<NodeId> segment;
-    const auto &seg = aSegments.at(currentSegment);
+    const auto& seg = aSegments.at(currentSegment);
     if (seg.front() == startNode)
       segment.insert(segment.end(), seg.begin(), seg.end());
     else if (seg.back() == startNode)
@@ -151,7 +160,7 @@ std::list<std::vector<NodeId>> assemblePolygon(
       currentSegment = adjacent.at(currentNode).front();
       adjacent.at(currentNode).pop_front();
       assert(aSegments.count(currentSegment) > 0);
-      auto &seg = aSegments.at(currentSegment);
+      auto& seg = aSegments.at(currentSegment);
       if (seg.front() == currentNode) {
         segment.insert(segment.end(), ++seg.begin(), seg.end());
       } else if (seg.back() == currentNode) {
@@ -173,32 +182,40 @@ std::list<std::vector<NodeId>> assemblePolygon(
   return result;
 };
 
-struct AreaPoi {
+struct AreaPoi
+{
   int64_t mOsmId;
-  const mapping_helper::MappingHelper::Level *mPoiLevel;
+  const mapping_helper::MappingHelper::Level* mPoiLevel;
 
   std::vector<osm_input::Tag> mTags;
   std::vector<SegmentId> mOuter;
   std::vector<SegmentId> mInner;
 
-  AreaPoi(int64_t aOsmId, const std::vector<osm_input::Tag> &aTags,
-          const mapping_helper::MappingHelper &aMh,
-          std::vector<SegmentId> &aOuterWays,
-          std::vector<SegmentId> &aInnerWays)
-      : mOsmId(aOsmId), mPoiLevel(aMh.computeLevel(aTags)), mTags(aTags),
-        mOuter(aOuterWays), mInner(aInnerWays){};
+  AreaPoi(int64_t aOsmId,
+          const std::vector<osm_input::Tag>& aTags,
+          const mapping_helper::MappingHelper& aMh,
+          std::vector<SegmentId>& aOuterWays,
+          std::vector<SegmentId>& aInnerWays)
+    : mOsmId(aOsmId)
+    , mPoiLevel(aMh.computeLevel(aTags))
+    , mTags(aTags)
+    , mOuter(aOuterWays)
+    , mInner(aInnerWays){};
 
-  bool getPoiInfo(std::unordered_map<SegmentId, std::vector<NodeId>> &aSegments,
-                  std::unordered_map<NodeId, Position> &aNodes,
-                  osm_input::OsmPoi *&aResult);
+  bool getPoiInfo(std::unordered_map<SegmentId, std::vector<NodeId>>& aSegments,
+                  std::unordered_map<NodeId, Position>& aNodes,
+                  osm_input::OsmPoi*& aResult);
 };
 
-bool AreaPoi::getPoiInfo(
-    std::unordered_map<SegmentId, std::vector<NodeId>> &aSegments,
-    std::unordered_map<NodeId, Position> &aNodes, osm_input::OsmPoi *&aResult) {
+bool
+AreaPoi::getPoiInfo(
+  std::unordered_map<SegmentId, std::vector<NodeId>>& aSegments,
+  std::unordered_map<NodeId, Position>& aNodes,
+  osm_input::OsmPoi*& aResult)
+{
   // TODO: Define - by bounding box? by area size? by maximum diameter?
   std::size_t count = 0;
-  for (auto &seg : mOuter) {
+  for (auto& seg : mOuter) {
     if (aSegments.count(seg) <= 0) {
       assert(false);
     }
@@ -214,7 +231,7 @@ bool AreaPoi::getPoiInfo(
   // TODO: Redefine. Using average point
   double sumLat = 0, sumLon = 0;
   count = 0;
-  for (auto &outer : outerSegments) {
+  for (auto& outer : outerSegments) {
     for (NodeId node : outer) {
       assert(aNodes.count(node) > 0);
       Position p = aNodes.at(node);
@@ -225,39 +242,45 @@ bool AreaPoi::getPoiInfo(
   }
 
   aResult = new osm_input::OsmPoi(
-      mOsmId, osm_input::OsmPoi::Position(sumLat / (double)count,
-                                          sumLon / (double)count),
-      mTags, mPoiLevel);
+    mOsmId,
+    osm_input::OsmPoi::Position(sumLat / (double)count, sumLon / (double)count),
+    mTags,
+    mPoiLevel);
 
   return true;
 }
 
 typedef std::vector<AreaPoi> AreaSet;
 
-struct SharedAreaSet {
+struct SharedAreaSet
+{
   std::mutex lock;
 
-  AreaSet *areas;
+  AreaSet* areas;
 
-  SharedAreaSet() : areas(new AreaSet()){};
+  SharedAreaSet()
+    : areas(new AreaSet()){};
 };
 
-struct BlockParserAreaPoiInfo {
-  SharedAreaSet *globalAreas;
+struct BlockParserAreaPoiInfo
+{
+  SharedAreaSet* globalAreas;
   AreaSet localAreas;
-  const mapping_helper::MappingHelper &mMappingHelper;
+  const mapping_helper::MappingHelper& mMappingHelper;
 
   osmpbf::RCFilterPtr filter;
 
-  BlockParserAreaPoiInfo(SharedAreaSet *aAreasGlobal,
-                         const mapping_helper::MappingHelper &aMappingHelper)
-      : globalAreas(aAreasGlobal), mMappingHelper(aMappingHelper){};
+  BlockParserAreaPoiInfo(SharedAreaSet* aAreasGlobal,
+                         const mapping_helper::MappingHelper& aMappingHelper)
+    : globalAreas(aAreasGlobal)
+    , mMappingHelper(aMappingHelper){};
 
-  BlockParserAreaPoiInfo(const BlockParserAreaPoiInfo &aOther)
-      : globalAreas(aOther.globalAreas),
-        mMappingHelper(aOther.mMappingHelper){};
+  BlockParserAreaPoiInfo(const BlockParserAreaPoiInfo& aOther)
+    : globalAreas(aOther.globalAreas)
+    , mMappingHelper(aOther.mMappingHelper){};
 
-  void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi)) {
+  void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
+  {
     // Filter to get all nodes that have an name tag
     //     osmpbf::KeyOnlyTagFilter* nameFilter = new
     //     osmpbf::KeyOnlyTagFilter("name");
@@ -274,14 +297,14 @@ struct BlockParserAreaPoiInfo {
     //     filter.reset(andFilter);
 
     //     Filter to get all relations that have an amenity, name or place tag
-    osmpbf::OrTagFilter *orFilter = new osmpbf::OrTagFilter();
+    osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
 
     //     Filter to get all relations of type multipolygon having a amenity,
     //     name or place tag
-    osmpbf::AndTagFilter *andFilter = new osmpbf::AndTagFilter();
+    osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
     andFilter->addChild(new osmpbf::KeyValueTagFilter("type", "multipolygon"));
     andFilter->addChild(orFilter);
 
@@ -306,7 +329,8 @@ struct BlockParserAreaPoiInfo {
 
           std::vector<SegmentId> outer, inner;
           for (osmpbf::IMemberStream memb = rel.getMemberStream();
-               !memb.isNull(); memb.next()) {
+               !memb.isNull();
+               memb.next()) {
             int64_t ref = memb.id();
             osmpbf::PrimitiveType type = memb.type();
             std::string role = memb.role();
@@ -342,35 +366,41 @@ struct BlockParserAreaPoiInfo {
     }
 
     std::unique_lock<std::mutex> lck(globalAreas->lock);
-    globalAreas->areas->insert(globalAreas->areas->end(), localAreas.begin(),
-                               localAreas.end());
+    globalAreas->areas->insert(
+      globalAreas->areas->end(), localAreas.begin(), localAreas.end());
   }
 };
 
 typedef std::unordered_map<SegmentId, std::vector<NodeId>> SegmentMap;
 
-struct SharedSegmentMap {
+struct SharedSegmentMap
+{
   std::mutex lock;
 
-  SegmentMap *segments;
+  SegmentMap* segments;
 
-  SharedSegmentMap() : segments(new SegmentMap()){};
+  SharedSegmentMap()
+    : segments(new SegmentMap()){};
 };
 
-struct BlockParserSegment {
-  SharedSegmentMap *globalSegments;
+struct BlockParserSegment
+{
+  SharedSegmentMap* globalSegments;
   SegmentMap localSegments;
 
   std::unordered_set<SegmentId> requested;
 
-  BlockParserSegment(SharedSegmentMap *aSegmentsGlobal,
-                     std::unordered_set<SegmentId> &aRequestedSegments)
-      : globalSegments(aSegmentsGlobal), requested(aRequestedSegments){};
+  BlockParserSegment(SharedSegmentMap* aSegmentsGlobal,
+                     std::unordered_set<SegmentId>& aRequestedSegments)
+    : globalSegments(aSegmentsGlobal)
+    , requested(aRequestedSegments){};
 
-  BlockParserSegment(const BlockParserSegment &aOther)
-      : globalSegments(aOther.globalSegments), requested(aOther.requested){};
+  BlockParserSegment(const BlockParserSegment& aOther)
+    : globalSegments(aOther.globalSegments)
+    , requested(aOther.requested){};
 
-  void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi)) {
+  void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
+  {
     localSegments.clear();
 
     if (pbi.waysSize() > 0) {
@@ -398,30 +428,36 @@ struct BlockParserSegment {
 
 typedef std::unordered_map<NodeId, osm_input::OsmPoi::Position> NodeMap;
 
-struct SharedNodeMap {
+struct SharedNodeMap
+{
   std::mutex lock;
 
-  NodeMap *nodes;
+  NodeMap* nodes;
 
-  SharedNodeMap() : nodes(new NodeMap()){};
+  SharedNodeMap()
+    : nodes(new NodeMap()){};
 };
 
-struct BlockParserNode {
-  SharedNodeMap *globalNodes;
+struct BlockParserNode
+{
+  SharedNodeMap* globalNodes;
   NodeMap localNodes;
 
   std::unordered_set<NodeId> requested;
 
   osmpbf::RCFilterPtr filter;
 
-  BlockParserNode(SharedNodeMap *aNodesGlobal,
-                  std::unordered_set<NodeId> &aRequestedNodes)
-      : globalNodes(aNodesGlobal), requested(aRequestedNodes){};
+  BlockParserNode(SharedNodeMap* aNodesGlobal,
+                  std::unordered_set<NodeId>& aRequestedNodes)
+    : globalNodes(aNodesGlobal)
+    , requested(aRequestedNodes){};
 
-  BlockParserNode(const BlockParserNode &aOther)
-      : globalNodes(aOther.globalNodes), requested(aOther.requested){};
+  BlockParserNode(const BlockParserNode& aOther)
+    : globalNodes(aOther.globalNodes)
+    , requested(aOther.requested){};
 
-  void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi)) {
+  void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
+  {
     localNodes.clear();
 
     if (pbi.nodesSize() > 0) {
@@ -433,7 +469,7 @@ struct BlockParserNode {
         }
 
         localNodes.emplace(
-            node.id(), osm_input::OsmPoi::Position(node.latd(), node.lond()));
+          node.id(), osm_input::OsmPoi::Position(node.latd(), node.lond()));
       }
     }
 
@@ -442,44 +478,57 @@ struct BlockParserNode {
   }
 };
 
-struct SharedPOISet {
+struct SharedPOISet
+{
   std::mutex lock;
 
-  PoiSet *pois;
+  PoiSet* pois;
 
-  SharedPOISet() : pois(new PoiSet()){};
+  SharedPOISet()
+    : pois(new PoiSet()){};
 };
 
-struct BlockParserPoi {
-  SharedPOISet *globalPois;
+struct BlockParserPoi
+{
+  SharedPOISet* globalPois;
   PoiSet localPois;
   const std::map<std::string, int32_t> mPopData;
-  const mapping_helper::MappingHelper &mMappingHelper;
+  const mapping_helper::MappingHelper& mMappingHelper;
 
   bool mIncludeSettlements;
   bool mIncludeGeneralPois;
 
   osmpbf::RCFilterPtr filter;
 
-  BlockParserPoi(SharedPOISet *aPoiGlobal, bool aSettlements, bool aGeneralPois,
-                 const mapping_helper::MappingHelper &aMappingHelper)
-      : globalPois(aPoiGlobal), mMappingHelper(aMappingHelper),
-        mIncludeSettlements(aSettlements), mIncludeGeneralPois(aGeneralPois){};
+  BlockParserPoi(SharedPOISet* aPoiGlobal,
+                 bool aSettlements,
+                 bool aGeneralPois,
+                 const mapping_helper::MappingHelper& aMappingHelper)
+    : globalPois(aPoiGlobal)
+    , mMappingHelper(aMappingHelper)
+    , mIncludeSettlements(aSettlements)
+    , mIncludeGeneralPois(aGeneralPois){};
 
-  BlockParserPoi(SharedPOISet *aPoiGlobal, bool aSettlements, bool aGeneralPois,
-                 const std::map<std::string, int32_t> &aPopMap,
-                 const mapping_helper::MappingHelper &aMappingHelper)
-      : globalPois(aPoiGlobal), mPopData(aPopMap),
-        mMappingHelper(aMappingHelper), mIncludeSettlements(aSettlements),
-        mIncludeGeneralPois(aGeneralPois){};
+  BlockParserPoi(SharedPOISet* aPoiGlobal,
+                 bool aSettlements,
+                 bool aGeneralPois,
+                 const std::map<std::string, int32_t>& aPopMap,
+                 const mapping_helper::MappingHelper& aMappingHelper)
+    : globalPois(aPoiGlobal)
+    , mPopData(aPopMap)
+    , mMappingHelper(aMappingHelper)
+    , mIncludeSettlements(aSettlements)
+    , mIncludeGeneralPois(aGeneralPois){};
 
-  BlockParserPoi(const BlockParserPoi &aOther)
-      : globalPois(aOther.globalPois), mPopData(aOther.mPopData),
-        mMappingHelper(aOther.mMappingHelper),
-        mIncludeSettlements(aOther.mIncludeSettlements),
-        mIncludeGeneralPois(aOther.mIncludeGeneralPois){};
+  BlockParserPoi(const BlockParserPoi& aOther)
+    : globalPois(aOther.globalPois)
+    , mPopData(aOther.mPopData)
+    , mMappingHelper(aOther.mMappingHelper)
+    , mIncludeSettlements(aOther.mIncludeSettlements)
+    , mIncludeGeneralPois(aOther.mIncludeGeneralPois){};
 
-  void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi)) {
+  void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
+  {
     // Filter to get all nodes that have an name tag
     //     osmpbf::KeyOnlyTagFilter* nameFilter = new
     //     osmpbf::KeyOnlyTagFilter("name");
@@ -495,8 +544,8 @@ struct BlockParserPoi {
     //     andFilter->addChild(orFilter);
     //     filter.reset(andFilter);
 
-    //     Filter to get all nodes that have an name and (amenity or place) tag
-    osmpbf::OrTagFilter *orFilter = new osmpbf::OrTagFilter();
+    //     Filter to get all nodes that have an name or amenity or place tag
+    osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
@@ -557,10 +606,10 @@ struct BlockParserPoi {
 
           if (city && mIncludeSettlements) {
             localPois.push_back(
-                osm_input::OsmPoi(id, pos, tags, mMappingHelper));
+              osm_input::OsmPoi(id, pos, tags, mMappingHelper));
           } else if (mIncludeGeneralPois) {
             localPois.push_back(
-                osm_input::OsmPoi(id, pos, tags, mMappingHelper));
+              osm_input::OsmPoi(id, pos, tags, mMappingHelper));
           } else {
             // ignore
             continue;
@@ -570,24 +619,30 @@ struct BlockParserPoi {
     }
 
     std::unique_lock<std::mutex> lck(globalPois->lock);
-    globalPois->pois->insert(globalPois->pois->end(), localPois.begin(),
-                             localPois.end());
+    globalPois->pois->insert(
+      globalPois->pois->end(), localPois.begin(), localPois.end());
   }
 };
 
-PoiSet importAreaPois(osmpbf::OSMFileIn &aOsmFile,
-                      mapping_helper::MappingHelper &aMappingHelper,
-                      int32_t aThreadCount, int32_t aBlobCount) {
+PoiSet
+importAreaPois(osmpbf::OSMFileIn& aOsmFile,
+               mapping_helper::MappingHelper& aMappingHelper,
+               int32_t aThreadCount,
+               int32_t aBlobCount)
+{
   bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
 
   aOsmFile.reset();
   osm_parsing::SharedAreaSet areas;
   osmpbf::parseFileCPPThreads(
-      aOsmFile, osm_parsing::BlockParserAreaPoiInfo(&areas, aMappingHelper),
-      aThreadCount, aBlobCount, threadPrivateProcessor);
+    aOsmFile,
+    osm_parsing::BlockParserAreaPoiInfo(&areas, aMappingHelper),
+    aThreadCount,
+    aBlobCount,
+    threadPrivateProcessor);
 
   std::unordered_set<SegmentId> requestedSegments;
-  for (auto &area : *(areas.areas)) {
+  for (auto& area : *(areas.areas)) {
     requestedSegments.insert(area.mOuter.begin(), area.mOuter.end());
     requestedSegments.insert(area.mInner.begin(), area.mInner.end());
   }
@@ -595,8 +650,11 @@ PoiSet importAreaPois(osmpbf::OSMFileIn &aOsmFile,
   aOsmFile.reset();
   osm_parsing::SharedSegmentMap segments;
   osmpbf::parseFileCPPThreads(
-      aOsmFile, osm_parsing::BlockParserSegment(&segments, requestedSegments),
-      aThreadCount, aBlobCount, threadPrivateProcessor);
+    aOsmFile,
+    osm_parsing::BlockParserSegment(&segments, requestedSegments),
+    aThreadCount,
+    aBlobCount,
+    threadPrivateProcessor);
 
   std::unordered_set<NodeId> requestedNodes;
   for (auto segment : *(segments.segments)) {
@@ -606,8 +664,11 @@ PoiSet importAreaPois(osmpbf::OSMFileIn &aOsmFile,
   aOsmFile.reset();
   osm_parsing::SharedNodeMap nodes;
   osmpbf::parseFileCPPThreads(
-      aOsmFile, osm_parsing::BlockParserNode(&nodes, requestedNodes),
-      aThreadCount, aBlobCount, threadPrivateProcessor);
+    aOsmFile,
+    osm_parsing::BlockParserNode(&nodes, requestedNodes),
+    aThreadCount,
+    aBlobCount,
+    threadPrivateProcessor);
 
   PoiSet result;
   result.reserve(areas.areas->size());
@@ -616,13 +677,13 @@ PoiSet importAreaPois(osmpbf::OSMFileIn &aOsmFile,
     // skip and remove / ignore the area if it was not fully contained in the
     // data set
     bool ignore = false;
-    for (auto &seg : it->mOuter) {
+    for (auto& seg : it->mOuter) {
       if (segments.segments->count(seg) == 0) {
         ignore = true;
         break;
       }
     }
-    for (auto &seg : it->mInner) {
+    for (auto& seg : it->mInner) {
       if (segments.segments->count(seg) == 0) {
         ignore = true;
         break;
@@ -633,7 +694,7 @@ PoiSet importAreaPois(osmpbf::OSMFileIn &aOsmFile,
       continue;
     }
 
-    osm_input::OsmPoi *tmpPoi;
+    osm_input::OsmPoi* tmpPoi;
     // #pragma clang diagnostics ignore maybe-uninitialized
     if (it->getPoiInfo(*(segments.segments), *(nodes.nodes), tmpPoi)) {
       result.push_back(*tmpPoi);
@@ -643,19 +704,25 @@ PoiSet importAreaPois(osmpbf::OSMFileIn &aOsmFile,
   return result;
 };
 
-PoiSet importNodePois(osmpbf::OSMFileIn &aOsmFile, bool aIncludeSettlements,
-                      bool aIncludeGeneral,
-                      const std::map<std::string, int32_t> &aPopData,
-                      mapping_helper::MappingHelper &aMappingHelper,
-                      int32_t aThreadCount, int32_t aBlobCount) {
+PoiSet
+importNodePois(osmpbf::OSMFileIn& aOsmFile,
+               bool aIncludeSettlements,
+               bool aIncludeGeneral,
+               const std::map<std::string, int32_t>& aPopData,
+               mapping_helper::MappingHelper& aMappingHelper,
+               int32_t aThreadCount,
+               int32_t aBlobCount)
+{
   osm_parsing::SharedPOISet pois;
   bool threadPrivateProcessor = true; // set to true so that MyCounter is copied
 
   osmpbf::parseFileCPPThreads(
-      aOsmFile,
-      osm_parsing::BlockParserPoi(&pois, aIncludeSettlements, aIncludeGeneral,
-                                  aPopData, aMappingHelper),
-      aThreadCount, aBlobCount, threadPrivateProcessor);
+    aOsmFile,
+    osm_parsing::BlockParserPoi(
+      &pois, aIncludeSettlements, aIncludeGeneral, aPopData, aMappingHelper),
+    aThreadCount,
+    aBlobCount,
+    threadPrivateProcessor);
 
   PoiSet result;
   result.reserve(pois.pois->size());
@@ -669,12 +736,18 @@ osm_input::OsmInputHelper::OsmInputHelper(std::string aPbfPath,
                                           std::string aClassDescriptionPath,
                                           int32_t aThreadCount,
                                           int32_t aBlobCount)
-    : mPbfPath(aPbfPath), mClassDescriptionPath(aClassDescriptionPath),
-      mThreadCount(aThreadCount), mBlobCount(aBlobCount),
-      mMappingHelper(aClassDescriptionPath) {}
+  : mPbfPath(aPbfPath)
+  , mClassDescriptionPath(aClassDescriptionPath)
+  , mThreadCount(aThreadCount)
+  , mBlobCount(aBlobCount)
+  , mMappingHelper(aClassDescriptionPath)
+{
+}
 
-PoiSet osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
-                                                bool aIncludeGeneral) {
+PoiSet
+osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
+                                         bool aIncludeGeneral)
+{
 
   // use an empty map of population information
   std::map<std::string, int32_t> populations;
@@ -682,9 +755,12 @@ PoiSet osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
   return importPoiData(aIncludeSettlements, aIncludeGeneral, populations);
 }
 
-PoiSet osm_input::OsmInputHelper::importPoiData(
-    bool aIncludeSettlements, bool aIncludeGeneral,
-    const std::map<std::string, int32_t> &aPopData) {
+PoiSet
+osm_input::OsmInputHelper::importPoiData(
+  bool aIncludeSettlements,
+  bool aIncludeGeneral,
+  const std::map<std::string, int32_t>& aPopData)
+{
   if (aPopData.size() > 0) {
     printf("Trying to parse infile %s\nUsing population data.\n",
            mPbfPath.c_str());
@@ -699,17 +775,21 @@ PoiSet osm_input::OsmInputHelper::importPoiData(
   }
 
   PoiSet result;
-  PoiSet nodeResult = osm_parsing::importNodePois(
-      osmFile, aIncludeSettlements, aIncludeGeneral, aPopData, mMappingHelper,
-      mThreadCount, mBlobCount);
+  PoiSet nodeResult = osm_parsing::importNodePois(osmFile,
+                                                  aIncludeSettlements,
+                                                  aIncludeGeneral,
+                                                  aPopData,
+                                                  mMappingHelper,
+                                                  mThreadCount,
+                                                  mBlobCount);
   result.reserve(nodeResult.size());
   result.insert(result.end(), nodeResult.begin(), nodeResult.end());
 
   std::printf("Imported %lu pois from the data set.\n", nodeResult.size());
 
   if (aIncludeGeneral) {
-    PoiSet areaResult = osm_parsing::importAreaPois(osmFile, mMappingHelper,
-                                                    mThreadCount, mBlobCount);
+    PoiSet areaResult = osm_parsing::importAreaPois(
+      osmFile, mMappingHelper, mThreadCount, mBlobCount);
 
     result.reserve(areaResult.size() + nodeResult.size());
     result.insert(result.end(), areaResult.begin(), areaResult.end());
@@ -721,7 +801,8 @@ PoiSet osm_input::OsmInputHelper::importPoiData(
   return result;
 }
 
-const mapping_helper::MappingHelper &
-osm_input::OsmInputHelper::getMappingHelper() const {
+const mapping_helper::MappingHelper&
+osm_input::OsmInputHelper::getMappingHelper() const
+{
   return mMappingHelper;
 }

@@ -27,15 +27,19 @@
 namespace text_output {
 const int32_t RADIUS_PRECISION = 3;
 
-double ceil(double aValue, int32_t aPrecision) {
+double
+ceil(double aValue, int32_t aPrecision)
+{
   return std::ceil(aValue * std::pow(10, aPrecision)) /
          std::pow(10, aPrecision);
 }
 }
 
-bool text_output::TextOutputHelper::writeBallsFile(
-    const std::vector<label_helper::LabelHelper::LabelBall> &aBalls,
-    char aSep) {
+bool
+text_output::TextOutputHelper::writeBallsFile(
+  const std::vector<label_helper::LabelHelper::LabelBall>& aBalls,
+  char aSep)
+{
   std::ofstream file(mOutputPath.c_str());
 
   if (!file.is_open()) {
@@ -46,9 +50,9 @@ bool text_output::TextOutputHelper::writeBallsFile(
   std::size_t importance = 0;
   file << aBalls.size();
 
-  for (auto &ball : aBalls) {
+  for (auto& ball : aBalls) {
     double radius_ceiled =
-        text_output::ceil(ball.mBallRadius, RADIUS_PRECISION);
+      text_output::ceil(ball.mBallRadius, RADIUS_PRECISION);
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
          << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
@@ -60,9 +64,11 @@ bool text_output::TextOutputHelper::writeBallsFile(
   return true;
 }
 
-bool text_output::TextOutputHelper::writeCompleteFile(
-    const std::vector<label_helper::LabelHelper::LabelBall> &aBalls,
-    char aSep) {
+bool
+text_output::TextOutputHelper::writeCompleteFile(
+  const std::vector<label_helper::LabelHelper::LabelBall>& aBalls,
+  char aSep)
+{
   std::ofstream file(mOutputPath.c_str());
 
   if (!file.is_open()) {
@@ -80,7 +86,7 @@ bool text_output::TextOutputHelper::writeCompleteFile(
       label.replace(label.find('\n'), 1, "\\n");
     }
     double radius_ceiled =
-        text_output::ceil(ball.mBallRadius, RADIUS_PRECISION);
+      text_output::ceil(ball.mBallRadius, RADIUS_PRECISION);
 
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()

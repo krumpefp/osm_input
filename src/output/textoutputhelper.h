@@ -28,20 +28,22 @@
 
 namespace text_output {
 
-class TextOutputHelper {
+class TextOutputHelper
+{
 public:
-  TextOutputHelper(std::string aOutputPath) : mOutputPath(aOutputPath){};
-  TextOutputHelper(const TextOutputHelper &other) = delete;
-  TextOutputHelper &operator=(const TextOutputHelper &other) = delete;
-  bool operator==(const TextOutputHelper &other) const = delete;
+  TextOutputHelper(std::string aOutputPath)
+    : mOutputPath(aOutputPath){};
+  TextOutputHelper(const TextOutputHelper& other) = delete;
+  TextOutputHelper& operator=(const TextOutputHelper& other) = delete;
+  bool operator==(const TextOutputHelper& other) const = delete;
 
   bool writeBallsFile(
-      const std::vector<label_helper::LabelHelper::LabelBall> &aBalls,
-      char aSep);
+    const std::vector<label_helper::LabelHelper::LabelBall>& aBalls,
+    char aSep);
 
   bool writeCompleteFile(
-      const std::vector<label_helper::LabelHelper::LabelBall> &aPois,
-      char aSep);
+    const std::vector<label_helper::LabelHelper::LabelBall>& aPois,
+    char aSep);
 
 private:
   std::string mOutputPath;

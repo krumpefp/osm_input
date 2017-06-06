@@ -25,13 +25,17 @@
 
 namespace osm_input {
 
-struct Tag {
+struct Tag
+{
   std::string mKey;
   std::string mValue;
 
-  Tag(std::string aKey, std::string aValue) : mKey(aKey), mValue(aValue){};
+  Tag(std::string aKey, std::string aValue)
+    : mKey(aKey)
+    , mValue(aValue){};
 
-  bool operator==(const Tag &aOther) const {
+  bool operator==(const Tag& aOther) const
+  {
     return aOther.mKey == this->mKey && aOther.mValue == this->mValue;
   };
 };

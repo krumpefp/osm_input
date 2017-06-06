@@ -29,40 +29,51 @@
 
 namespace osm_input {
 
-class OsmInputHelper {
+class OsmInputHelper
+{
 public:
-  struct BoundingBox {
+  struct BoundingBox
+  {
     double mMinLat;
     double mMaxLat;
     double mMinLon;
     double mMaxLon;
 
-    BoundingBox() : mMinLat(90), mMaxLat(-90), mMinLon(180), mMaxLon(-180){};
+    BoundingBox()
+      : mMinLat(90)
+      , mMaxLat(-90)
+      , mMinLon(180)
+      , mMaxLon(-180){};
 
     BoundingBox(double aMinLat, double aMaxLat, double aMinLon, double aMaxLon)
-        : mMinLat(aMinLat), mMaxLat(aMaxLat), mMinLon(aMinLon),
-          mMaxLon(aMaxLon){};
+      : mMinLat(aMinLat)
+      , mMaxLat(aMaxLat)
+      , mMinLon(aMinLon)
+      , mMaxLon(aMaxLon){};
 
-    void adapt(const osm_input::OsmPoi::Position &aPos);
+    void adapt(const osm_input::OsmPoi::Position& aPos);
 
     void adapt(double aLat, double aLon);
   };
 
 public:
-  OsmInputHelper(std::string aPbfPath, std::string aClassDescriptionPath,
-                 int32_t aThreadCount, int32_t aBlobCount);
-  OsmInputHelper(const OsmInputHelper &other) = delete;
-  OsmInputHelper &operator=(const OsmInputHelper &other) = delete;
-  bool operator==(const OsmInputHelper &other) const = delete;
+  OsmInputHelper(std::string aPbfPath,
+                 std::string aClassDescriptionPath,
+                 int32_t aThreadCount,
+                 int32_t aBlobCount);
+  OsmInputHelper(const OsmInputHelper& other) = delete;
+  OsmInputHelper& operator=(const OsmInputHelper& other) = delete;
+  bool operator==(const OsmInputHelper& other) const = delete;
 
   std::vector<osm_input::OsmPoi> importPoiData(bool aIncludeSettlements,
                                                bool aIncludeGeneral);
 
-  std::vector<osm_input::OsmPoi>
-  importPoiData(bool aIncludeSettlements, bool aIncludeGeneral,
-                const std::map<std::string, int32_t> &aPopData);
+  std::vector<osm_input::OsmPoi> importPoiData(
+    bool aIncludeSettlements,
+    bool aIncludeGeneral,
+    const std::map<std::string, int32_t>& aPopData);
 
-  const mapping_helper::MappingHelper &getMappingHelper() const;
+  const mapping_helper::MappingHelper& getMappingHelper() const;
 
 private:
   std::string mPbfPath;

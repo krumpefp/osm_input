@@ -26,14 +26,16 @@
 
 namespace pop_input {
 
-class PopulationInput {
+class PopulationInput
+{
 public:
   PopulationInput(std::string aInputPath);
-  PopulationInput(const PopulationInput &other) = delete;
-  PopulationInput &operator=(const PopulationInput &other) = delete;
-  bool operator==(const PopulationInput &other) const = delete;
+  PopulationInput(const PopulationInput& other) = delete;
+  PopulationInput& operator=(const PopulationInput& other) = delete;
+  bool operator==(const PopulationInput& other) const = delete;
 
-  std::map<std::string, int32_t> getPopulationsMap() const {
+  std::map<std::string, int32_t> getPopulationsMap() const
+  {
     return mPopulations;
   };
 
