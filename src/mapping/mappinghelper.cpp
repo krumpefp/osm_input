@@ -22,6 +22,7 @@
 
 #include <assert.h>
 #include <fstream>
+#include <iostream>
 
 #include "json.h"
 
@@ -75,6 +76,11 @@ mapping_helper::MappingHelper::Constraint::toString() const
 }
 
 // Level
+mapping_helper::MappingHelper::Level::Level()
+  : mName("Undefined Level")
+  , mLevelId(Level::UNDEFINED_ID)
+  , mLevelFactor(0)
+  , mIconName(""){};
 
 mapping_helper::MappingHelper::Level::Level(
   const std::vector<Constraint>& aConstraints,
@@ -109,9 +115,33 @@ mapping_helper::MappingHelper::Level::Level(
   }
 }
 
+mapping_helper::MappingHelper::Level::Level(
+  mapping_helper::MappingHelper::Level&& aOther)
+  : mName(aOther.mName)
+  , mLevelId(aOther.mLevelId)
+  , mLevelFactor(aOther.mLevelFactor)
+  , mIconName(aOther.mIconName){};
+
+bool
+mapping_helper::MappingHelper::Level::hasIcon() const
+{
+  // if the icon name is empty, the Level does not have an icon
+  return mIconName != "";
+}
+
+bool
+mapping_helper::MappingHelper::Level::isUndefinedLvl() const
+{
+  return mLevelId == Level::UNDEFINED_ID;
+}
+
 std::string
 mapping_helper::MappingHelper::Level::toString() const
 {
+  if (this->isUndefinedLvl()) {
+    return "Undefined Level";
+  }
+
   std::string constraints = "";
   for (const auto& c : mConstraints) {
     if (constraints != "")
@@ -257,7 +287,18 @@ mapping_helper::MappingHelper::LevelTree::toString(std::size_t aDepth) const
 
 // begin MappingHelper
 
+mapping_helper::MappingHelper::MappingHelper()
+  : mCountLevels(0)
+  , mLevelTree(nullptr)
+  , mDefaultLevel(new Level())
+  , m_required_tag_keys()
+{
+}
+
 mapping_helper::MappingHelper::MappingHelper(std::string& aInputPath)
+  : mDefaultLevel(new Level())
+  , m_required_tag_keys()
+
 {
   std::ifstream inputFile(aInputPath);
   if (!inputFile.is_open()) {
@@ -276,9 +317,36 @@ mapping_helper::MappingHelper::MappingHelper(std::string& aInputPath)
 
   std::vector<const Level*> lvls;
   mLevelTree->computeLevelList(lvls);
-  mDefaultLevel = lvls.back();
+}
 
-  //   printf("%s\n", mLevelTree->toString(0).c_str());
+mapping_helper::MappingHelper::MappingHelper(const Json::Value& aMapping)
+  : mDefaultLevel(new Level())
+  , m_required_tag_keys()
+{
+  uint32_t id = 1;
+  mLevelTree = new LevelTree(nullptr, aMapping, std::vector<Constraint>(), id);
+
+  mCountLevels = mLevelTree->computeTreeSize();
+
+  std::vector<const Level*> lvls;
+  mLevelTree->computeLevelList(lvls);
+}
+
+mapping_helper::MappingHelper::MappingHelper(
+  mapping_helper::MappingHelper&& aOther)
+  : mCountLevels(aOther.mCountLevels)
+  , mLevelTree(std::move(aOther.mLevelTree))
+  , mDefaultLevel(std::move(aOther.mDefaultLevel))
+  , m_required_tag_keys(aOther.m_required_tag_keys){};
+
+mapping_helper::MappingHelper&
+mapping_helper::MappingHelper::operator=(mapping_helper::MappingHelper&& aOther)
+{
+  mCountLevels = aOther.mCountLevels;
+  mLevelTree = std::move(aOther.mLevelTree);
+  mDefaultLevel = std::move(aOther.mDefaultLevel);
+
+  return *this;
 }
 
 namespace {
@@ -395,6 +463,12 @@ const mapping_helper::MappingHelper::Level*
 mapping_helper::MappingHelper::getLevelDefault() const
 {
   return mDefaultLevel;
+}
+
+const std::unordered_set<std::string>&
+mapping_helper::MappingHelper::get_tag_key_set() const
+{
+  return m_required_tag_keys;
 }
 
 void

@@ -26,6 +26,7 @@
 
 #include "argumentparser.h"
 
+#include "confighelper.h"
 #include "labelhelper.h"
 #include "mappinghelper.h"
 #include "osminputhelper.h"
@@ -37,10 +38,7 @@
 #include "utf8helper.h"
 
 namespace {
-const std::size_t LABEL_SPLIT_SIZE = 15;
-const std::unordered_set<char32_t> DELIMITERS({ ' ', '-', '/' });
-
-typedef argumentparser::ArgumentParser::ARGUMENT_TYPES ARG_TYPES;
+using ARG_TYPES = argumentparser::ArgumentParser::ARGUMENT_TYPES;
 }
 
 int
@@ -52,32 +50,17 @@ main(int argc, char** argv)
                                       "human settlements as well as amenities");
 
   // required arguments
+  args.addArgumentRequired("-C",
+                           "--config",
+                           "Defines the config file which guides the import.",
+                           ARG_TYPES::STRING);
   args.addArgumentRequired(
     "-i", "--input", "path to the input .pbf file", ARG_TYPES::STRING);
-  args.addArgumentRequired(
-    "-m",
-    "--mapping",
-    "path to the json file defining the tag to class mapping.",
-    ARG_TYPES::STRING);
-  args.addArgumentRequired(
-    "-f", "--font", "font information, ttf file path.", ARG_TYPES::STRING);
-
+  args.addArgumentRequired("-C",
+                           "--config",
+                           "Defines the config file which guides the import.",
+                           ARG_TYPES::STRING);
   // optional arguments
-  args.addArgument("-p",
-                   "--population",
-                   "file containing extra population "
-                   "information for some human "
-                   "settlement pois",
-                   ARG_TYPES::STRING);
-  args.addArgument("-c",
-                   "--cities",
-                   "if set, city (human settlement) labels are imported",
-                   ARG_TYPES::BINARY);
-  args.addArgument("-g",
-                   "--general",
-                   "if set, general poi labels are imported",
-                   ARG_TYPES::BINARY);
-
   args.addArgument(
     "-tc",
     "--threadcount",
@@ -111,36 +94,25 @@ main(int argc, char** argv)
 
   // required arguments
   std::string pbfPath = args.getValue<std::string>("-i");
-  std::string jsonPath = args.getValue<std::string>("-m");
-  std::string fontPath = args.getValue<std::string>("-f");
+  config_helper::ConfigHelper config(args.getValue<std::string>("-C"));
 
   // optional arguments
-  std::string popPath =
-    (args.isSet("-p")) ? args.getValue<std::string>("-p") : "";
   int threadCount = (args.isSet("-tc")) ? args.getValue<int>("-tc") : 4;
   int blobCount = (args.isSet("-bc")) ? args.getValue<int>("-bc") : 2;
 
-  label_helper::LabelHelper labelHelper(fontPath, LABEL_SPLIT_SIZE, DELIMITERS);
+  label_helper::LabelHelper labelHelper(config.get_ttf_path(),
+                                        config.get_split_bound(),
+                                        config.get_split_delimiters());
+
+  const mapping_helper::MappingHelper& mappingHelper =
+    config.get_mapping_helper();
 
   debug_timer::Timer t;
   t.start();
-  osm_input::OsmInputHelper input(pbfPath, jsonPath, threadCount, blobCount);
+  osm_input::OsmInputHelper input(
+    pbfPath, mappingHelper, threadCount, blobCount);
   std::vector<osm_input::OsmPoi> pois;
-  if (args.isSet("p")) {
-    printf("Additionally importing population data from file %s\n",
-           popPath.c_str());
-    std::map<std::string, int32_t> populations;
-    popPath = std::string(argv[2]);
-    pop_input::PopulationInput popInput(popPath);
-    populations = popInput.getPopulationsMap();
-    pois = input.importPoiData(
-      args.getValue<bool>("-c"), args.getValue<bool>("-g"), populations);
-  } else {
-    pois =
-      input.importPoiData(args.getValue<bool>("-c"), args.getValue<bool>("-g"));
-  }
-
-  auto& mh = input.getMappingHelper();
+  pois = input.importPoiData();
 
   t.createTimepoint();
 
@@ -156,7 +128,7 @@ main(int argc, char** argv)
 
   {
     std::vector<osm_input::OsmPoi> undefs;
-    auto* defaultLvl = mh.getLevelDefault();
+    auto* defaultLvl = mappingHelper.getLevelDefault();
     for (const auto& p : pois) {
       if (*p.getLevel() == *defaultLvl) {
         undefs.push_back(p);

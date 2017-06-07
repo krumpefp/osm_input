@@ -488,44 +488,61 @@ struct SharedPOISet
     : pois(new PoiSet()){};
 };
 
+namespace {
+enum NameLvl
+{
+  undefined = 0,
+  name_en = 50,
+  int_name = 70,
+  official_name = 80,
+  name = 100,
+};
+
+std::string
+get_name(std::vector<osm_input::Tag>& tags)
+{
+  std::string res = "";
+  NameLvl max_name_lvl = NameLvl::undefined;
+
+  for (auto& t : tags) {
+    if (t.mKey == "name:en" && max_name_lvl < NameLvl::name_en) {
+      res = t.mValue;
+      max_name_lvl = NameLvl::name_en;
+    } else if (t.mKey == "int_name" && max_name_lvl < NameLvl::int_name) {
+      res = t.mValue;
+      max_name_lvl = NameLvl::int_name;
+    } else if (t.mKey == "official_name" &&
+               max_name_lvl < NameLvl::official_name) {
+      res = t.mValue;
+      max_name_lvl = NameLvl::name;
+    } else if (t.mKey == "name" && max_name_lvl < NameLvl::name) {
+      res = t.mValue;
+      // highest valued name - skip when found this!
+      break;
+    }
+  }
+
+  return res;
+}
+}
+
 struct BlockParserPoi
 {
+
   SharedPOISet* globalPois;
   PoiSet localPois;
-  const std::map<std::string, int32_t> mPopData;
   const mapping_helper::MappingHelper& mMappingHelper;
-
-  bool mIncludeSettlements;
-  bool mIncludeGeneralPois;
 
   osmpbf::RCFilterPtr filter;
 
   BlockParserPoi(SharedPOISet* aPoiGlobal,
-                 bool aSettlements,
-                 bool aGeneralPois,
                  const mapping_helper::MappingHelper& aMappingHelper)
     : globalPois(aPoiGlobal)
-    , mMappingHelper(aMappingHelper)
-    , mIncludeSettlements(aSettlements)
-    , mIncludeGeneralPois(aGeneralPois){};
-
-  BlockParserPoi(SharedPOISet* aPoiGlobal,
-                 bool aSettlements,
-                 bool aGeneralPois,
-                 const std::map<std::string, int32_t>& aPopMap,
-                 const mapping_helper::MappingHelper& aMappingHelper)
-    : globalPois(aPoiGlobal)
-    , mPopData(aPopMap)
-    , mMappingHelper(aMappingHelper)
-    , mIncludeSettlements(aSettlements)
-    , mIncludeGeneralPois(aGeneralPois){};
+    , mMappingHelper(aMappingHelper){};
 
   BlockParserPoi(const BlockParserPoi& aOther)
     : globalPois(aOther.globalPois)
-    , mPopData(aOther.mPopData)
-    , mMappingHelper(aOther.mMappingHelper)
-    , mIncludeSettlements(aOther.mIncludeSettlements)
-    , mIncludeGeneralPois(aOther.mIncludeGeneralPois){};
+    , mMappingHelper(aOther.mMappingHelper){};
 
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
@@ -560,6 +577,7 @@ struct BlockParserPoi
     localPois.clear();
 
     if (pbi.nodesSize() > 0) {
+      const auto& tag_keys = mMappingHelper.get_tag_key_set();
 
       for (osmpbf::INodeStream node = pbi.getNodeStream(); !node.isNull();
            node.next()) {
@@ -568,52 +586,24 @@ struct BlockParserPoi
           int64_t id = node.id();
           std::vector<osm_input::Tag> tags;
 
-          bool city = false;
-          bool population = false;
-          std::string name = "";
-
           for (int32_t i = 0, s = node.tagsSize(); i < s; ++i) {
             std::string key = node.key(i);
             std::string value = node.value(i);
-            if (key != "amenity" && key != "place" && key != "population" &&
-                key != "name" && key != "name:de" && key != "name:en" &&
-                key != "capital") {
-              continue;
-            }
-
-            if (key == "place" && (value != "locality")) {
-              city = true;
-            }
-            if (key == "population") {
-              population = true;
-            }
-            if (key == "name") {
-              name = value;
-            }
             tags.emplace_back(key, value);
           }
 
-          if (city && !population) {
-            // try to find population data using the population map
-            auto elem = mPopData.find(name);
-            if (elem != mPopData.end()) {
-              std::printf("Searching for population of city %s ...\n",
-                          name.c_str());
-              tags.emplace_back("population", std::to_string(elem->second));
-              std::printf("\t... found: %i\n", elem->second);
-            }
-          }
-
-          if (city && mIncludeSettlements) {
-            localPois.push_back(
-              osm_input::OsmPoi(id, pos, tags, mMappingHelper));
-          } else if (mIncludeGeneralPois) {
-            localPois.push_back(
-              osm_input::OsmPoi(id, pos, tags, mMappingHelper));
-          } else {
-            // ignore
+          std::string name = get_name(tags);
+          auto level = mMappingHelper.computeLevel(tags);
+          if (level->isUndefinedLvl()) {
+            // skip if no level could be assigned to the poi!
             continue;
           }
+          if (name == "" && !level->hasIcon()) {
+            // skip the poi
+            continue;
+          }
+
+          localPois.emplace_back(id, pos, tags, level);
         }
       }
     }
@@ -626,7 +616,7 @@ struct BlockParserPoi
 
 PoiSet
 importAreaPois(osmpbf::OSMFileIn& aOsmFile,
-               mapping_helper::MappingHelper& aMappingHelper,
+               const mapping_helper::MappingHelper& aMappingHelper,
                int32_t aThreadCount,
                int32_t aBlobCount)
 {
@@ -697,7 +687,9 @@ importAreaPois(osmpbf::OSMFileIn& aOsmFile,
     osm_input::OsmPoi* tmpPoi;
     // #pragma clang diagnostics ignore maybe-uninitialized
     if (it->getPoiInfo(*(segments.segments), *(nodes.nodes), tmpPoi)) {
-      result.push_back(*tmpPoi);
+      if (!tmpPoi->getLevel()->isUndefinedLvl()) {
+        result.push_back(*tmpPoi);
+      }
     }
   }
 
@@ -706,10 +698,7 @@ importAreaPois(osmpbf::OSMFileIn& aOsmFile,
 
 PoiSet
 importNodePois(osmpbf::OSMFileIn& aOsmFile,
-               bool aIncludeSettlements,
-               bool aIncludeGeneral,
-               const std::map<std::string, int32_t>& aPopData,
-               mapping_helper::MappingHelper& aMappingHelper,
+               const mapping_helper::MappingHelper& aMappingHelper,
                int32_t aThreadCount,
                int32_t aBlobCount)
 {
@@ -718,8 +707,7 @@ importNodePois(osmpbf::OSMFileIn& aOsmFile,
 
   osmpbf::parseFileCPPThreads(
     aOsmFile,
-    osm_parsing::BlockParserPoi(
-      &pois, aIncludeSettlements, aIncludeGeneral, aPopData, aMappingHelper),
+    osm_parsing::BlockParserPoi(&pois, aMappingHelper),
     aThreadCount,
     aBlobCount,
     threadPrivateProcessor);
@@ -732,40 +720,22 @@ importNodePois(osmpbf::OSMFileIn& aOsmFile,
 };
 }
 
-osm_input::OsmInputHelper::OsmInputHelper(std::string aPbfPath,
-                                          std::string aClassDescriptionPath,
-                                          int32_t aThreadCount,
-                                          int32_t aBlobCount)
+osm_input::OsmInputHelper::OsmInputHelper(
+  std::string aPbfPath,
+  const mapping_helper::MappingHelper& aMappingHelper,
+  int32_t aThreadCount,
+  int32_t aBlobCount)
   : mPbfPath(aPbfPath)
-  , mClassDescriptionPath(aClassDescriptionPath)
+  //  , mClassDescriptionPath(aClassDescriptionPath)
   , mThreadCount(aThreadCount)
   , mBlobCount(aBlobCount)
-  , mMappingHelper(aClassDescriptionPath)
+  , mMappingHelper(aMappingHelper)
 {
 }
 
 PoiSet
-osm_input::OsmInputHelper::importPoiData(bool aIncludeSettlements,
-                                         bool aIncludeGeneral)
+osm_input::OsmInputHelper::importPoiData()
 {
-
-  // use an empty map of population information
-  std::map<std::string, int32_t> populations;
-
-  return importPoiData(aIncludeSettlements, aIncludeGeneral, populations);
-}
-
-PoiSet
-osm_input::OsmInputHelper::importPoiData(
-  bool aIncludeSettlements,
-  bool aIncludeGeneral,
-  const std::map<std::string, int32_t>& aPopData)
-{
-  if (aPopData.size() > 0) {
-    printf("Trying to parse infile %s\nUsing population data.\n",
-           mPbfPath.c_str());
-  }
-
   osmpbf::OSMFileIn osmFile(mPbfPath.c_str(), false);
 
   if (!osmFile.open()) {
@@ -775,34 +745,20 @@ osm_input::OsmInputHelper::importPoiData(
   }
 
   PoiSet result;
-  PoiSet nodeResult = osm_parsing::importNodePois(osmFile,
-                                                  aIncludeSettlements,
-                                                  aIncludeGeneral,
-                                                  aPopData,
-                                                  mMappingHelper,
-                                                  mThreadCount,
-                                                  mBlobCount);
+  PoiSet nodeResult = osm_parsing::importNodePois(
+    osmFile, mMappingHelper, mThreadCount, mBlobCount);
   result.reserve(nodeResult.size());
   result.insert(result.end(), nodeResult.begin(), nodeResult.end());
 
   std::printf("Imported %lu pois from the data set.\n", nodeResult.size());
 
-  if (aIncludeGeneral) {
-    PoiSet areaResult = osm_parsing::importAreaPois(
-      osmFile, mMappingHelper, mThreadCount, mBlobCount);
+  PoiSet areaResult = osm_parsing::importAreaPois(
+    osmFile, mMappingHelper, mThreadCount, mBlobCount);
 
-    result.reserve(areaResult.size() + nodeResult.size());
-    result.insert(result.end(), areaResult.begin(), areaResult.end());
+  result.reserve(areaResult.size() + nodeResult.size());
+  result.insert(result.end(), areaResult.begin(), areaResult.end());
 
-    std::printf("Imported %lu area pois from the data set.\n",
-                areaResult.size());
-  }
+  std::printf("Imported %lu area pois from the data set.\n", areaResult.size());
 
   return result;
-}
-
-const mapping_helper::MappingHelper&
-osm_input::OsmInputHelper::getMappingHelper() const
-{
-  return mMappingHelper;
 }

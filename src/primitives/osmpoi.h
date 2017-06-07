@@ -54,12 +54,14 @@ public:
   OsmPoi(int64_t aOsmId,
          osm_input::OsmPoi::Position aPos,
          const std::vector<osm_input::Tag>& aTags,
-         const mapping_helper::MappingHelper& aMh);
+         const mapping_helper::MappingHelper::Level* aLvl);
 
+  /*
   OsmPoi(int64_t aOsmId,
          osm_input::OsmPoi::Position aPos,
          const std::vector<osm_input::Tag>& aTags,
          const mapping_helper::MappingHelper::Level* aLvl);
+         */
 
   // comparison operators
   bool operator==(const OsmPoi& aOther) const;

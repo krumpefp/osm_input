@@ -58,32 +58,24 @@ public:
 
 public:
   OsmInputHelper(std::string aPbfPath,
-                 std::string aClassDescriptionPath,
+                 const mapping_helper::MappingHelper& aMappingHelper,
                  int32_t aThreadCount,
                  int32_t aBlobCount);
   OsmInputHelper(const OsmInputHelper& other) = delete;
   OsmInputHelper& operator=(const OsmInputHelper& other) = delete;
   bool operator==(const OsmInputHelper& other) const = delete;
 
-  std::vector<osm_input::OsmPoi> importPoiData(bool aIncludeSettlements,
-                                               bool aIncludeGeneral);
-
-  std::vector<osm_input::OsmPoi> importPoiData(
-    bool aIncludeSettlements,
-    bool aIncludeGeneral,
-    const std::map<std::string, int32_t>& aPopData);
-
-  const mapping_helper::MappingHelper& getMappingHelper() const;
+  std::vector<osm_input::OsmPoi> importPoiData();
 
 private:
   std::string mPbfPath;
-  std::string mClassDescriptionPath;
+  //  std::string mClassDescriptionPath;
   int32_t mThreadCount;
   int32_t mBlobCount;
 
   BoundingBox mDataBox;
 
-  mapping_helper::MappingHelper mMappingHelper;
+  const mapping_helper::MappingHelper& mMappingHelper;
 };
 }
 

@@ -21,9 +21,11 @@
 #ifndef MAPPINGHELPER_H
 #define MAPPINGHELPER_H
 
+#include <limits>
 #include <list>
 #include <stdint.h>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "json.h"
@@ -56,6 +58,7 @@ public:
 
   struct Level
   {
+    static const uint64_t UNDEFINED_ID = std::numeric_limits<uint64_t>::max();
 
     std::string mName;
     uint64_t mLevelId;
@@ -64,9 +67,16 @@ public:
     std::string mIconName;
 
     std::vector<Constraint> mConstraints;
+
+    Level();
+
     Level(const std::vector<Constraint>& aConstraints,
           const Json::Value& aJson,
           uint64_t aId);
+    Level(Level&& aOther);
+
+    bool hasIcon() const;
+    bool isUndefinedLvl() const;
 
     std::string toString() const;
 
@@ -80,14 +90,20 @@ public:
   };
 
 public:
+  MappingHelper();
   MappingHelper(std::string& aInputPath);
+  MappingHelper(const Json::Value& aMapping);
   MappingHelper(const MappingHelper&) = delete;
-  MappingHelper(MappingHelper&&) = delete;
+  MappingHelper(MappingHelper&& aOther);
+
+  MappingHelper& operator=(MappingHelper&& aOther);
 
   const Level* computeLevel(const std::vector<osm_input::Tag>& aTags) const;
 
   std::vector<const Level*> getLevels() const;
   const Level* getLevelDefault() const;
+
+  const std::unordered_set<std::string>& get_tag_key_set() const;
 
   void test();
 
@@ -122,6 +138,7 @@ private:
   std::size_t mCountLevels;
   LevelTree* mLevelTree;
   const Level* mDefaultLevel;
+  std::unordered_set<std::string> m_required_tag_keys;
 };
 }
 

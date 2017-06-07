@@ -12,7 +12,7 @@ find_package(ZLIB REQUIRED)
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
 include_directories(src
-	src/config
+	src/config
 	src/debughelpers
 	src/input
 	src/label
@@ -28,6 +28,7 @@ include_directories(src
 
 FILE(GLOB SOURCES_CPP src/*.cpp
 	src/*.cpp
+	src/config/*.cpp
 	src/debughelpers/*.cpp
 	src/input/*.cpp
 	src/label/*.cpp
