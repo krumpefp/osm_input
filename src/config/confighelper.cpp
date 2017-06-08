@@ -64,6 +64,7 @@ ConfigHelper::ConfigHelper(std::string input_path)
   m_font_ttf_path = root["font"]["ttf-path"].asString();
 
   m_mapping_helper = mapping_helper::MappingHelper(root["mapping"]);
+  m_filter_helper = filter_helper::FilterHelper(root["filter"]);
 }
 
 std::string
@@ -100,6 +101,12 @@ const mapping_helper::MappingHelper&
 ConfigHelper::get_mapping_helper() const
 {
   return m_mapping_helper;
+}
+
+const filter_helper::FilterHelper&
+ConfigHelper::get_filter_helper() const
+{
+  return m_filter_helper;
 }
 }
 // end ConfigHelper

@@ -109,8 +109,7 @@ main(int argc, char** argv)
 
   debug_timer::Timer t;
   t.start();
-  osm_input::OsmInputHelper input(
-    pbfPath, mappingHelper, threadCount, blobCount);
+  osm_input::OsmInputHelper input(pbfPath, config, threadCount, blobCount);
   std::vector<osm_input::OsmPoi> pois;
   pois = input.importPoiData();
 

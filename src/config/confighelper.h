@@ -27,6 +27,8 @@
 #include <unordered_set>
 
 #include "json.h"
+
+#include "filterhelper.h"
 #include "mappinghelper.h"
 
 namespace config_helper {
@@ -44,6 +46,7 @@ public:
   std::string get_ttf_path() const;
 
   const mapping_helper::MappingHelper& get_mapping_helper() const;
+  const filter_helper::FilterHelper& get_filter_helper() const;
 
 private:
   std::string m_labeling_name;
@@ -56,6 +59,7 @@ private:
   std::string m_font_ttf_path;
 
   mapping_helper::MappingHelper m_mapping_helper;
+  filter_helper::FilterHelper m_filter_helper;
 };
 }
 

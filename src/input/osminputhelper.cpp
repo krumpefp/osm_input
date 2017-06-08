@@ -533,16 +533,19 @@ struct BlockParserPoi
   PoiSet localPois;
   const mapping_helper::MappingHelper& mMappingHelper;
 
-  osmpbf::RCFilterPtr filter;
+  osmpbf::RCFilterPtr m_filter;
 
   BlockParserPoi(SharedPOISet* aPoiGlobal,
-                 const mapping_helper::MappingHelper& aMappingHelper)
+                 const mapping_helper::MappingHelper& aMappingHelper,
+                 const filter_helper::FilterHelper& aFilterHelper)
     : globalPois(aPoiGlobal)
-    , mMappingHelper(aMappingHelper){};
+    , mMappingHelper(aMappingHelper)
+    , m_filter(aFilterHelper.get_filter()){};
 
   BlockParserPoi(const BlockParserPoi& aOther)
     : globalPois(aOther.globalPois)
-    , mMappingHelper(aOther.mMappingHelper){};
+    , mMappingHelper(aOther.mMappingHelper)
+    , m_filter(aOther.m_filter){};
 
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
@@ -562,15 +565,19 @@ struct BlockParserPoi
     //     filter.reset(andFilter);
 
     //     Filter to get all nodes that have an name or amenity or place tag
-    osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
+    /*
+     * osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
-    filter.reset(orFilter);
+    m_filter.reset(orFilter);
+    *
+    */
 
-    filter->assignInputAdaptor(&pbi);
+    m_filter->assignInputAdaptor(&pbi);
 
-    if (!(filter->rebuildCache())) {
+    bool elements_contained = m_filter->rebuildCache();
+    if (!elements_contained) {
       return;
     }
 
@@ -581,7 +588,7 @@ struct BlockParserPoi
 
       for (osmpbf::INodeStream node = pbi.getNodeStream(); !node.isNull();
            node.next()) {
-        if (filter->matches(node)) {
+        if (m_filter->matches(node)) {
           osm_input::OsmPoi::Position pos(node.latd(), node.lond());
           int64_t id = node.id();
           std::vector<osm_input::Tag> tags;
@@ -699,6 +706,7 @@ importAreaPois(osmpbf::OSMFileIn& aOsmFile,
 PoiSet
 importNodePois(osmpbf::OSMFileIn& aOsmFile,
                const mapping_helper::MappingHelper& aMappingHelper,
+               const filter_helper::FilterHelper& aFilterHelper,
                int32_t aThreadCount,
                int32_t aBlobCount)
 {
@@ -707,7 +715,7 @@ importNodePois(osmpbf::OSMFileIn& aOsmFile,
 
   osmpbf::parseFileCPPThreads(
     aOsmFile,
-    osm_parsing::BlockParserPoi(&pois, aMappingHelper),
+    osm_parsing::BlockParserPoi(&pois, aMappingHelper, aFilterHelper),
     aThreadCount,
     aBlobCount,
     threadPrivateProcessor);
@@ -722,14 +730,14 @@ importNodePois(osmpbf::OSMFileIn& aOsmFile,
 
 osm_input::OsmInputHelper::OsmInputHelper(
   std::string aPbfPath,
-  const mapping_helper::MappingHelper& aMappingHelper,
+  const config_helper::ConfigHelper& config,
   int32_t aThreadCount,
   int32_t aBlobCount)
   : mPbfPath(aPbfPath)
-  //  , mClassDescriptionPath(aClassDescriptionPath)
   , mThreadCount(aThreadCount)
   , mBlobCount(aBlobCount)
-  , mMappingHelper(aMappingHelper)
+  , mMappingHelper(config.get_mapping_helper())
+  , mFilterHelper(config.get_filter_helper())
 {
 }
 
@@ -746,7 +754,7 @@ osm_input::OsmInputHelper::importPoiData()
 
   PoiSet result;
   PoiSet nodeResult = osm_parsing::importNodePois(
-    osmFile, mMappingHelper, mThreadCount, mBlobCount);
+    osmFile, mMappingHelper, mFilterHelper, mThreadCount, mBlobCount);
   result.reserve(nodeResult.size());
   result.insert(result.end(), nodeResult.begin(), nodeResult.end());
 

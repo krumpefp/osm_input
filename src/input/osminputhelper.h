@@ -24,6 +24,8 @@
 #include <map>
 #include <stdint.h>
 
+#include "confighelper.h"
+#include "filterhelper.h"
 #include "mappinghelper.h"
 #include "osmpoi.h"
 
@@ -58,7 +60,7 @@ public:
 
 public:
   OsmInputHelper(std::string aPbfPath,
-                 const mapping_helper::MappingHelper& aMappingHelper,
+                 const config_helper::ConfigHelper& aConfig,
                  int32_t aThreadCount,
                  int32_t aBlobCount);
   OsmInputHelper(const OsmInputHelper& other) = delete;
@@ -76,6 +78,7 @@ private:
   BoundingBox mDataBox;
 
   const mapping_helper::MappingHelper& mMappingHelper;
+  const filter_helper::FilterHelper& mFilterHelper;
 };
 }
 
