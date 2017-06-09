@@ -36,14 +36,18 @@ FILE(GLOB SOURCES_CPP src/*.cpp
 	src/output/*.cpp
 	src/primitives/*.cpp
 	src/statistics/*.cpp
-	vendor/argument_parser/src/*.cpp
-	vendor/jsoncpp/dist/*.cpp)
+	vendor/argument_parser/src/*.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-variable -Wconversion -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -O3 -march=native")
 
+add_subdirectory(vendor/argument_parser)
+add_subdirectory(vendor/jsoncpp)
+add_subdirectory(vendor/osmpbf)
+
 set(MY_LINK_LIBS
+	jsoncpp
 	osmpbf
 	${CAIRO_LIBRARIES}
 	${FREETYPE_LIBRARIES}
@@ -53,6 +57,5 @@ set(MY_LINK_LIBS
 
 add_executable(${PROJECT_NAME} ${SOURCES_CPP})
 
-add_subdirectory(vendor/osmpbf)
 add_dependencies(${PROJECT_NAME} osmpbf)
 target_link_libraries(${PROJECT_NAME} ${MY_LINK_LIBS})
