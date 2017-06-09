@@ -61,17 +61,22 @@ main(int argc, char** argv)
                            "Defines the config file which guides the import.",
                            ARG_TYPES::STRING);
   // optional arguments
-  args.addArgument(
-    "-tc",
-    "--threadcount",
-    "define the number of threads used during the pbf import. Default 4",
-    ARG_TYPES::INT);
   args.addArgument("-bc",
                    "--blobcount",
                    "define the number of blobs used per "
                    "thread during the pbf import. "
                    "Default 2",
                    ARG_TYPES::INT);
+  args.addArgument("-fa",
+                   "--fontatlas",
+                   "if set, the font information will be "
+                   "outputted to a font file",
+                   ARG_TYPES::BINARY);
+  args.addArgument(
+    "-tc",
+    "--threadcount",
+    "define the number of threads used during the pbf import. Default 4",
+    ARG_TYPES::INT);
 
   try {
     if (!args.parseArguments(std::size_t(argc), argv) && !args.isSet("-h")) {
@@ -153,23 +158,25 @@ main(int argc, char** argv)
     ++count;
   }
 
-  std::cout << "Writing font atlas to files ... " << std::endl;
+  if (args.isSet("-fa")) {
+    std::cout << "Writing font atlas to files ... " << std::endl;
 
-  labelHelper.outputFontAtlas("TestFont");
+    labelHelper.outputFontAtlas(config.get_font_name());
 
-  std::cout << "... successfull!" << std::endl;
+    std::cout << "... successfull!" << std::endl;
+  }
 
-  std::string outputname =
-    (pbfPath.find("/") == pbfPath.npos)
-      ? pbfPath.substr(0, pbfPath.size())
-      : pbfPath.substr(pbfPath.rfind('/') + 1, pbfPath.size());
+  std::string outputpath;
+  /*
+   * DEPRECATED
+   *
+   * outputpath = config.get_labeling_name() + ".balls.txt";
+   * std::printf("Outputting data to %s\n", outputpath.c_str());
+   * text_output::TextOutputHelper out(outputpath);
+   * out.writeBallsFile(balls, ' ');
+   */
 
-  std::string outputpath = outputname + ".balls.txt";
-  std::printf("Outputting data to %s\n", outputpath.c_str());
-  text_output::TextOutputHelper out(outputpath);
-  out.writeBallsFile(balls, ' ');
-
-  outputpath = outputname + ".complete.txt";
+  outputpath = config.get_labeling_name() + ".complete.txt";
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
   outComplete.writeCompleteFile(balls, ' ');
