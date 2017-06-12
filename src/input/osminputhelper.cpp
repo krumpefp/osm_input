@@ -545,7 +545,7 @@ struct BlockParserPoi
   BlockParserPoi(const BlockParserPoi& aOther)
     : globalPois(aOther.globalPois)
     , mMappingHelper(aOther.mMappingHelper)
-    , m_filter(aOther.m_filter){};
+    , m_filter(aOther.m_filter->copy()){};
 
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
