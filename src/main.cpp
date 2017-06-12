@@ -171,12 +171,14 @@ main(int argc, char** argv)
    * DEPRECATED
    *
    * outputpath = config.get_labeling_name() + ".balls.txt";
+   * std::replace(outputpath.begin(), outputpath.end(), ' ', '_');
    * std::printf("Outputting data to %s\n", outputpath.c_str());
    * text_output::TextOutputHelper out(outputpath);
    * out.writeBallsFile(balls, ' ');
    */
 
   outputpath = config.get_labeling_name() + ".complete.txt";
+  std::replace(outputpath.begin(), outputpath.end(), ' ', '_');
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
   outComplete.writeCompleteFile(balls, ' ');
