@@ -130,34 +130,6 @@ main(int argc, char** argv)
               t.getTimes()[0],
               t.getTimes()[1]);
 
-  {
-    std::vector<osm_input::OsmPoi> undefs;
-    auto* defaultLvl = mappingHelper.getLevelDefault();
-    for (const auto& p : pois) {
-      if (*p.getLevel() == *defaultLvl) {
-        undefs.push_back(p);
-      }
-    }
-    std::printf("Computing statistics for %lu pois with undefined level only\n",
-                undefs.size());
-    statistics::PoiStatistics statsUndefs(undefs);
-    printf("%s\n", statsUndefs.tagStatisticsDetailed(2.).c_str());
-  }
-
-  //   statistics::PoiStatistics stats(pois);
-  //   printf("%s\n", stats.mappingStatistics(mh).c_str());
-  //   printf("%s\n", stats.tagStatisticsSimple().c_str());
-
-  std::vector<label_helper::LabelHelper::LabelBall> balls;
-  balls.reserve(pois.size());
-  std::size_t count = 0;
-  for (const auto& poi : pois) {
-    //     std::cout << "Computing label ball for label " << count << ": "
-    //               << poi.getName() << std::endl;
-    balls.push_back(labelHelper.computeLabelBall(poi));
-    ++count;
-  }
-
   if (args.isSet("-fa")) {
     std::cout << "Writing font atlas to files ... " << std::endl;
 
@@ -166,22 +138,27 @@ main(int argc, char** argv)
     std::cout << "... successfull!" << std::endl;
   }
 
-  std::string outputpath;
-  /*
-   * DEPRECATED
-   *
-   * outputpath = config.get_labeling_name() + ".balls.txt";
-   * std::replace(outputpath.begin(), outputpath.end(), ' ', '_');
-   * std::printf("Outputting data to %s\n", outputpath.c_str());
-   * text_output::TextOutputHelper out(outputpath);
-   * out.writeBallsFile(balls, ' ');
-   */
+  std::cout << "Creating label discs ..." << std::endl;
 
-  outputpath = config.get_labeling_name() + ".complete.txt";
+  std::vector<label_helper::LabelHelper::LabelBall> balls;
+  balls.reserve(pois.size());
+  std::size_t count = 0;
+  for (const auto& poi : pois) {
+    balls.push_back(labelHelper.computeLabelBall(poi));
+    ++count;
+  }
+
+  std::cout << "... successfull!" << std::endl;
+
+  std::cout << "Exporting data ..." << std::endl;
+
+  std::string outputpath = config.get_labeling_name() + ".complete.txt";
   std::replace(outputpath.begin(), outputpath.end(), ' ', '_');
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
   outComplete.writeCompleteFile(balls, ' ');
+
+  std::cout << "... successfull!" << std::endl;
 
   return EXIT_SUCCESS;
 }
