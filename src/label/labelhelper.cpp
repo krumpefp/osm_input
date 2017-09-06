@@ -104,10 +104,11 @@ label_helper::LabelHelper::computeLabelBall(
   const osm_input::OsmPoi& aOsmPoi) const
 {
   std::string label;
-  double ballRadius = 4;
+  double ballRadius = 1;
 
   if (aOsmPoi.getLevel()->mIconName != "") {
     label = "icon:" + aOsmPoi.getLevel()->mIconName;
+    ballRadius = mFont.getMeanLetterWidth();
   } else {
     int32_t l = computeLabelSize(aOsmPoi.getName());
     if (l > mSplitSizePx) {
