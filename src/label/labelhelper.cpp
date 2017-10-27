@@ -80,7 +80,7 @@ toLabelSplit(const std::u32string& aLabel,
 
   return std::make_pair(label1, label2);
 }
-}
+} // namespace label_helper
 
 label_helper::LabelHelper::LabelHelper(
   const std::string& aFontTTFPath,
@@ -108,7 +108,7 @@ label_helper::LabelHelper::computeLabelBall(
 
   if (aOsmPoi.getLevel()->mIconName != "") {
     label = "icon:" + aOsmPoi.getLevel()->mIconName;
-    ballRadius = mFont.getMeanLetterWidth();
+    ballRadius = 4 * mFont.getMeanLetterWidth();
   } else {
     int32_t l = computeLabelSize(aOsmPoi.getName());
     if (l > mSplitSizePx) {
