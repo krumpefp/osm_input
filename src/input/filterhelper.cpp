@@ -29,14 +29,14 @@ namespace {
 osmpbf::AbstractTagFilter*
 create_filter(Json::Value j_filter)
 {
-  if (j_filter.isString()) {
-    return new osmpbf::KeyOnlyTagFilter(j_filter.asString());
+  auto type = j_filter["type"].asString();
+  if (type == "value") {
+    return new osmpbf::KeyOnlyTagFilter(j_filter["value"].asString());
   }
 
   // if j_filter is not a string, it is an object and has the type and operands
   // field
   osmpbf::AbstractMultiTagFilter* filter = nullptr;
-  auto type = j_filter["type"].asString();
   if (type == "and") {
     filter = new osmpbf::AndTagFilter();
   } else if (type == "or") {
