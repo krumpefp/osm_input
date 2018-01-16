@@ -139,8 +139,9 @@ assemblePolygon(
       continue;
     }
 
-    if (adjacent.at(startNode).size() == 1)
-      assert(adjacent.at(startNode).size() > 1);
+    if (adjacent.count(startNode) == 1) {
+      return result;
+    }
     SegmentId currentSegment = adjacent.at(startNode).front();
     adjacent.at(startNode).pop_front();
 
@@ -156,10 +157,18 @@ assemblePolygon(
     adjacent.at(currentNode).remove(currentSegment);
 
     while (currentNode != startNode) {
-      assert(adjacent.at(currentNode).size() > 0);
+      // assert(adjacent.at(currentNode).size() > 0);
+      if (adjacent.count(currentNode) <= 0) {
+        // polygon could not be assebled as some nodes were missing
+        return result;
+      }
       currentSegment = adjacent.at(currentNode).front();
       adjacent.at(currentNode).pop_front();
-      assert(aSegments.count(currentSegment) > 0);
+      // assert(aSegments.count(currentSegment) > 0);
+      if (adjacent.count(currentSegment) <= 0) {
+        // could not assemble the polygon as some segments were missing
+        return result;
+      }
       auto& seg = aSegments.at(currentSegment);
       if (seg.front() == currentNode) {
         segment.insert(segment.end(), ++seg.begin(), seg.end());
@@ -524,7 +533,7 @@ get_name(std::vector<osm_input::Tag>& tags)
 
   return res;
 }
-}
+} // namespace
 
 struct BlockParserPoi
 {
@@ -726,7 +735,7 @@ importNodePois(osmpbf::OSMFileIn& aOsmFile,
 
   return result;
 };
-}
+} // namespace osm_parsing
 
 osm_input::OsmInputHelper::OsmInputHelper(
   std::string aPbfPath,
