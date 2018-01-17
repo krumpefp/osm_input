@@ -20,7 +20,6 @@ include_directories(src
 	src/output
 	src/primitives
 	src/statistics
-	#vendor/argument_parser/src/lib/include
 	vendor/jsoncpp/dist/json
 	vendor/osmpbf
 	vendor/osmpbf/osmpbf/include)
@@ -36,7 +35,6 @@ FILE(GLOB SOURCES_CPP src/*.cpp
 	src/output/*.cpp
 	src/primitives/*.cpp
 	src/statistics/*.cpp)
-#vendor/argument_parser/src/*.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11  -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-variable -Wconversion -Wall")

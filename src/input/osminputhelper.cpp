@@ -237,6 +237,9 @@ AreaPoi::getPoiInfo(
   // compute the centeroid of the polygone
   // compare https://en.wikipedia.org/wiki/Centroid#Centroid_of_polygon
   auto outerSegments = assemblePolygon(mOuter, aSegments);
+  if (outerSegments.size() == 0) {
+    return false;
+  }
   // TODO: Redefine. Using average point
   double sumLat = 0, sumLon = 0;
   count = 0;
