@@ -24,7 +24,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "argumentparser.h"
+#include "argumentparser/argumentparser.h"
 
 #include "confighelper.h"
 #include "labelhelper.h"
