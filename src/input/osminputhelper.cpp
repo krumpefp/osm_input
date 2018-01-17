@@ -280,51 +280,25 @@ struct BlockParserAreaPoiInfo
   AreaSet localAreas;
   const mapping_helper::MappingHelper& mMappingHelper;
 
-  osmpbf::RCFilterPtr filter;
+  osmpbf::RCFilterPtr m_filter;
 
   BlockParserAreaPoiInfo(SharedAreaSet* aAreasGlobal,
-                         const mapping_helper::MappingHelper& aMappingHelper)
+                         const mapping_helper::MappingHelper& aMappingHelper,
+                         const filter_helper::FilterHelper& aFilterHelper)
     : globalAreas(aAreasGlobal)
-    , mMappingHelper(aMappingHelper){};
+    , mMappingHelper(aMappingHelper)
+    , m_filter(aFilterHelper.get_filter()){};
 
   BlockParserAreaPoiInfo(const BlockParserAreaPoiInfo& aOther)
     : globalAreas(aOther.globalAreas)
-    , mMappingHelper(aOther.mMappingHelper){};
+    , mMappingHelper(aOther.mMappingHelper)
+    , m_filter(aOther.m_filter->copy()){};
 
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
-    // Filter to get all nodes that have an name tag
-    //     osmpbf::KeyOnlyTagFilter* nameFilter = new
-    //     osmpbf::KeyOnlyTagFilter("name");
-    //     filter.reset(nameFilter);
+    m_filter->assignInputAdaptor(&pbi);
 
-    // Filter to get all nodes that have an name and (amenity or place) tag
-    //     osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
-    //     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
-    //     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
-    //
-    //     osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
-    //     andFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
-    //     andFilter->addChild(orFilter);
-    //     filter.reset(andFilter);
-
-    //     Filter to get all relations that have an amenity, name or place tag
-    osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
-
-    //     Filter to get all relations of type multipolygon having a amenity,
-    //     name or place tag
-    osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
-    andFilter->addChild(new osmpbf::KeyValueTagFilter("type", "multipolygon"));
-    andFilter->addChild(orFilter);
-
-    filter.reset(andFilter);
-
-    filter->assignInputAdaptor(&pbi);
-
-    if (!(filter->rebuildCache())) {
+    if (!(m_filter->rebuildCache())) {
       return;
     }
 
@@ -334,7 +308,7 @@ struct BlockParserAreaPoiInfo
 
       for (osmpbf::IRelationStream rel = pbi.getRelationStream(); !rel.isNull();
            rel.next()) {
-        if (filter->matches(rel)) {
+        if (m_filter->matches(rel)) {
           int64_t id = rel.id();
 
           bool ignore = false;
@@ -351,9 +325,10 @@ struct BlockParserAreaPoiInfo
               ignore = true;
               break;
             }
-            if (role == "outer" || role == "") {
+            if (role == "outer" || role == "Outer" || role == "out" ||
+                role == "") {
               outer.push_back(ref);
-            } else if (role == "inner") {
+            } else if (role == "inner" || role == "Inner" || role == "inn") {
               inner.push_back(ref);
             } else {
               printf("Found unknown way role %s\n", role.c_str());
@@ -561,31 +536,6 @@ struct BlockParserPoi
 
   void operator()(osmpbf::PrimitiveBlockInputAdaptor(&pbi))
   {
-    // Filter to get all nodes that have an name tag
-    //     osmpbf::KeyOnlyTagFilter* nameFilter = new
-    //     osmpbf::KeyOnlyTagFilter("name");
-    //     filter.reset(nameFilter);
-
-    // Filter to get all nodes that have an name and (amenity or place) tag
-    //     osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
-    //     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
-    //     orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
-    //
-    //     osmpbf::AndTagFilter* andFilter = new osmpbf::AndTagFilter();
-    //     andFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
-    //     andFilter->addChild(orFilter);
-    //     filter.reset(andFilter);
-
-    //     Filter to get all nodes that have an name or amenity or place tag
-    /*
-     * osmpbf::OrTagFilter* orFilter = new osmpbf::OrTagFilter();
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("place"));
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("amenity"));
-    orFilter->addChild(new osmpbf::KeyOnlyTagFilter("name"));
-    m_filter.reset(orFilter);
-    *
-    */
-
     m_filter->assignInputAdaptor(&pbi);
 
     bool elements_contained = m_filter->rebuildCache();
@@ -636,6 +586,7 @@ struct BlockParserPoi
 PoiSet
 importAreaPois(osmpbf::OSMFileIn& aOsmFile,
                const mapping_helper::MappingHelper& aMappingHelper,
+               const filter_helper::FilterHelper& aFilterHelper,
                int32_t aThreadCount,
                int32_t aBlobCount)
 {
@@ -645,7 +596,7 @@ importAreaPois(osmpbf::OSMFileIn& aOsmFile,
   osm_parsing::SharedAreaSet areas;
   osmpbf::parseFileCPPThreads(
     aOsmFile,
-    osm_parsing::BlockParserAreaPoiInfo(&areas, aMappingHelper),
+    osm_parsing::BlockParserAreaPoiInfo(&areas, aMappingHelper, aFilterHelper),
     aThreadCount,
     aBlobCount,
     threadPrivateProcessor);
@@ -773,7 +724,7 @@ osm_input::OsmInputHelper::importPoiData()
   std::printf("Imported %lu pois from the data set.\n", nodeResult.size());
 
   PoiSet areaResult = osm_parsing::importAreaPois(
-    osmFile, mMappingHelper, mThreadCount, mBlobCount);
+    osmFile, mMappingHelper, mFilterHelper, mThreadCount, mBlobCount);
 
   result.reserve(areaResult.size() + nodeResult.size());
   result.insert(result.end(), areaResult.begin(), areaResult.end());
