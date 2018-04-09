@@ -1,5 +1,3 @@
-debug/
-debug_clang
-release/
+build/
 *.kdev4
 *.gch
