@@ -47,6 +47,7 @@ add_subdirectory(vendor/osmpbf)
 set(MY_LINK_LIBS
 	argumentparser
 	jsoncpp
+	argumentparser
 	osmpbf
 	${CAIRO_LIBRARIES}
 	${FREETYPE_LIBRARIES}
