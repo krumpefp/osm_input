@@ -90,6 +90,6 @@ public:
   FT_Face* getFontFace() { return &mFace; };
   int32_t getMeanLetterWidth() const;
 };
-}
+} // namespace fonts
 
 #endif // FONT_H

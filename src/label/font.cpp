@@ -34,9 +34,7 @@
 #include "utf8helper.h"
 
 namespace fonts {
-// Font size in pixels for the font atlas
-int32_t FONT_SIZE = 100;
-int32_t MEAN_LETTER_WITH = FONT_SIZE * 2 / 3;
+int32_t FONT_DPI = 96;
 
 const double pow6 = 64;     // 2^6
 const double pow16 = 65536; // 2^16
@@ -69,9 +67,10 @@ initFontFace(FT_Library& aLib, FT_Face& aFace, std::string aFontName)
       "Unable to open or read the font file: " + aFontName + "!");
   }
 
-  error = FT_Set_Pixel_Sizes(aFace, FONT_SIZE, FONT_SIZE);
+  // Initialize the font for a character size of 1pt on a display with 96 dpi
+  error = FT_Set_Char_Size(aFace, 1 * 64, 1 * 64, FONT_DPI, FONT_DPI);
   if (error) {
-    throw std::runtime_error("Font does not support assignment of pixel size!");
+    throw std::runtime_error("Unable to set character size for the given font");
   }
 }
 
@@ -130,7 +129,7 @@ Font::Glyph::getKerning(char32_t c)
 
   return it->second.mKerning;
 }
-}
+} // namespace fonts
 
 // public class functions
 fonts::Font::Font(const std::string& fontPath)
@@ -364,5 +363,5 @@ fonts::Font::createFontAtlas(const std::string& aName) const
 int32_t
 fonts::Font::getMeanLetterWidth() const
 {
-  return MEAN_LETTER_WITH;
+  return (int32_t)std::ceil(mFace->size->metrics.x_ppem);
 }
