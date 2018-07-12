@@ -40,13 +40,13 @@ const double pow6 = 64;     // 2^6
 const double pow16 = 65536; // 2^16
 
 double
-fromFP26_6(int32_t aFixPoint)
+fromFP26_6(int64_t aFixPoint)
 {
   return (double)aFixPoint / pow6;
 }
 
 double
-fromFP16_16(int32_t aFixPoint)
+fromFP16_16(int64_t aFixPoint)
 {
   return (double)aFixPoint / pow16;
 }
@@ -87,7 +87,7 @@ struct AlignedBMP_A8
     mData.reserve(mWidth * mHeight);
     mData.insert(mData.end(), mWidth * mHeight, 0);
 
-    for (size_t i = 0; i < aHeight; ++i) {
+    for (int32_t i = 0; i < aHeight; ++i) {
       std::memcpy(mData.data() + i * mWidth, aData + i * aWidth, aWidth);
     }
   }
@@ -117,11 +117,11 @@ Font::Glyph::updateKerning(std::u32string aAlphabet, fonts::Font* aFont)
         std::to_string(mLetter) + "! Error was: " + std::to_string(error));
     }
     mKerning.emplace(
-      c, Kerning(c, mLetter, (int32_t)std::ceil(fromFP26_6(kerning.x))));
+      c, Kerning(c, mLetter, (int64_t)std::ceil(fromFP26_6(kerning.x))));
   }
 }
 
-int32_t
+int64_t
 Font::Glyph::getKerning(char32_t c)
 {
   auto it = mKerning.find(c);
@@ -170,8 +170,8 @@ fonts::Font::computeTextLength(const std::u32string& aStr)
         throw std::runtime_error("Unable to load glyph: " + std::to_string(c) +
                                  "! Error was: " + std::to_string(error));
       }
-      int32_t adv =
-        (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance));
+      int64_t adv =
+        (int64_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance));
 
       mAlphabet.emplace(c, Glyph(c, adv));
     }
@@ -182,9 +182,9 @@ fonts::Font::computeTextLength(const std::u32string& aStr)
   }
 
   auto glyph = mAlphabet.at(aStr[0]);
-  int32_t length = glyph.mAdvance;
+  int64_t length = glyph.mAdvance;
 
-  for (int32_t idx = 1, size = (int32_t)aStr.size(); idx < size; ++idx) {
+  for (size_t idx = 1, size = aStr.size(); idx < size; ++idx) {
     glyph = mAlphabet.at(aStr[idx]);
     length += glyph.mAdvance + glyph.getKerning(aStr[idx - 1]);
   }
@@ -198,11 +198,11 @@ fonts::Font::createFontAtlas(const std::string& aName) const
   std::u32string alphabet = mCurrentAlphabet;
   std::sort(alphabet.begin(), alphabet.end());
   // get overall glyph information
-  int32_t maxAdv = 0;
-  int32_t maxHeight;
+  int64_t maxAdv = 0;
+  int64_t maxHeight;
   double meanAdv = 0;
-  int32_t maxBearingY = 0;
-  int32_t maxNegBearingY = 0;
+  int64_t maxBearingY = 0;
+  int64_t maxNegBearingY = 0;
   for (auto& c : alphabet) {
     auto error = FT_Load_Char(mFace, c, FT_LOAD_RENDER);
     if (error) {
@@ -211,14 +211,14 @@ fonts::Font::createFontAtlas(const std::string& aName) const
     }
     maxAdv = std::max(
       maxAdv,
-      (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance)));
+      (int64_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiAdvance)));
     meanAdv += (double)fromFP26_6(mFace->glyph->metrics.horiAdvance);
     maxBearingY = std::max(
       maxBearingY,
-      (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiBearingY)));
+      (int64_t)std::ceil(fromFP26_6(mFace->glyph->metrics.horiBearingY)));
     maxNegBearingY = std::max(
       maxNegBearingY,
-      (int32_t)std::ceil(fromFP26_6(mFace->glyph->metrics.height -
+      (int64_t)std::ceil(fromFP26_6(mFace->glyph->metrics.height -
                                     mFace->glyph->metrics.horiBearingY)));
   }
   meanAdv /= alphabet.size();

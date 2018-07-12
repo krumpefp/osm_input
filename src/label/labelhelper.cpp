@@ -111,7 +111,7 @@ label_helper::LabelHelper::computeLabelBall(
     ballRadius = mFont.getMeanLetterWidth();
   } else {
     int32_t l = computeLabelSize(aOsmPoi.getName());
-    if (l > mSplitPoints) {
+    if (l > mSplitSizePx) {
       label = computeLabelSplit(aOsmPoi.getName());
     } else {
       label = aOsmPoi.getName();
