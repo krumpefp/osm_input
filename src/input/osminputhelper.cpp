@@ -546,7 +546,7 @@ struct BlockParserPoi
     localPois.clear();
 
     if (pbi.nodesSize() > 0) {
-      const auto& tag_keys = mMappingHelper.get_tag_key_set();
+      // const auto& tag_keys = mMappingHelper.get_tag_key_set();
 
       for (osmpbf::INodeStream node = pbi.getNodeStream(); !node.isNull();
            node.next()) {
@@ -701,8 +701,7 @@ osm_input::OsmInputHelper::OsmInputHelper(
   , mBlobCount(aBlobCount)
   , mMappingHelper(config.get_mapping_helper())
   , mFilterHelper(config.get_filter_helper())
-{
-}
+{}
 
 PoiSet
 osm_input::OsmInputHelper::importPoiData()

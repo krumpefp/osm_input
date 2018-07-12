@@ -108,7 +108,7 @@ label_helper::LabelHelper::computeLabelBall(
 
   if (aOsmPoi.getLevel()->mIconName != "") {
     label = "icon:" + aOsmPoi.getLevel()->mIconName;
-    ballRadius = 4 * mFont.getMeanLetterWidth();
+    ballRadius = mFont.getMeanLetterWidth();
   } else {
     int32_t l = computeLabelSize(aOsmPoi.getName());
     if (l > mSplitSizePx) {

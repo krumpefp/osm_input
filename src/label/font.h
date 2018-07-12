@@ -44,9 +44,9 @@ private:
     char32_t mPredecessor;
     char32_t mSuccessor;
 
-    int32_t mKerning;
+    int64_t mKerning;
 
-    Kerning(char32_t aPred, char32_t aSucc, int32_t aKern)
+    Kerning(char32_t aPred, char32_t aSucc, int64_t aKern)
       : mPredecessor(aPred)
       , mSuccessor(aSucc)
       , mKerning(aKern){};
@@ -55,16 +55,16 @@ private:
   struct Glyph
   {
     char32_t mLetter;
-    int32_t mAdvance;
+    int64_t mAdvance;
     std::unordered_map<char32_t, Kerning> mKerning;
 
-    Glyph(char32_t aLetter, int32_t aAdv)
+    Glyph(char32_t aLetter, int64_t aAdv)
       : mLetter(aLetter)
       , mAdvance(aAdv){};
 
     void updateKerning(std::u32string aAlphabet, Font* aFontFace);
 
-    int32_t getKerning(char32_t c);
+    int64_t getKerning(char32_t c);
   };
 
   // general font information
@@ -90,6 +90,6 @@ public:
   FT_Face* getFontFace() { return &mFace; };
   int32_t getMeanLetterWidth() const;
 };
-}
+} // namespace fonts
 
 #endif // FONT_H
