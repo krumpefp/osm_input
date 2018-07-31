@@ -58,7 +58,7 @@ public:
 
   struct Level
   {
-    static const uint64_t UNDEFINED_ID = std::numeric_limits<uint64_t>::max();
+    static const uint64_t UNDEFINED_ID = 0;
 
     std::string mName;
     uint64_t mLevelId;
@@ -140,6 +140,6 @@ private:
   const Level* mDefaultLevel;
   std::unordered_set<std::string> m_required_tag_keys;
 };
-}
+} // namespace mapping_helper
 
 #endif

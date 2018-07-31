@@ -67,6 +67,11 @@ main(int argc, char** argv)
                    "thread during the pbf import. "
                    "Default 2",
                    ARG_TYPES::INT);
+  args.addArgument("-eh",
+                   "--exporthierarchy",
+                   "if set the hierarchy levels will be exported instead of a "
+                   "total oder.",
+                   ARG_TYPES::BINARY);
   args.addArgument("-fa",
                    "--fontatlas",
                    "if set, the font information will be "
@@ -156,7 +161,7 @@ main(int argc, char** argv)
   std::replace(outputpath.begin(), outputpath.end(), ' ', '_');
   std::printf("Outputting data to %s\n", outputpath.c_str());
   text_output::TextOutputHelper outComplete(outputpath);
-  outComplete.writeCompleteFile(balls, ' ');
+  outComplete.writeCompleteFile(balls, ' ', args.isSet("-eh"));
 
   std::cout << "... successfull!" << std::endl;
 

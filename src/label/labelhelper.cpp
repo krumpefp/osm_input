@@ -123,8 +123,11 @@ label_helper::LabelHelper::computeLabelBall(
 
   ballRadius *= aOsmPoi.getLevel()->mLevelFactor;
 
+  uint64_t hierarchyLvl = aOsmPoi.getLevel()->mLevelId;
+
   return LabelBall(aOsmPoi.getPosition(),
                    aOsmPoi.getOsmId(),
+                   hierarchyLvl,
                    ballRadius,
                    label,
                    aOsmPoi.getLevel()->mLevelFactor);

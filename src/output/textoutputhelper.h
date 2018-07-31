@@ -43,11 +43,12 @@ public:
 
   bool writeCompleteFile(
     const std::vector<label_helper::LabelHelper::LabelBall>& aPois,
-    char aSep);
+    char aSep,
+    bool aExportHierarchy = false);
 
 private:
   std::string mOutputPath;
 };
-}
+} // namespace text_output
 
 #endif // TEXTOUTPUTHELPER_H

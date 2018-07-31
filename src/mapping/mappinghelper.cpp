@@ -20,6 +20,7 @@
 
 #include "mappinghelper.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <fstream>
 #include <iostream>
@@ -166,7 +167,7 @@ Level::operator!=(const mapping_helper::MappingHelper::Level& aOther) const
 bool
 Level::operator<(const mapping_helper::MappingHelper::Level& aOther) const
 {
-  return this->mLevelId > aOther.mLevelId;
+  return this->mLevelId < aOther.mLevelId;
 }
 
 bool
@@ -211,16 +212,23 @@ mapping_helper::MappingHelper::LevelTree::LevelTree(
   // handle the sublevels and construct corresponding subtrees
   if (aData.isMember("sublevels")) {
     mIsLeaf = false;
-    mNodeId = 0;
+    mNodeId = mapping_helper::MappingHelper::Level::UNDEFINED_ID;
 
     std::vector<Constraint> localConstraints = aParentConstraints;
     localConstraints.insert(
       localConstraints.begin(), mConstraints.begin(), mConstraints.end());
 
-    // determine the number of sublevels
-    for (const auto& lvl : aData["sublevels"]) {
+    // construct the sublevels in reverse order
+    auto it = aData["sublevels"].end();
+    auto begin = aData["sublevels"].begin();
+    do {
+      --it;
+      mChildren.emplace_back(this, *it, localConstraints, aNodeId);
+    } while (it != begin);
+    std::reverse(mChildren.begin(), mChildren.end());
+    /*for (const auto& lvl : aData["sublevels"]) {
       mChildren.emplace_back(this, lvl, localConstraints, aNodeId);
-    }
+    }*/
   } else {
     // ... if no sublevels are available construct a leaf node
     mIsLeaf = true;
@@ -276,8 +284,8 @@ mapping_helper::MappingHelper::LevelTree::toString(std::size_t aDepth) const
     for (const auto& child : mChildren) {
       subtree += child.toString(aDepth + 1);
     }
-    result = "\n" + prefix + "SUBTREE " + std::to_string(mNodeId) + " '" +
-             mName + "', constraints: [" + constraints + "]: " + subtree;
+    result = "\n" + prefix + "SUBTREE '" + mName + "', constraints: [" +
+             constraints + "]: " + subtree;
   }
 
   return result;
@@ -292,8 +300,7 @@ mapping_helper::MappingHelper::MappingHelper()
   , mLevelTree(nullptr)
   , mDefaultLevel(new Level())
   , m_required_tag_keys()
-{
-}
+{}
 
 mapping_helper::MappingHelper::MappingHelper(std::string& aInputPath)
   : mDefaultLevel(new Level())
@@ -411,7 +418,7 @@ checkConstraints(const Level& aLevel, const std::vector<osm_input::Tag>& aTags)
 
   return true;
 }
-}
+} // namespace
 
 const Level*
 mapping_helper::MappingHelper::LevelTree::computeLevel(

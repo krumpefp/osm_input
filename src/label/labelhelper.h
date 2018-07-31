@@ -35,6 +35,7 @@ public:
   {
     osm_input::OsmPoi::Position mPos;
     int64_t mOsmId;
+    uint64_t mHierarchyLevel;
 
     double mBallRadius;
 
@@ -43,11 +44,13 @@ public:
 
     LabelBall(const osm_input::OsmPoi::Position& aCenter,
               int64_t aOsmId,
+              uint64_t aHierarchyLevel,
               double aRadius,
               std::string aLabel,
               double aFactor)
       : mPos(aCenter)
       , mOsmId(aOsmId)
+      , mHierarchyLevel(aHierarchyLevel)
       , mBallRadius(aRadius)
       , mLabel(aLabel)
       , mLabelFactor(aFactor){};
@@ -82,6 +85,6 @@ public:
 
   void outputFontAtlas(std::string aAtlasName);
 };
-}
+} // namespace label_helper
 
 #endif // LABELHELPER_H

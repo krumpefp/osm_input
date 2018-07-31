@@ -33,7 +33,7 @@ ceil(double aValue, int32_t aPrecision)
   return std::ceil(aValue * std::pow(10, aPrecision)) /
          std::pow(10, aPrecision);
 }
-}
+} // namespace text_output
 
 bool
 text_output::TextOutputHelper::writeBallsFile(
@@ -67,7 +67,8 @@ text_output::TextOutputHelper::writeBallsFile(
 bool
 text_output::TextOutputHelper::writeCompleteFile(
   const std::vector<label_helper::LabelHelper::LabelBall>& aBalls,
-  char aSep)
+  char aSep,
+  bool aExportHierarchy)
 {
   std::ofstream file(mOutputPath.c_str());
 
@@ -88,12 +89,16 @@ text_output::TextOutputHelper::writeCompleteFile(
     double radius_ceiled =
       text_output::ceil(ball.mBallRadius, RADIUS_PRECISION);
 
+    std::size_t level = (aExportHierarchy) ? ball.mHierarchyLevel : importance;
+
     file << "\n"
          << std::fixed << std::setprecision(17) << ball.mPos.getLatDegree()
-         << aSep << ball.mPos.getLonDegree() << aSep << importance++ << aSep
+         << aSep << ball.mPos.getLonDegree() << aSep << level << aSep
          << std::fixed << std::setprecision(RADIUS_PRECISION) << radius_ceiled
          << aSep << ball.mOsmId << aSep << "'" << label << "'" << aSep
          << ball.mLabelFactor;
+
+    ++importance;
   }
 
   file.close();
