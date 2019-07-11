@@ -11,6 +11,10 @@ find_package(ZLIB REQUIRED)
 
 include_directories(${FREETYPE_INCLUDE_DIRS})
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(JSONCPP jsoncpp)
+link_libraries(${JSONCPP_LIBRARIES})
+
 include_directories(src
 	src/config
 	src/debughelpers
@@ -20,7 +24,6 @@ include_directories(src
 	src/output
 	src/primitives
 	src/statistics
-	vendor/jsoncpp/dist/json
 	vendor/osmpbf
 	vendor/osmpbf/osmpbf/include)
 
@@ -41,18 +44,17 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wsign-compare -Wunused-vari
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto -ffat-lto-objects -O3 -march=native")
 
 add_subdirectory(vendor/argument_parser)
-add_subdirectory(vendor/jsoncpp)
 add_subdirectory(vendor/osmpbf)
 
 set(MY_LINK_LIBS
 	argumentparser
-	jsoncpp
 	argumentparser
 	osmpbf
 	${CAIRO_LIBRARIES}
 	${FREETYPE_LIBRARIES}
 	${PROTOBUF_LIBRARIES}
 	${ZLIB_LIBRARIES}
+	${JSONCPP_LIBRARIES}
 	)
 
 add_executable(${PROJECT_NAME} ${SOURCES_CPP})

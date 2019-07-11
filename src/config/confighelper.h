@@ -26,7 +26,7 @@
 #include <string>
 #include <unordered_set>
 
-#include "json.h"
+#include <json/json.h>
 
 #include "filterhelper.h"
 #include "mappinghelper.h"

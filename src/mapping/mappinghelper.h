@@ -28,7 +28,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "json.h"
+#include <json/json.h>
 #include "tag.h"
 
 namespace mapping_helper {
