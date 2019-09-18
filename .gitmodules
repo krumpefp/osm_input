@@ -1,9 +1,6 @@
 [submodule "vendor/osmpbf"]
 	path = vendor/osmpbf
 	url = https://github.com/inphos42/osmpbf.git
-[submodule "vendor/jsoncpp"]
-	path = vendor/jsoncpp
-	url = https://github.com/open-source-parsers/jsoncpp.git
 [submodule "vendor/argument_parser"]
 	path = vendor/argument_parser
 	url = https://krumpefp@bitbucket.org/krumpefp/argument_parser.git
