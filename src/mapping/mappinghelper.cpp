@@ -25,8 +25,6 @@
 #include <fstream>
 #include <iostream>
 
-#include "json.h"
-
 typedef mapping_helper::MappingHelper::Constraint Constraint;
 typedef mapping_helper::MappingHelper::Level Level;
 

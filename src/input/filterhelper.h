@@ -21,7 +21,7 @@
 #ifndef FILTERHELPER_H
 #define FILTERHELPER_H
 
-#include "json.h"
+#include <json/json.h>
 #include "osmpbf/filter.h"
 
 namespace filter_helper {
