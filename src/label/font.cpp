@@ -312,10 +312,10 @@ fonts::Font::createFontAtlas(const std::string& aName) const
   Json::Value glyph;
   glyph["ascender"] = (int32_t)std::ceil(fromFP26_6(mFace->ascender));
   glyph["descender"] = (int32_t)std::ceil(fromFP26_6(mFace->descender));
-  glyph["top_height"] = maxBearingY;
-  glyph["bottom_height"] = maxNegBearingY;
+  glyph["top_height"] = (int32_t)maxBearingY;
+  glyph["bottom_height"] = (int32_t)maxNegBearingY;
   glyph["height"] = (int32_t)std::ceil(maxHeight);
-  glyph["width"] = maxAdv;
+  glyph["width"] = (int32_t)maxAdv;
   glyph["mean_width"] = (int32_t)std::ceil(meanAdv);
 
   // glyph specific info
